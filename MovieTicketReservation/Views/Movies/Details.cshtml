@@ -1,0 +1,122 @@
+﻿@using MovieTicketReservation.Models
+@{
+	ViewBag.Title = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model MovieDetails
+
+<link href="~/Content/film_details.css" rel="stylesheet" />
+<div class="container">
+	<div class="row">
+		<div class="col-sm-9">
+			<div class="film-details">
+				<img src="@Model.WideThumbnail" alt="" class="wide-thumbnail img-responsive">
+				<div class="film-info">
+					<div class="col-sm-7 info">
+						<h1 class="film-title">@Model.Title</h1>
+						<div class="inline-child">
+							<p class="detail-header">Khởi chiếu: </p>
+							Từ @Model.BeginShowDate đến @Model.BeginShowDate.AsDateTime().AddDays(Model.Duration).ToShortDateString();
+						</div>
+						<div class="inline-child">
+							<p class="detail-header">Thể loại: </p>
+							@foreach (var item in Model.Genres) {
+								<span class="badge">@item.Name</span>
+							}
+						</div>
+						<p class="detail-header">Diễn viên: </p>@Model.Actors
+						<div class="inline-child">
+							<p class="detail-header">Đạo diễn: </p>@Model.Director
+						</div>
+					</div>
+					<div class="col-sm-5">
+						<h2></h2>
+						<p class="detail-header">Phiên bản: </p>
+						@foreach (var item in Model.Editions) {
+							<span class="badge">@item.Name</span>
+						}
+						<hr>
+						<button type="button" id="btnBook" class="btn btn-sm btn-success right">Mua vé</button>
+						<button type="button" id="btnScheduler" class="btn btn-sm btn-info">Xem lịch chiếu</button>
+						<script type="text/javascript">
+							$('#btnScheduler').click(function (e) {
+								e.preventDefault();
+								var target = $('.film-description>ul>li>a[href="#scheduler"]');
+								target.tab('show');
+								$('html, body').animate({
+									scrollTop: $(target).offset().top
+								}, 2000);
+							});
+						</script>
+						<hr>
+						<div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-layout="standard" data-action="like" show-faces="false"></div>
+						<div class="fb-share-button" style="padding-top: 5px" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+					</div>
+				</div>
+
+				<div class="col-sm-12 film-description">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active">
+							<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Giới thiệu</a>
+						</li>
+						<li role="presentation">
+							<a href="#trailer" aria-controls="trailer" role="tab" data-toggle="tab">Trailer</a>
+						</li>
+						<li role="presentation">
+							<a href="#scheduler" aria-controls="scheduler" role="tab" data-toggle="tab">Lịch chiếu</a>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane fade in active">
+							<p>@Model.LongDescription</p>
+						</div>
+						<div role="tabpanel" class="tab-pane fade">
+							<div class="embed-responsive embed-responsive-16by9">
+								<iframe id="trailer" class="embed-responsive-item" src="@Model.TrailerUrl"></iframe>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="scheduler">
+							@foreach (var cinema in ViewBag.Schedules) {
+								<p class="schedule-cine">@cinema.CinemaName</p>
+								foreach (var date in cinema.Dates) {
+									<p class="schedule-date">
+										@date.ShowingDate.ToShortDateString():
+										@foreach (Showtime item in date.Showtimes) {
+											<span>
+												@Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+												"Reserve", "Ticket", new { ScheduleID = item.ScheduleId }, new { @class = "schedule-showtime" })
+											</span>
+										}
+									</p>
+								}
+							}
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<ul class="side-bar">
+				<li class="sidebar-item"><i class="fa fa-caret-right"></i> <a href="/">Phim đang chiếu</a></li>
+				<li class="sidebar-item"><i class="fa fa-caret-right"></i> <a href="/">Phim sắp chiếu</a></li>
+				<li class="sidebar-item"><i class="fa fa-caret-right"></i> <a href="/">Mới cập nhật</a></li>
+			</ul>
+			<hr>
+			<div id="verticalCarousel" class="carousel vertical slide" data-ride="carousel">
+				<!-- Carousel items -->
+				<div class="carousel-inner">
+					<div class="item active">
+						<a href="#" class="film-thumbnail"><img src="~/Content/Images/cinderella_mov.jpg" class="img-responsive center" alt="Image"></a>
+						<a href="#" class="film-thumbnail"><img src="~/Content/Images/runallnight_mov.jpg" class="img-responsive center" alt="Image"></a>
+					</div>
+					<div class="item">
+						<a href="#" class="film-thumbnail"><img src="~/Content/Images/insurgent_mov.jpg" class="img-responsive center" alt="Image"></a>
+						<a href="#" class="film-thumbnail"><img src="~/Content/Images/wildcard_mov.jpg" class="img-responsive center" alt="Image"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

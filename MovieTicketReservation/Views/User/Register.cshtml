@@ -1,0 +1,66 @@
+﻿@using MovieTicketReservation.Models
+@model UserRegisterModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-push-2 col-sm-8 col-xs-12 col-panel">
+            <h2>Đăng kí thành viên</h2>
+            <hr />
+            @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @class = "form-horizontal col-sm-8 col-sm-push-2" })) {
+                @Html.ValidationSummary()
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Nhập lại mật khẩu", new { @class = "col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBox("password2", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-8">
+                        <input class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Đăng kí" />
+                        @Html.ActionLink("Huỷ bỏ", "Index", "Home", null, new { @class = "btn btn-danger", style = "float: right" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@using MovieTicketReservation.Models
+@model List<MovieDetails>
+
+@foreach (var item in Model) {
+    <div class="col-sm-12 item" id='@item.MovieId'>
+        <img src="@Url.Content(item.ThumbnailUrl)" alt="" class="col-sm-3 center img-responsive">
+        <div class="col-sm-9">
+            <div class="movie-details col-sm-7">
+                <h3 class="movie-title">
+                    @Html.ActionLink(item.Title, "Details", "Movies", new { MovieID = item.MovieId }, null)
+                </h3>
+                <div class="inline-child"><p class="detail-header">Ngày ra mắt: </p>@item.ReleasedDate</div>
+                <div class="inline-child"><p class="detail-header">Độ dài: </p>@item.Length.ToString() phút</div>
+                <p class="detail-header">Tóm tắt: </p>@item.Description
+            </div>
+            <div class="col-xs-12 col-sm-5 movie-options">
+                <br />
+                <span class="detail-header">Phiên bản: </span>
+                @foreach (var edition in item.Editions) {
+                    <span class="badge">@edition.Name</span>
+                }
+                <p></p>
+                <span class="detail-header">Giới hạn độ tuổi: </span><span class="badge">@item.AgeLimit</span>
+                <hr>
+                <button class="btn btn-sm btn-success center btn-schedule" data-id="@item.MovieId">Đặt vé</button>
+                <hr>
+                <div class="fb-share-button" style="padding-top: 5px" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(".btn-schedule").click(function () {
+        var id = $(this).attr("data-id");
+        $.get("/Movies/AjaxGetScheduleViewByMovieId", { movieId: id }, function (data) {
+            $("body").remove("#modalSchedule");
+            $(data).appendTo("body").modal("show");
+        });
+    });
+</script>

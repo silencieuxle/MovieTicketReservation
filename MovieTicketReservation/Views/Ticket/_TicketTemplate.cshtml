@@ -1,0 +1,25 @@
+﻿@using MovieTicketReservation.Models
+@model List<TicketModel>
+
+@foreach (var item in Model) {
+    <div class="col-sm-8">
+        <div class="inline-child">
+            <p>Film</p>
+            @item.MovieTitle
+        </div>
+        <div class="inline-child">
+            <p>Ngày đặt</p>
+            @item.ReservedDate.ToShortDateString()
+        </div>
+        <div class="inline-child">
+            <p>Thời gian chiếu</p>
+            @item.ShowTime.Hours giờ @item.ShowTime.Minutes ngày @item.ShowDate.ToShortDateString()
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+}

@@ -1,0 +1,78 @@
+﻿@model MovieTicketReservation.Models.Member
+
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-push-2 col-xs-12">
+            <h4>Member</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.IDCardNumber)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IDCardNumber)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Firstname)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Firstname)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Lastname)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Lastname)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Password)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Password)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Phone)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Address)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Address)
+                </dd>
+
+            </dl>
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.MemberID }) |
+                @Html.ActionLink("Back to List", "Index")
+            </p>
+        </div>
+    </div>
+</div>

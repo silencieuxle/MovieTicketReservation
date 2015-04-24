@@ -1,0 +1,98 @@
+﻿@using MovieTicketReservation.Models
+@model List<TicketModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/ticket.css" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-panel">
+                <div class="col-sm-8 col-sm-push-2 ticket-list">
+                    <h2>Các vé đã đặt</h2>
+                    <hr />
+                    @if (Model.Count() != 0) {
+                        foreach (var item in Model) {
+                            <div class="item item-@item.BookingHeaderId">
+                                <div class="col-sm-3"><img class="img img-responsive" src="@item.ThumbnailUrl" alt="Alternate Text" /></div>
+                                <div class="col-sm-6">
+                                    <div class="inline-child">
+                                        <p class="detail-header">Film: </p>@item.MovieTitle
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Ngày đặt: </p>@item.ReservedDate.ToShortDateString()
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Rạp: </p>@Html.ActionLink(item.Cinema.Name, "Details", "Cinema",
+                                        routeValues: new { cinemaID = item.Cinema.CinemaId }, htmlAttributes: null)
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Phòng: </p>@item.RoomName
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Ngày giờ chiếu: </p>@item.ShowTime.Hours giờ @item.ShowTime.Minutes phút ngày @item.ShowDate.ToShortDateString()
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Số ghế: </p>@item.Seats.Count()
+                                    </div>
+                                    <div class="inline-child">
+                                        <p class="detail-header">Tình trạng: </p>
+                                        @if (item.IsTaken == true) {
+                                            <text>Đã lấy</text>
+                                        } else {
+                                            <text>Chưa lấy</text>}
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button id="btnCancel" class="btn btn-danger" onclick="cancelReservation(@item.BookingHeaderId);">Huỷ vé</button>
+                                </div>
+                                <div class="table-responsive col-sm-12">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Hàng</th>
+                                                <th>Cột</th>
+                                                <th>Tên</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var seat in item.Seats) {
+                                                <tr>
+                                                    <td>@seat.Substring(0, 1)</td>
+                                                    <td>@seat.Substring(1, 2)</td>
+                                                    <td>@seat</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    } else {
+                        <h4 style="text-align: center">Bạn chưa đặt vé nào, <a href="/Movies/">chọn film và đặt ngay!</a></h4>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function cancelReservation(bookingHeaderId) {
+        if (!confirm("Bạn chắc chắn muốn huỷ đặt vé?")) {
+            return false;
+        }
+        $.post("/Ticket/AjaxCancelReservation", { bookingHeaderId: parseInt(bookingHeaderId) }, function (data) {
+            if (data.Success == true) {
+                $(".ticket-list").removeChild($("div.item-" + bookingHeaderId));
+                alert("Đã huỷ vé thành công!");
+                if ($(".ticket-list").children().length == 0) {
+                    $(".ticket-list").append('<h4 style="text-align: center">Bạn chưa đặt vé nào, <a href="/Movies/">chọn film và đặt ngay!</a></h4>');
+                }
+            }
+        });
+    }
+</script>

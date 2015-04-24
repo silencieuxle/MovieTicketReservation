@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "DuplicateIDCard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-push-4 col-sm-4 col-xs-12 duplicateIDCard">
+            <h2>Xảy ra lỗi!</h2>
+            <p>Số chứng minh nhân dân bạn đăng kí với chúng tôi đã được sử dụng.</p>
+            @Html.ActionLink("Đăng kí lại", "Register", "User", routeValues: new { }, htmlAttributes: new { });
+            @Html.ActionLink("Về trang chủ", "Index", "Home", routeValues: new { }, htmlAttributes: new { });
+        </div>
+    </div>
+</div>
+

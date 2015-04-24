@@ -1,0 +1,110 @@
+.page-body {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    background-color: rgba(56, 56, 56, 0.9);
+}
+
+.slide-banner {
+    background-color: rgba(56, 56, 56, 0.9) !important;
+    border-bottom: 1px solid orange;
+}
+
+.main-content {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    background-color: rgba(18, 18, 18, 0.9);
+}
+
+.col-header {
+    text-transform: capitalize;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid white;
+}
+
+.blogs {
+    background-color: rgba(18, 18, 18, 0.9);
+    padding-bottom: 25px;
+    color: white;
+}
+
+.preview-content a {
+    color: white;
+    text-transform: uppercase;
+}
+
+.preview-content p {
+    font-size: 13px;
+}
+
+.blogs h4.col-header {
+    text-transform: uppercase !important;
+    font-style: italic;
+    border-bottom: 2px solid white !important;
+}
+
+.fb-like-box, .fb-root {
+    background-color: white;
+}
+
+.thumbnail {
+    overflow: hidden;
+}
+
+    .thumbnail img {
+        -webkit-transition: all .25s ease; /* Safari and Chrome */
+        -moz-transition: all .25s ease; /* Firefox */
+        -ms-transition: all .25s ease; /* IE 9 */
+        -o-transition: all .25s ease; /* Opera */
+        transition: all .25s ease;
+    }
+
+    .thumbnail:hover img {
+        -webkit-transform: scale(1.1); /* Safari and Chrome */
+        -moz-transform: scale(1.1); /* Firefox */
+        -ms-transform: scale(1.1); /* IE 9 */
+        -o-transform: scale(1.1); /* Opera */
+        transform: scale(1.1);
+    }
+
+.filtered-movies {
+    margin-top: 15px !important;
+}
+
+#page-tab {
+    border-radius: 0 !important;
+    border: 1px solid yellow;
+}
+
+    #page-tab * {
+        border-radius: 0 !important;
+        border: none;
+    }
+
+    #page-tab > li > a {
+        text-transform: uppercase;
+        font-size: 1em;
+        color: orange;
+    }
+
+    .nav-tabs > li.active > a, #page-tab > li.active > a:focus {
+        background-color: rgba(211, 84, 0, .9) !important;
+        color: white !important;
+    }
+
+    #page-tab > li > a:hover {
+        background-color: brown;
+    }
+
+.carousel-inner a > img {
+    width: 100% !important;
+    height: auto;
+}
+
+.carousel-inner a {
+    height: auto;
+}
+
+.movies, .reserve-box {
+    overflow: hidden;
+}

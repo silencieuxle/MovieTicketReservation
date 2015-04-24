@@ -1,0 +1,9 @@
+﻿@using MovieTicketReservation.Models
+@model List<PostModel>
+@foreach (var item in Model) {
+    <div class="recent-post-item col-sm-12">
+        <img class="img img-responsive" src="@item.ThumbnailUrl" alt="" />
+        @Html.ActionLink(item.PostTitle, "Detail", "News", routeValues: new { item.NewId }, htmlAttributes: null)
+    </div>
+}
+

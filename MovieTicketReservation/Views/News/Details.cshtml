@@ -1,0 +1,30 @@
+﻿@using MovieTicketReservation.Models
+@model New
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/news.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="col-panel">
+                <img class="img img-responsive" src="@Model.ThumbnailURL" alt="" />
+                <ul class="post-stat">
+                    <li class="hidden-xs"><i class="fa fa-calendar"></i>@{ ((DateTime)Model.PostedDate).ToShortDateString(); }</li>
+                    <li class="hidden-xs"><i class="fa fa-eye"></i> @Model.ViewCount</li>
+                    <li class="hidden-xs"><i class="fa fa-comment"></i> 50 comments</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="col-panel">
+                @{
+                    Html.RenderPartial("_RecentPostTemplate", (List<PostModel>)ViewBag.RecentPost);
+                }
+            </div>
+        </div>
+    </div>
+</div>

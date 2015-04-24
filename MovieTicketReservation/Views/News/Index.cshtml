@@ -1,0 +1,68 @@
+﻿@using MovieTicketReservation.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<New>
+
+<link href="~/Content/news.css" rel="stylesheet">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            @if (Model != null) {
+                foreach (var item in Model) {
+                    <div class="panel panel-default post">
+                        <div class="panel-heading">
+                            <a href="/News/Details?newID=@item.NewsID"><img class="img img-responsive" src="@item.ThumbnailURL" alt="Heading image"></a>
+                        </div>
+                        <div class="panel-body">
+                            <a href="/News/Details?newID=@item.NewsID"><h2>@item.Title</h2></a>
+                            <p>
+                                @item.Description
+                            </p>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="col-sm-10 col-xs-12">
+                                <ul class="post-stat">
+                                    <li class="hidden-xs"><i class="fa fa-calendar"></i>@{ ((DateTime)item.PostedDate).ToShortDateString(); }</li>
+                                    <li class="hidden-xs"><i class="fa fa-eye"></i> @item.ViewCount</li>
+                                    <li class="hidden-xs"><i class="fa fa-comment"></i> 50 comments</li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-2 col-xs-12 content-center">
+                                <a href="/News/Details?newID=@item.NewsID" data-toggle="tooltip" id="btnReadMore" data-placement="left" title="Đọc tiếp">
+                                    <i class="fa fa-2x fa-arrow-circle-o-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            } else {
+                <h1>Không có tin tức nào</h1>
+            }
+        </div>
+
+        <div class="col-sm-4">
+            <div class="col-panel">
+                <h3 class="tag-header">
+                    Tags
+                </h3>
+                <div class="tags">
+
+                </div>
+                <h3 class="tag-header">
+                    Liên kết nhanh
+                </h3>
+                <div class="quick-link"></div>
+                <h3 class="tag-header">
+                    Bài viết gần đây
+                </h3>
+                <div class="recent-post">
+                    @{
+                        Html.RenderPartial("_RecentPostTemplate", (List<PostModel>)ViewBag.RecentPost);
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+﻿@using MovieTicketReservation.Models
+@model List<CinemaModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/cinema.css" rel="stylesheet" />
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="list-group cinema-selector">
+                    <a class="list-group-item disabled" data-toggle="collapse" href="#collapseExample">
+                        <i class="glyphicon glyphicon-chevron-right" style="color: #ff8000;"></i> Chọn rạp
+                    </a>
+                    @foreach (var item in Model) {
+                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaId" data-toggle="tab" 
+                            onclick="loadCinemaInfo('@item.CinemaId', this);">
+                            <h5 class="list-group-item-heading">@item.Name</h5>
+                        </a>
+                    }
+                </div>
+                <div class="cinema-info hidden-xs">
+                    <!-- get data from server by cinema id and display here -->
+                    <p class="list-group-item-text">Addr: 230 Nguyễn Trãi, Quận 1, TP.HCM.<br>Tel: (08) 3920 6688</p>
+                    <p class="list-group-item-text">Addr: 116 Nguyễn Du, Quận 1, TP.HCM.<br>Tel: (08) 3823 5235</p>
+                    <p class="list-group-item-text">Addr: 246 Nguyễn Hồng Đào, Quận Tân Bình, TP.HCM.<br>Tel: (08) 3849 4567</p>
+                    <p class="list-group-item-text">Addr: 718Bis Kinh Dương Vương, Quận 6, TP.HCM.<br>Tel: (08) 3817 2398</p>
+                    <p class="list-group-item-text">Addr: 304A Quang Trung, Quận Gò Vấp, TP.HCM.<br>Tel: (08)35.897.899</p>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="cinema-scheduler">
+                    <ul class="nav nav-tabs nav-justified" role="tablist" id="page-tab">
+                        <li role="presentation" class="active hidden-xs">
+                            <a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Hình ảnh</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#divScheduler" aria-controls="divScheduler" role="tab" data-toggle="tab">Lịch chiếu</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#price" aria-controls="price" role="tab" data-toggle="tab">Giá vé</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active preview-img hidden-xs" role="tabpanel" id="preview">
+                        <div id="cineImage" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner" role="listbox">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="divScheduler">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed">
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">12:30|13:45|14:45|17:00|18:15|19:15|20:30|21:30</td>
+                                </tr>
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">12:30|13:45|14:45|17:00|18:15|19:15|20:30|21:30</td>
+                                </tr>
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">12:30|13:30|14:30|15:35|16:45|19:00|20:30</td>
+                                </tr>
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">12:30|13:30|14:30|15:35|16:45|19:00|20:30</td>
+                                </tr>
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">13:15|15:25|19:30|21:15</td>
+                                </tr>
+                                <tr>
+                                    <th class="date">Thứ 6, 16-01-2015</th>
+                                    <td class="time">13:15|15:25|19:30|21:15</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="price">
+                        ádas
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    $.post("/Cinema/GetCinemaDetails", { cinemaId: 'CINE1' }, function (data) {
+
+                    });
+                });
+
+                function updateImages(data) {
+                    $(".carousel-inner").empty();
+                    $.each(data, function (index, value) {
+                        if (index == 0) {
+                            var imageHtml = "<div class='item active'><img src='" + value + "' alt='' class=''></div>";
+                        } else {
+                            var imageHtml = "<div class='item'><img src='" + value + "' alt='' class=''></div>";
+                        }
+                        $(".carousel-inner").append(imageHtml)
+                    });
+                }
+
+                function updateSchedule(data) {
+
+                }
+
+                function loadCinemaInfo(cinemaId, source) {
+                    var target = $('.list-group-item');
+                    target.removeClass('active');
+                    $(source).addClass('active');
+
+                    $.post("/Cinema/GetCinemaDetails", { cinemaId: cinemaId }, function (data) {
+
+                    });
+                }
+            </script>
+        </div>
+    </div>
+</div>

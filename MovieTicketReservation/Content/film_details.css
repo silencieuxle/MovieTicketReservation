@@ -1,0 +1,153 @@
+.page-body {
+	margin-top: 50px;
+	padding-top: 20px;
+	padding-bottom: 15px;
+	background-color: rgba(243, 156, 18, 0.9);
+}
+
+.detail-header {
+	font-weight: 600;
+}
+
+
+.col-header {
+	text-decoration: none;
+	color: white;
+	border-bottom: 2px solid white;
+}
+
+.film-details {
+	color: black;
+	background-color: white;
+	overflow: hidden;
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(153,0,0,1);
+	-moz-box-shadow: 0px 0px 10px 0px rgba(153,0,0,1);
+	box-shadow: 0px 0px 10px 0px rgba(153,0,0,1);
+}
+
+.film-info {
+	overflow: hidden;
+	padding-bottom: 20px !important;
+}
+
+.film-description {
+	padding-bottom: 15px;
+}
+
+.film-title {
+	text-transform: uppercase;
+}
+
+.content {
+	padding: 20px;
+}
+
+.schedule-cine {
+	padding: 5px;
+	background-color:aqua;
+	font-weight: 600;
+}
+
+.schedule-date {
+	font-style: italic
+}
+
+.schedule-showtime {
+	font-style: normal !important;
+	padding-left: 10px;
+}
+
+.trailer {
+	padding: 20px;
+	text-align: center;
+}
+
+.side-bar {
+	list-style-type: none;
+	padding-left: 10px;
+}
+
+.sidebar-item {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-transform: uppercase;
+	font-weight: 600;
+	font-size: 16px;
+}
+
+	.sidebar-item a {
+		color: white;
+	}
+
+.film-thumbnail {
+	padding: 5px;
+}
+
+	.film-thumbnail img {
+		width: 80% !important;
+		margin: 0 auto;
+		height: auto;
+	}
+
+.scheduler {
+	background-color: #;
+	color: white;
+	padding-bottom: 50px;
+}
+
+.tab-content {
+	padding: 10px;
+	border: 1px solid #dddddd;
+	border-top: none;
+}
+
+div.img > img {
+	margin: 0 auto;
+}
+
+th.cinema {
+	color: #d35400;
+	font-weight: 600;
+}
+
+td.date {
+	font-weight: 600;
+}
+
+/* Vertical scroll carousel */
+.vertical .carousel-inner {
+	height: 100%;
+}
+
+.carousel.vertical .item {
+	-webkit-transition: .6s ease-in-out top;
+	-moz-transition: .6s ease-in-out top;
+	-o-transition: .6s ease-in-out top;
+	transition: .6s ease-in-out top;
+	left: 0;
+}
+
+.carousel.vertical .active {
+	top: 0;
+}
+
+.carousel.vertical .next {
+	top: 100%;
+}
+
+.carousel.vertical .prev {
+	top: -100%;
+}
+
+	.carousel.vertical .next.left,
+	.carousel.vertical .prev.right {
+		top: 0;
+	}
+
+.carousel.vertical .active.left {
+	top: -100%;
+}
+
+.carousel.vertical .active.right {
+	top: 100%;
+}

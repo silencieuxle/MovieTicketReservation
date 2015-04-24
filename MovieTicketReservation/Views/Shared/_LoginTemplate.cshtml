@@ -1,0 +1,16 @@
+﻿@using MovieTicketReservation.Models
+@if (Session["UID"] != null && (int)Session["uid"] != 0) {
+    using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })) {
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-link">
+                @Html.ActionLink("Xem profile", "Index", "User", routeValues: null, htmlAttributes: new { title = "Xem profile" })
+            </li>
+            <li class="nav-link"><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+    }
+} else {
+    <ul class="nav navbar-nav navbar-right">
+        <li class="nav-link">@Html.ActionLink("Đăng kí", "Register", "User", routeValues: null, htmlAttributes: new { id = "btnRegister" })</li>
+        <li class="nav-link"><a href="#" id="btnLogin">Đăng nhập</a></li>
+    </ul>
+}

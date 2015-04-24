@@ -1,0 +1,28 @@
+﻿@using MovieTicketReservation.Models
+@model List<CinemaScheduleDetails>
+<div class="modal fade" id="modalSchedule">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Lịch chiếu</h4>
+            </div>
+            <div class="modal-body">
+                @foreach (var cinema in Model) {
+                    <p class="schedule-cine">@cinema.CinemaName</p>
+                    foreach (var date in cinema.Dates) {
+                        <p class="schedule-date">
+                            @date.ShowingDate.ToShortDateString():
+                            @foreach (Showtime item in date.Showtimes) {
+                                <span>
+                                    @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+                                                "Reserve", "Ticket", new { item.ScheduleId }, new { @class = "schedule-showtime" })
+                                </span>
+                            }
+                        </p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

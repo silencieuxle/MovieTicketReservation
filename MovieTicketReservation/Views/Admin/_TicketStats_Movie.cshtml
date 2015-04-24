@@ -1,0 +1,48 @@
+﻿<script src="~/Scripts/raphael.min.js"></script>
+<script src="~/Scripts/morris.min.js"></script>
+<link href="~/Content/morris.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-sm-12">
+        <h2>Ticket Booking Staticstics By Movie</h2>
+        <select id="selMovie"></select>
+
+        <script>
+            $(document).ready(function () {
+                loadMovieList();
+            });
+
+            function loadMovieList() {
+                $.get("/Admin/AjaxGetMovieList", function (data) {
+                    $("#selMovie").empty();
+                    $.each(data, function (index, value) {
+                        var htmlString = "<option value='" + value.MovieID + "'>" + value.Title + "</option>";
+                        $("#selMovie").append(htmlString);
+                    });
+                });
+            }
+
+            $("#selMovie").change(function () {
+                var movieId = $("#selMovie").val();
+                $.post("/Admin/AjaxTicketStats_Movie", { movieId: movieId }, function (data) {
+                    draw(data);
+                });
+            });
+
+            function draw(data) {
+                Morris.Line({
+                    element: 'result',
+                    data: data,
+                    xkey: byDate,
+                    ykey: ['count'],
+                    lable: ['Count']
+                })
+            }
+        </script>
+        <h2>Thống kê</h2>
+        <hr />
+        <div id="result">
+
+        </div>
+    </div>
+</div>

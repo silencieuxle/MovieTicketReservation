@@ -1,0 +1,81 @@
+﻿.page-body {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.list-group-item-text {
+    font-size: 12px;
+}
+
+.preview-img * {
+    overflow: hidden;
+}
+
+.carousel {
+    max-height: 368px;
+}
+
+    .carousel.item img {
+        height: 100% !important;
+        width: auto;
+    }
+
+.nav-tabs {
+    background-color: white;
+}
+
+    .nav-tabs > li {
+        border-left: 2px solid rgb(70, 136, 71);
+    }
+
+    .nav-tabs > :first-child {
+        border-left: none;
+    }
+
+    .nav-tabs > li > a {
+        font-weight: 600;
+        text-transform: uppercase;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    .nav-tabs > li.active > a {
+        background-color: rgb(70, 136, 71) !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .nav-tabs > li > a:hover {
+        color: white;
+        background-color: #e67e22;
+        -moz-transition: all .5s;
+        -o-transition: all .5s;
+        -webkit-transition: all .5s;
+        transition: all .5s;
+        border-radius: 0;
+    }
+
+.cinema-info {
+    background-color: white;
+    padding: 10px;
+    color: black;
+}
+
+.tab-content {
+    color: black;
+    margin-top: 20px;
+    background-color: white;
+}
+
+.list-group-item {
+    border-radius: 0 !important;
+    text-transform: uppercase;
+    color: #ff8000;
+    font-size: 20px;
+}
+
+.cinema-selector, .cinema-info, .cinema-scheduler > .nav-tabs, .tab-content {
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}

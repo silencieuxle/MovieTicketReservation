@@ -1,0 +1,146 @@
+html, body {
+    background-color: rgb(54, 54, 54);
+    font-family: 'Roboto Slab', sans-serif;
+    height: 100%;
+}
+
+.inline-child {
+    padding-bottom: 15px;
+}
+
+    .inline-child > * {
+        display: inline !important;
+    }
+
+.navbar-brand {
+    font-style: oblique;
+    font-size: xx-large;
+}
+
+a {
+    font-family: 'Roboto Slab', sans-serif;
+}
+
+.btn {
+    border-radius: 0 !important;
+}
+
+select, input[type="text"] {
+    border-radius: 0 !important;
+}
+
+.center {
+    margin: 0 auto !important;
+}
+
+.content-center {
+    text-align: center;
+}
+
+.content-right {
+    text-align: right;
+}
+
+.content-left {
+    text-align: left;
+}
+
+.navbar-inverse {
+    margin-bottom: 0 !important;
+    background-color: rgba(119, 41, 83, 0.9);
+    border-bottom: 1px solid orange;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.nav-link {
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+    .nav-link > a {
+        color: #ebebeb !important;
+    }
+
+    .nav-link:hover > a {
+        color: white !important;
+    }
+
+.page-body {
+    background-color: #FF6F00;
+    color: white;
+    margin-top: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.footer {
+    border-top: 1px solid orange;
+    background-color: rgba(42,52,62, 0.9);
+    color: white;
+    padding-top: 25px;
+}
+
+.footer-col-header {
+    color: white;
+}
+
+.footer-list {
+    list-style-type: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 0;
+}
+
+    .footer-list li {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .footer-list a {
+        padding-left: 10px;
+        color: #EEEEEE;
+    }
+
+.reserve-box-control {
+    width: 90%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+form[role="search"] {
+    text-align: center;
+}
+
+.search-btn {
+    color: white;
+    border: none !important;
+    background: transparent !important;
+}
+
+.search-box {
+    border: none;
+    border-radius: 0 !important;
+    border-left: 2px solid orange !important;
+    background: transparent;
+    color: white;
+}
+
+    .search-box:focus {
+        box-shadow: none;
+    }
+
+.nav a:hover {
+    -moz-transition: all .5s;
+    -o-transition: all .5s;
+    -webkit-transition: all .5s;
+    transition: all .5s;
+}
+
+.col-panel {
+    padding: 15px;
+    margin-bottom: 20px !important;
+    color: black;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(153,0,0,1) !important;
+}

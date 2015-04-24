@@ -1,0 +1,23 @@
+.main-content {
+	overflow: hidden;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.main-content > div {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.cine-selector > a {
+	border-radius: 0 !important;
+}
+
+.schedule-detail {
+	background-color: #dff0d8;
+	color: rgb(70, 136, 71);
+}
+
+.schedule-detail > table > td {
+	
+}

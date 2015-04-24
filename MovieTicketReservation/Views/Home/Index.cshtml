@@ -1,0 +1,254 @@
+﻿@using MovieTicketReservation.Models
+@model List<MovieBasicInfo>
+@{
+	ViewBag.Title = "Home Page";
+}
+
+<link href="~/Content/index.css" rel="stylesheet" />
+<!-- FACEBOOK JavaScript SDK -->
+<div id="fb-root"></div>
+<!-- END SCRIPT -->
+
+<div class="slide-banner hidden-sm hidden-xs">
+	<div class="container-fluid">
+		<div class="row">
+			<div id="mainCarousel" class="carousel slide" data-ride="carousel">
+				<ol class="carousel-indicators">
+					<li data-target="#mainCarousel" data-slide-to="0" class="active"></li>
+					<li data-target="#mainCarousel" data-slide-to="1"></li>
+					<li data-target="#mainCarousel" data-slide-to="2"></li>
+				</ol>
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<h1 style="position: absolute; top: 100px; left: 170px; text-transform: uppercase; font-size: 4em">Cinderella</h1>
+						<h4 style="position: absolute; top: 180px; left: 200px">The perfect fairy godmother.</h4>
+						<a href="/film_detail.html"><img src="/Content/Images/slide1.jpg" class="center" alt="Image"></a>
+					</div>
+					<div class="item">
+						<h1 style="position: absolute; top: 100px; left: 170px; text-transform: uppercase; font-size: 4em">Cinderella</h1>
+						<h4 style="position: absolute; top: 180px; left: 200px">The film that made for kids.</h4>
+						<a href="/film_detail.html"><img src="/Content/Images/slide2.jpg" class="center" alt="Image"></a>
+					</div>
+					<div class="item">
+						<h1 style="position: absolute; top: 100px; left: 170px; text-transform: uppercase; font-size: 4em">Run all night</h1>
+						<h4 style="position: absolute; top: 180px; left: 200px">Accept revenge as a fact of life.</h4>
+						<a href="/film_detail.html"><img src="/Content/Images/slide3.jpg" class="center" alt="Image"></a>
+					</div>
+				</div>
+
+				<a class="left carousel-control" href="#mainCarousel" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="right carousel-control" href="#mainCarousel" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- QUICK SELECT -->
+<div class="main-content">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 movies">
+				<h3 class="col-header">PHIM</h3>
+
+				<div role="tabpanel">
+					<ul class="nav nav-tabs nav-justified" role="tablist" id="page-tab">
+						<li role="presentation" class="active">
+							<a href="" data-filter="1" role="tab" data-toggle="tab">Đang chiếu</a>
+						</li>
+						<li role="presentation">
+							<a href="" data-filter="2" role="tab" data-toggle="tab">Sắp chiếu</a>
+						</li>
+						<li role="presentation">
+							<a href="" data-filter="3" role="tab" data-toggle="tab">Sắp ra mắt</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="filtered-movies">
+					<!-- Data should be placed here -->
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<h3 class="col-header">ĐẶT VÉ</h3>
+				<div class="reserve-box-control">
+					<label for="selMovie">Chọn film</label>
+					<select name="" id="selMovie" class="form-control" required="required">
+						<option value="" disabled selected>Chọn film</option>
+						@foreach (var item in Model.Where(item => item.ScheduleType == 1 || item.ScheduleType == 2)) {
+							<option value="@item.MovieId">@item.Title</option>
+						}
+
+					</select>
+				</div>
+				<div class="reserve-box-control">
+					<label for="selCinema">Chọn rạp:</label>
+					<select name="" id="selCinema" class="form-control">
+						<option value="" disabled selected>Chọn rạp</option>
+					</select>
+				</div>
+				<div class="reserve-box-control">
+					<label for="selDate">Chọn ngày:</label>
+					<select name="" id="selDate" class="form-control">
+						<option value="" disabled selected>Chọn ngày</option>
+					</select>
+				</div>
+				<div class="reserve-box-control">
+					<label for="selShowtime">Chọn suất:</label>
+					<select name="" id="selShowtime" class="form-control">
+						<option value="" disabled selected>Chọn suất</option>
+					</select>
+				</div>
+				<div class="reserve-box-control" style="text-align: center;">
+					<button type="button" id="btnReserve" class="btn btn-success">Xác nhận</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END QUICK SELECT -->
+<!-- BLOGS -->
+<div class="blogs">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 reserve-box">
+				<h4 class="col-header">khuyến mãi</h4>
+				<div id="carousel1" class="carousel slide" data-ride="carousel">
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner" role="listbox">
+						<div class="item active">
+							<a href="#"><img src="/Content/Images/promotion1.jpg" class="img-responsive center" alt="Image"></a>
+							<br>
+							<a href="#"><img src="/Content/Images/promotion2.jpg" class="img-responsive center" alt="Image"></a>
+						</div>
+						<div class="item">
+							<a href="#"><img src="/Content/Images/promotion3.jpg" class="img-responsive center" alt="Image"></a>
+							<br>
+							<a href="#"><img src="/Content/Images/promotion4.jpg" class="img-responsive center" alt="Image"></a>
+						</div>
+					</div>
+				</div>
+
+				<script type="text/javascript">
+					$(document).ready(function () {
+						$('.carousel').carousel({ interval: 5000 });
+					});
+				</script>
+			</div>
+			<div class="col-sm-4">
+				<h4 class="col-header">blogs</h4>
+				<div class="blog-content">
+					<div id="carousel2" class="carousel slide" data-ride="carousel">
+						<!-- Wrapper for slides -->
+						<div class="carousel-inner" role="listbox">
+							<div class="item active center">
+								<div class="blog-preview row">
+									<div class="col-sm-4 col-xs-4">
+										<img src="/Content/Images/blog_thumbnail1.jpg" class="img-responsive" alt="Image">
+									</div>
+									<div class="preview-content col-sm-7">
+										<a href="#">Liệu Frozen có tái ngộ khán giả</a>
+										<p>
+											Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+											tempor incididunt ut labore et ...
+										</p>
+									</div>
+								</div>
+								<br>
+								<div class="blog-preview row">
+									<div class="col-sm-4 col-xs-4">
+										<img src="/Content/Images/blog_thumbnail2.jpg" class="img-responsive" alt="Image">
+									</div>
+									<div class="preview-content col-sm-7">
+										<a href="#">Săn combo độc, xem Chàng trai năm ấy</a>
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ...</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="item center">
+								<div class="blog-preview row">
+									<div class="col-sm-4 col-xs-4">
+										<img src="/Content/Images/blog_thumbnail3.jpg" class="img-responsive" alt="Image">
+									</div>
+									<div class="preview-content col-sm-7">
+										<a href="#">Tiết lộ về quá trình may phục trang</a>
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ...</p>
+									</div>
+								</div>
+								<br>
+
+								<div class="blog-preview row">
+									<div class="col-sm-4 col-xs-4">
+										<img src="/Content/Images/blog_thumbnail4.jpg" class="img-responsive" alt="Image">
+									</div>
+									<div class="preview-content col-sm-7">
+										<a href="#">Nhìn lại lịch sử các nhân vật yêu quái</a>
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et ...</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4 hidden-xs">
+				<h4 class="col-header">social</h4>
+				<div class="content-center">
+					<div class="fb-like-box" data-href="https://www.facebook.com/FacebookDevelopers" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="false" data-show-border="true"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$("#page-tab>li>a").click(function () {
+		var filter = $(this).attr("data-filter");
+		$(".filtered-movies").empty();
+		index_loadMoviesFilterData(filter);
+	});
+
+	$("#selMovie").change(function () {
+		var movieId = $(this).val();
+		index_loadCinemaData(movieId);
+	});
+
+	$("#selCinema").change(function () {
+		var movieId = $("#selMovie").val();
+		var cinemaId = $(this).val();
+		index_loadScheduleDateData(movieId, cinemaId);
+	});
+
+	$("#selDate").change(function () {
+		var movieId = $("#selMovie").val();
+		var scheduleId = $(this).val();
+		index_loadScheduleShowTimeData(scheduleId, movieId);
+	});
+
+	$("#selShowtime").click(function () {
+		var scheduleId = $(this).val();
+	});
+
+	$("#btnReserve").click(function () {
+		var scheduleId = $("#selShowtime").val();
+		if (scheduleId == null) alert("Bạn phải chọn suất chiếu!");
+		else reserveTicket(scheduleId);
+	});
+
+	$(document).ready(function () {
+		index_loadMoviesFilterData(1);
+	});
+
+	(function (d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.0";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>

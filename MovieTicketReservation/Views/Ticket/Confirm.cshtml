@@ -1,0 +1,61 @@
+﻿@using MovieTicketReservation.Models
+@model BookingDetails
+@{
+    ViewBag.Title = "Confirm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/ticket.css" />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-push-2 col-xs-12">
+            <div class="col-panel">
+                <h2>Thông tin vé</h2>
+                <hr />
+                <div class="col-sm-12">
+                    <div class="inline-child">
+                        <p class="detail-header">Film: </p>@Model.MovieTitle
+                    </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Ngày đặt: </p>@Model.ReservedDate.ToShortDateString()
+                    </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Rạp: </p>@Model.Cinema
+                    </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Phòng: </p>@Model.Room
+                    </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Ngày giờ chiếu: </p>@Model.Showtime
+                    </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Số ghế: </p>@Model.Seats.Count()
+                    </div>
+                </div>
+                <div class="table-responsive col-sm-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Hàng</th>
+                                <th>Cột</th>
+                                <th>Tên</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var seat in Model.Seats) {
+                                <tr>
+                                    <td>@seat.Substring(0, 1)</td>
+                                    <td>@seat.Substring(1, 2)</td>
+                                    <td>@seat</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @Html.ActionLink("Xác nhận", "CheckOut", "Ticket", null, new { @class = "btn btn-success", style = "float: right;" })
+                @Html.ActionLink("Huỷ bỏ", "CancelConfirmation", "Ticket", null, new { @class = "btn btn-danger", style = "float: right; margin-right: 10px" })
+            </div>
+        </div>
+    </div>
+</div>

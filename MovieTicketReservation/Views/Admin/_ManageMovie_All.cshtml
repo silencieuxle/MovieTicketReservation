@@ -1,0 +1,34 @@
+﻿<h2>Tất cả film</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tên film</th>
+                            <th>Ngày bắt đầu chiếu</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="content">
+                        
+                    </tbody>
+                </table>
+                <script>
+                    $.get("/Admin/AjaxGetAllMovie", function (data) {
+                        $.each(data, function (index, value) {
+                            var htmlString = "<tr>" +
+                                             "<td>" + value.Title + "</td>" +
+                                             "<td>" + value.BeginShowDate + "</td>" +
+                                             "<td>" + "<a class='btn btn-primary' href='/Admin/DeleteMovie?id='" + value.MovieID + ">Edit</a>" +
+                                                      "<a class='btn btn-primary' href='/Admin/EditMovie?id='" + value.MovieID + ">Edit</a>"
+                            $("#content").append(htmlString);
+                        });
+                    });
+                </script>
+
+            </div>
+        </div>
+    </div>
+</div>
