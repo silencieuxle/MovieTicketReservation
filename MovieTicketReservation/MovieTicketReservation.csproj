@@ -438,7 +438,6 @@
     <Content Include="Views\Ticket\CheckOut.cshtml" />
     <Content Include="Views\Ticket\Cancel.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\User\DuplicateIDCard.cshtml" />
     <Content Include="Views\User\RegisterSucceeded.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\Ticket\_TicketTemplate.cshtml" />

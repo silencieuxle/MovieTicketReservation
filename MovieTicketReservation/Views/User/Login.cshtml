@@ -8,6 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8 col-sm-push-2 col-panel col-xs-12">
+            <h1>&nbsp;</h1>
             @using (Html.BeginForm("Login", "User", FormMethod.Post, htmlAttributes: new { @class = "col-sm-8 col-sm-push-2 col-xs-12 form-horizontal" })) {
                 <h2 class="separator">Đăng nhập</h2>
                 <h4>@Html.ValidationSummary()</h4>
@@ -26,6 +27,7 @@
                 </div>
                 <input type="submit" value="Đăng nhập" class="btn btn-success" style="float: right" />
             }
+            <h1>&nbsp;</h1>
         </div>
     </div>
 </div>
