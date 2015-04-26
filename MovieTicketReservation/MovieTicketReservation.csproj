@@ -165,29 +165,31 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BookingDetails.cs" />
+    <Compile Include="Models\BookingDetailsModel.cs" />
     <Compile Include="Models\CinemaModel.cs" />
-    <Compile Include="Models\Date.cs" />
-    <Compile Include="Models\Date_Showtime.cs" />
+    <Compile Include="Models\DateModel.cs" />
+    <Compile Include="Models\DateShowtimeModel.cs" />
     <Compile Include="Models\EditionModel.cs" />
     <Compile Include="Models\GenreModel.cs" />
-    <Compile Include="Models\MovieDetails.cs" />
+    <Compile Include="Models\MovieDetailsModel.cs" />
     <Compile Include="Models\MoviesDb.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MoviesDb.dbml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Movie_BasicInfo.cs" />
-    <Compile Include="Models\CinemaScheduleDetails.cs" />
+    <Compile Include="Models\MovieBasicModel.cs" />
+    <Compile Include="Models\CinemaScheduleModel.cs" />
     <Compile Include="Models\PostModel.cs" />
     <Compile Include="Models\SeatModel.cs" />
     <Compile Include="Models\Showtime.cs" />
     <Compile Include="Models\TicketList.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\MemberModel.cs" />
     <Compile Include="Models\UserRegisterModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\choose_cinema.css" />
     <Content Include="Content\cinema.css" />
@@ -204,6 +206,7 @@
     <Content Include="Content\Images\divergent_detailsimg.jpg" />
     <Content Include="Content\Images\exotic_detailsimg.png" />
     <Content Include="Content\Images\FF7_detailsimg.jpg" />
+    <Content Include="Content\Images\general-avatar.png" />
     <Content Include="Content\Images\gunman_detailsimg.jpg" />
     <Content Include="Content\Images\heineken_detailsimg.jpg" />
     <Content Include="Content\Images\henry_detailsimg.jpg" />
@@ -273,6 +276,9 @@
     <Content Include="Content\Images\spongebob_mov.jpg" />
     <Content Include="Content\Images\thevoice_mov.jpg" />
     <Content Include="Content\Images\wildcard_mov.jpg" />
+    <Content Include="Scripts\bootstrap-datepicker.en-GB.min.js" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\bootstrap-datepicker.vi.min.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
@@ -438,10 +444,10 @@
     <Content Include="Views\Ticket\_TicketTemplate.cshtml" />
     <Content Include="Views\News\_RecentPostTemplate.cshtml" />
     <Content Include="Views\Cinemas\Index.cshtml" />
+    <Content Include="Views\Shared\_HotMoviesSliderTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Cinema\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,0 +1,19 @@
+﻿@using MovieTicketReservation.Models
+@model List<MovieDetailsModel>
+
+<div id="verticalCarousel" class="carousel vertical slide" data-ride="carousel">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        @foreach (var movie in Model) {
+            <div class="item active">
+                <a href="#" class="film-thumbnail"><img src="@movie.ThumbnailUrl" class="img-responsive center" alt="Image"></a>
+                <a href="#" class="film-thumbnail"><img src="~/Content/Images/runallnight_mov.jpg" class="img-responsive center" alt="Image"></a>
+            </div>
+        }
+        
+        <div class="item">
+            <a href="#" class="film-thumbnail"><img src="~/Content/Images/insurgent_mov.jpg" class="img-responsive center" alt="Image"></a>
+            <a href="#" class="film-thumbnail"><img src="~/Content/Images/wildcard_mov.jpg" class="img-responsive center" alt="Image"></a>
+        </div>
+    </div>
+</div>

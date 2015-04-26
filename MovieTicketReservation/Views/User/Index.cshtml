@@ -1,78 +1,94 @@
-﻿@model MovieTicketReservation.Models.Member
+﻿@using MovieTicketReservation.Models
+@model MemberModel
 
 @{
     ViewBag.Title = "Thông tin cá nhân";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.vi.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.en-GB.min.js"></script>
+<link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+
 <div class="container">
     <div class="row">
-        <div class="col-sm-8 col-sm-push-2 col-xs-12">
-            <h4>Member</h4>
-            <hr />
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.IDCardNumber)
-                </dt>
+        <div class="col-sm-12">
+            <div class="col-panel">
+                <div class="col-sm-4">
+                    <div class="avatar-container">
+                        <img src="@Model.AvatarUrl" alt="Image" />
+                        <button class="btn btn-success">Đổi ảnh đại diện</button>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    @using (Html.BeginForm("Update", "User", FormMethod.Post, htmlAttributes: null)) {
+                        <div class="col-sm-8">
+                            <h2>Thông tin cơ bản</h2>
+                            <hr />
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.FirstName)
+                                @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.LastName)
+                                @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
+                            </div>
 
-                <dd>
-                    @Html.DisplayFor(model => model.IDCardNumber)
-                </dd>
+                            <h4>Thông tin đăng nhập</h4>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Email)
+                                @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Password)
+                                @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Firstname)
-                </dt>
+                            </div>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Firstname)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.Lastname)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Lastname)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.Password)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Password)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.Phone)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Phone)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.Address)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.Address)
-                </dd>
-
-            </dl>
-            <p>
-                @Html.ActionLink("Edit", "Edit", new { id = Model.MemberID }) |
-                @Html.ActionLink("Back to List", "Index")
-            </p>
+                            <h4>Thông tin xác thực</h4>
+                            <hr />
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.IDCardNumber)
+                                @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Address)
+                                @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Phone)
+                                @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Gender)
+                                @Html.DropDownListFor(model => model.Gender,
+                                    new SelectList(
+                                        new List<object> {
+                                            new {value = 0, text = "Nữ" },
+                                            new {value = 1, text = "Nam"}
+                                        },
+                                        "value",
+                                        "text",
+                                        1
+                                    ),
+                                    htmlAttributes: new { @class = "form-control" }
+                                )
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Birthday)
+                                @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker" })
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" id="btnSave" value="Lưu" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <script>
+                    $("#date-picker").datepicker({});
+                </script>
+            </div>
         </div>
     </div>
 </div>

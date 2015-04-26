@@ -29,7 +29,6 @@ namespace MovieTicketReservation.Controllers {
             return View(result);
         }
 
-        [HttpPost]
         public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter) {
             var cinema = JsonConvert.DeserializeObject<string[]>(cinemaFilter);
             var edition = JsonConvert.DeserializeObject<string[]>(editionFilter);
@@ -64,12 +63,12 @@ namespace MovieTicketReservation.Controllers {
         }
 
         #region Private methods
-        private List<CinemaScheduleDetails> GetScheduleByMovieId(int movieId) {
-            var schedules = _db.Cine_MovieDetails.Where(cine => cine.MovieID == movieId).Select(c => new CinemaScheduleDetails {
+        private List<CinemaScheduleModel> GetScheduleByMovieId(int movieId) {
+            var schedules = _db.Cine_MovieDetails.Where(cine => cine.MovieID == movieId).Select(c => new CinemaScheduleModel {
                 CinemaId = c.CinemaID,
                 CinemaName = c.Cinema.Name,
                 Dates = _db.Schedules.Where(sc => sc.Cine_MovieDetail.CinemaID == c.CinemaID && sc.Cine_MovieDetail.MovieID == movieId)
-                                     .GroupBy(sch => sch.Date, (key, group) => new Date {
+                                     .GroupBy(sch => sch.Date, (key, group) => new DateModel {
                                          ShowingDate = (DateTime)key,
                                          Showtimes = group.Where(sche => sche.Cine_MovieDetail.CinemaID == c.CinemaID && sche.Date == key)
                                                           .Select(sh => sh.ShowTime.StartTime != null ? new Showtime {
@@ -81,8 +80,8 @@ namespace MovieTicketReservation.Controllers {
             return schedules.ToList();
         }
 
-        private List<MovieDetails> GetAllMovies() {
-            var result = _db.Movies.Select(movie => new MovieDetails {
+        private List<MovieDetailsModel> GetAllMovies() {
+            var result = _db.Movies.Select(movie => new MovieDetailsModel {
                 Cinemas = movie.Cine_MovieDetails.Select(c => new CinemaModel {
                     CinemaId = c.CinemaID,
                     Name = c.Cinema.Name,
@@ -113,7 +112,7 @@ namespace MovieTicketReservation.Controllers {
             return result;
         }
 
-        private List<MovieDetails> GetMoviesTittle(string title) {
+        private List<MovieDetailsModel> GetMoviesTittle(string title) {
             return GetAllMovies().Where(movie => movie.Title.ToLower().Contains(title.ToLower())).ToList();
         }
 

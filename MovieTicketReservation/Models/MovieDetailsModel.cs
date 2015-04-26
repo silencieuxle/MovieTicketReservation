@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace MovieTicketReservation.Models {
-	public class MovieDetails : MovieBasicInfo {
+	public class MovieDetailsModel : MovieBasicModel {
 		public bool Available { get; set; }
 		public int Duration { get; set; }
 		public int Length { get; set; }

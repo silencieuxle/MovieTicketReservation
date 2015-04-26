@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace MovieTicketReservation.Models {
-	public class Date {
+	public class DateModel {
 		public DateTime ShowingDate { get; set; }
 		public List<Showtime> Showtimes;
 	}

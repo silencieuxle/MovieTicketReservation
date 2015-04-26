@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 
 namespace MovieTicketReservation.Models {
-	public class BookingDetails {
+	public class BookingDetailsModel {
         public int ScheduleId { get; set; }
         public string MovieTitle { get; set; }
         public string Cinema { get; set; }

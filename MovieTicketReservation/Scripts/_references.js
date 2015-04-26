@@ -61,3 +61,6 @@
 /// <reference path="metismenu.js" />
 /// <reference path="datatables.bootstrap.min.js" />
 /// <reference path="jquery.countdown.min.js" />
+/// <reference path="bootstrap-datepicker.min.js" />
+/// <reference path="bootstrap-datepicker.en-gb.min.js" />
+/// <reference path="bootstrap-datepicker.vi.min.js" />

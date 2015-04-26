@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 
 namespace MovieTicketReservation.Models {
-	public class MovieBasicInfo {
+	public class MovieBasicModel {
 		public int MovieId { get; set; }
 		public string Title { get; set; }
 		public string ThumbnailUrl { get; set; }

@@ -13,8 +13,25 @@ namespace MovieTicketReservation.Controllers {
         // GET: User
         [HttpGet]
         public ActionResult Index() {
+            if (Session["UID"] == null) {
+                Session["RedirectURL"] = Request.RawUrl;
+                return Redirect("/User/Login");
+            }
+
             var userId = (int)Session["UID"];
-            var user = _db.Members.FirstOrDefault(u => u.MemberID == userId);
+            var data = _db.Members.FirstOrDefault(u => u.MemberID == userId);
+            var user = new MemberModel {
+                FirstName = data.Firstname,
+                LastName = data.Lastname,
+                Address = data.Address,
+                Password = data.Password,
+                Phone = data.Phone,
+                Email = data.Email,
+                IDCardNumber = data.IDCardNumber,
+                Gender = data.Gender == null ? false : (bool)data.Gender,
+                Birthday = data.Birthday == null ? new DateTime(1920, 1, 1) : (DateTime)data.Birthday,
+                AvatarUrl = data.AvatarURL == null ? "/Content/Images/general-avatar.png" : data.AvatarURL
+            };
             return View(user);
         }
 
@@ -24,18 +41,8 @@ namespace MovieTicketReservation.Controllers {
         }
 
         [HttpPost]
-        public ActionResult Authenticate(LoginModel loginModel) {
-            if (!ModelState.IsValid) return Json(new { Success = false, ErrorMessage = "Invalid login info." });
-            int userId = 0;
-            if ((userId = Authenticate(loginModel.Email, loginModel.Password)) != 0) {
-                return Json(new { Success = true, ErrorMessage = "" });
-            }
-            return Json(new { Success = false, ErrorMessage = "Wrong login info." });
-        }
-
-        [HttpPost]
         public ActionResult Login(string currentURL, LoginModel loginModel) {
-            if (!ModelState.IsValid) return View();
+            if (!ModelState.IsValid) return View(loginModel);
             int userId = 0;
             if ((userId = Authenticate(loginModel.Email, loginModel.Password)) != 0) {
                 Session["UID"] = userId;
@@ -60,7 +67,7 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult Register(UserRegisterModel userRegisterModel) {
-            if (!ModelState.IsValid) return View();
+            if (!ModelState.IsValid) return View(userRegisterModel);
             string firstName = userRegisterModel.FirstName;
             string lastName = userRegisterModel.LastName;
             string idCardNumber = userRegisterModel.IdCardNumber;
@@ -88,6 +95,7 @@ namespace MovieTicketReservation.Controllers {
                 _db.SubmitChanges();
                 _db.Transaction.Commit();
             } catch (Exception e) {
+                Console.WriteLine(e.StackTrace);
                 _db.Transaction.Rollback();
                 return null;
             } finally {
@@ -96,17 +104,29 @@ namespace MovieTicketReservation.Controllers {
             return View("RegisterSucceeded");
         }
 
-        #region Email and ID Card Number validation
-        public ActionResult CheckEmail(string email) {
+        #region Ajax methods
+        public ActionResult AjaxCheckEmail(string email) {
             var emailRegistered = _db.Members.Any(u => u.Email == email);
-            if (emailRegistered) return Json(new { Success = false, Error = "Email is used" }, JsonRequestBehavior.AllowGet);
-            else return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            if (emailRegistered) 
+                return Json(new { Success = false, ErrorMessage = "Email đã được sử dụng." }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CheckIdCard(string idCardNumber) {
+        public ActionResult AjaxCheckIdCard(string idCardNumber) {
             var idCardRegistered = _db.Members.Any(u => u.IDCardNumber == idCardNumber);
-            if (idCardRegistered) return Json(new { Success = false, Error = "ID Card Number is used" }, JsonRequestBehavior.AllowGet);
-            else return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            if (idCardRegistered)
+                return Json(new { Success = false, ErrorMessage = "Số chứng minh nhân dân đã được sử dụng." }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxAuthenticate(LoginModel loginModel) {
+            if (!ModelState.IsValid) 
+                return Json(new { Success = false, ErrorMessage = "Thông tin đăng nhập không đầy đủ." });
+            int userId = 0;
+            if ((userId = Authenticate(loginModel.Email, loginModel.Password)) != 0)
+                return Json(new { Success = true, ErrorMessage = "" });
+            return Json(new { Success = false, ErrorMessage = "Sai thông tin đăng nhập." });
         }
         #endregion
 

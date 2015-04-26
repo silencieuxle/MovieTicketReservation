@@ -142,5 +142,28 @@ form[role="search"] {
     color: black;
     overflow: hidden;
     background-color: white;
-    box-shadow: 0 0 10px 0 rgba(153,0,0,1) !important;
+    box-shadow: 0 0 10px 0 rgba(153, 0 ,0, 1) !important;
+}
+
+.validation-summary-errors ul {
+    list-style: none;
+}
+
+.validation-summary-errors ul li {
+    list-style-type: none;
+    color: red;
+    font-style: oblique;
+}
+
+.separator {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+ytrjkPcuAAAAAAnRSTlMAeChNNDYAAAASSURBVAgdYxBkEmRSYnJhgNIAB5wBHRJ1Jg0AAAAASUVORK5CYII=') /*../Content/Images/title-bg.png*/ repeat-x bottom;
+}
+
+.validate-label {
+    padding-top: 10px;
+    color: red;
+    font-style: italic;
+    display: none;
 }

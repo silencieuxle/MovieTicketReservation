@@ -51,8 +51,8 @@ namespace MovieTicketReservation.Controllers {
             return Json(movies, JsonRequestBehavior.AllowGet);
         }
 
-        public List<MovieBasicInfo> GetAllMovies() {
-            var movies = _db.Movies.Select(movie => new MovieBasicInfo {
+        public List<MovieBasicModel> GetAllMovies() {
+            var movies = _db.Movies.Select(movie => new MovieBasicModel {
                 MovieId = movie.MovieID,
                 ScheduleType = MoviesController.GetScheduleType((DateTime)movie.BeginShowDate, (int)movie.Duration),
                 ThumbnailUrl = movie.ThumbnailURL,

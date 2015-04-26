@@ -165,21 +165,6 @@
       <Association Name="Role_Member" Member="Members" ThisKey="RoleID" OtherKey="Role" Type="Member" />
     </Type>
   </Table>
-  <Table Name="dbo.Member" Member="Members">
-    <Type Name="Member">
-      <Column Name="MemberID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="IDCardNumber" Type="System.String" DbType="VarChar(9) NOT NULL" CanBeNull="false" />
-      <Column Name="Firstname" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="Lastname" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="Email" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
-      <Column Name="Password" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="Phone" Type="System.String" DbType="VarChar(11)" CanBeNull="true" />
-      <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="Role" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Member_BookingHeader" Member="BookingHeaders" ThisKey="MemberID" OtherKey="MemberID" Type="BookingHeader" />
-      <Association Name="Role_Member" Member="Role1" ThisKey="Role" OtherKey="RoleID" Type="Role" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.News" Member="News">
     <Type Name="New">
       <Column Name="NewsID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -197,6 +182,24 @@
       <Column Name="CinemaID" Type="System.String" DbType="VarChar(5)" CanBeNull="true" />
       <Column Name="ImageURL" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Association Name="Cinema_CinemaImage" Member="Cinema" ThisKey="CinemaID" OtherKey="CinemaID" Type="Cinema" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Member" Member="Members">
+    <Type Name="Member">
+      <Column Name="MemberID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDCardNumber" Type="System.String" DbType="VarChar(9) NOT NULL" CanBeNull="false" />
+      <Column Name="Firstname" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Lastname" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Phone" Type="System.String" DbType="VarChar(11)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Role" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Gender" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Birthday" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="AvatarURL" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="Member_BookingHeader" Member="BookingHeaders" ThisKey="MemberID" OtherKey="MemberID" Type="BookingHeader" />
+      <Association Name="Role_Member" Member="Role1" ThisKey="Role" OtherKey="RoleID" Type="Role" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

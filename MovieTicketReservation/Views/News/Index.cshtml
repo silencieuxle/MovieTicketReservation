@@ -44,23 +44,25 @@
 
         <div class="col-sm-4">
             <div class="col-panel">
-                <h3 class="tag-header">
+                <h3 class="separator">
                     Tags
                 </h3>
                 <div class="tags">
 
                 </div>
-                <h3 class="tag-header">
+
+                <h3 class="separator">
                     Liên kết nhanh
                 </h3>
-                <div class="quick-link"></div>
-                <h3 class="tag-header">
+                <div class="quick-link">
+
+                </div>
+
+                <h3 class="separator">
                     Bài viết gần đây
                 </h3>
                 <div class="recent-post">
-                    @{
-                        Html.RenderPartial("_RecentPostTemplate", (List<PostModel>)ViewBag.RecentPost);
-                    }
+                    @{ Html.RenderPartial("_RecentPostTemplate", (List<PostModel>)ViewBag.RecentPost); }
                 </div>
             </div>
         </div>

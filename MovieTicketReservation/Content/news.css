@@ -42,12 +42,6 @@
     color: black !important;
 }
 
-.tag-header {
-    margin-top: 0;
-    padding-bottom: 20px;
-    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+ytrjkPcuAAAAAAnRSTlMAeChNNDYAAAASSURBVAgdYxBkEmRSYnJhgNIAB5wBHRJ1Jg0AAAAASUVORK5CYII=') /*../Content/Images/title-bg.png*/ repeat-x bottom;
-}
-
 .recent-post {
 }
 

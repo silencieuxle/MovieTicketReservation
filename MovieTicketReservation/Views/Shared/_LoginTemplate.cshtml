@@ -3,9 +3,9 @@
     using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })) {
         <ul class="nav navbar-nav navbar-right">
             <li class="nav-link">
-                @Html.ActionLink("Xem profile", "Index", "User", routeValues: null, htmlAttributes: new { title = "Xem profile" })
+                @Html.ActionLink("Xem profile", "Index", "User", routeValues: null, htmlAttributes: new { title = "Profile" })
             </li>
-            <li class="nav-link"><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+            <li class="nav-link"><a href="/User/LogOff">Thoát</a></li>
         </ul>
     }
 } else {

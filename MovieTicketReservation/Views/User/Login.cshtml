@@ -1,7 +1,7 @@
 ﻿@using MovieTicketReservation.Models
 @model LoginModel
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Đăng nhập";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,11 +9,10 @@
     <div class="row">
         <div class="col-sm-8 col-sm-push-2 col-panel col-xs-12">
             @using (Html.BeginForm("Login", "User", FormMethod.Post, htmlAttributes: new { @class = "col-sm-8 col-sm-push-2 col-xs-12 form-horizontal" })) {
-                <h2>Đăng nhập</h2>
-                <h4>@ViewBag.LoginMessage</h4>
-                <hr />
+                <h2 class="separator">Đăng nhập</h2>
+                <h4>@Html.ValidationSummary()</h4>
                 <div class="form-group">
-                    @Html.ValidationSummary()
+                    @Html.ValidationSummary("")
                     @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-sm-4" })
                     <div class="col-sm-8">
                         @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
@@ -22,7 +21,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+                        @Html.PasswordFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
                 <input type="submit" value="Đăng nhập" class="btn btn-success" style="float: right" />

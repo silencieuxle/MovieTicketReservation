@@ -69,7 +69,7 @@ namespace MovieTicketReservation.Controllers {
             var movie = _db.Schedules.FirstOrDefault(x => x.ScheduleID == scheduleId).Cine_MovieDetail.Movie;
             var seats = (List<int>)Session["ReservedSeats"];
             var showtime = (TimeSpan)_db.Schedules.FirstOrDefault(x => x.ScheduleID == scheduleId).ShowTime.StartTime;
-            var details = new BookingDetails {
+            var details = new BookingDetailsModel {
                 Cinema = schedule.Cine_MovieDetail.Cinema.Name,
                 Room = schedule.Room.Name,
                 MovieTitle = movie.Title,
@@ -141,6 +141,7 @@ namespace MovieTicketReservation.Controllers {
                 _db.SubmitChanges();
                 _db.Transaction.Commit();
             } catch (Exception e) {
+                Console.WriteLine(e.StackTrace);
                 _db.Transaction.Rollback();
                 return Json(new { Success = false }, JsonRequestBehavior.AllowGet);
             } finally {
