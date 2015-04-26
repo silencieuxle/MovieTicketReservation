@@ -1,86 +1,111 @@
 ﻿@using MovieTicketReservation.Models
 
 @{
-	ViewBag.Title = "Index";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @model List<MovieDetailsModel>
 <link href="~/Content/movies.css" rel="stylesheet" />
 <div class="container">
-	<div class="row">
-		<div class="col-sm-9" >
-            <div class="movies-container" id="filtered-result">
-			    @RenderPage("_MovieTemplate.cshtml", Model)
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="movies-container">
+                <div id="filtered-result">
+                    @RenderPage("_MovieTemplate.cshtml", Model)
+                </div>
             </div>
-		</div>
-		<div class="col-sm-3 filter-container">
-			<div class="filter">
-				<h4 class="col-header"><i class="fa fa-caret-right"></i> <a href="#" class="checkbox-list" data-toggle="#location-list">Địa điểm</a></h4>
-				<div id="location-list">
-					@foreach (var item in ViewBag.CinemaList) {
-						<input type="checkbox" class="chkCinema" value="@item.CinemaID">
-						@item.Name
-						<br>
-					}
-				</div>
-				<hr>
-				<h4 class="col-header"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="#" data-toggle="#edition-list">Phiên bản</a></h4>
-				<div id="edition-list">
-					@foreach (var item in ViewBag.EditionList) {
-						<input type="checkbox" class="chkEdition" value="@item.EditionID">
-						@item.Name
-						<br>
-					}
-				</div>
-				<hr>
-				<h4 class="col-header"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="#" data-toggle="#genre-list">Thể loại</a></h4>
-				<div id="genre-list">
-					@foreach (var item in ViewBag.GenreList) {
-						<input type="checkbox" class="chkGenre" value="@item.GenreID">
-						@item.Name
-						<br>
-					}
-				</div>
-				<button class="btn btn-info" id="btnFilter">Lọc</button>
-			</div>
-		</div>
-		<script type="text/javascript">
-			$(".checkbox-list").click(function () {
-				var target = $($(this).attr("data-toggle"));
-				target.slideToggle('fast');
-			});
+        </div>
+        <div class="col-sm-3 filter-container">
+            <div class="filter">
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#scheduletype-list">Phân loại</a></h4>
+                <div id="scheduletype-list">
+                    <input type="checkbox" class="chkSchedule" value="1"> Phim đang chiếu
+                    <br>
+                    <input type="checkbox" class="chkSchedule" value="2"> Phim sắp chiếu
+                    <br />
+                    <input type="checkbox" class="chkSchedule" value="3"> Phim sắp ra mắt
+                    <br>
+                </div>
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#location-list">Địa điểm</a></h4>
+                <div id="location-list">
+                    @foreach (var item in ViewBag.CinemaList) {
+                        <input type="checkbox" class="chkCinema" value="@item.CinemaID">
+                        @item.Name
+                        <br>
+                    }
+                </div>
+                <hr>
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#edition-list">Phiên bản</a></h4>
+                <div id="edition-list">
+                    @foreach (var item in ViewBag.EditionList) {
+                        <input type="checkbox" class="chkEdition" value="@item.EditionID">
+                        @item.Name
+                        <br>
+                    }
+                </div>
+                <hr>
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#genre-list">Thể loại</a></h4>
+                <div id="genre-list">
+                    @foreach (var item in ViewBag.GenreList) {
+                        <input type="checkbox" class="chkGenre" value="@item.GenreID">
+                        @item.Name
+                        <br>
+                    }
+                </div>
+                <button class="btn btn-info" id="btnFilter">Lọc</button>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(".checkbox-list").click(function () {
+                var target = $($(this).attr("data-toggle"));
+                target.slideToggle('fast');
+            });
 
-			$("#btnFilter").click(function () {
-				var arrCinema = [];
-				var arrEdition = [];
-				var arrGenre = [];
+            $("#btnFilter").click(function () {
+                var arrCinema = [];
+                var arrEdition = [];
+                var arrGenre = [];
+                var arrScheduleType = [];
 
-				$(".chkCinema:checked").each(function () {
-					arrCinema.push($(this).val());
-				});
+                $(".chkCinema:checked").each(function () {
+                    arrCinema.push($(this).val());
+                });
 
-				$(".chkEdition:checked").each(function () {
-					arrEdition.push($(this).val());
-				});
+                $(".chkEdition:checked").each(function () {
+                    arrEdition.push($(this).val());
+                });
 
-				$(".chkGenre:checked").each(function () {
-					arrGenre.push($(this).val());
-				});
+                $(".chkGenre:checked").each(function () {
+                    arrGenre.push($(this).val());
+                });
 
-				$.get("/Movies/AjaxFilter", {
-					cinemaFilter: JSON.stringify(arrCinema),
-					editionFilter: JSON.stringify(arrEdition),
-					genreFilter: JSON.stringify(arrGenre)
-				}, function (result) {
-					//if (result == undefined) { //not working ??
-						$("#filtered-result").html(result).fadeIn("fast");
-					//} else {
-						//$("#filtered-result").html("<h2>Không tìm thấy film phù hợp với bộ lọc được cung cấp!</h2>");
-					//}
-				});
-			});
-		</script>
-	</div>
+                $(".chkSchedule:checked").each(function () {
+                    arrScheduleType.push($(this).val());
+                });
+
+                $.get("/Movies/AjaxFilter", {
+                    cinemaFilter: JSON.stringify(arrCinema),
+                    editionFilter: JSON.stringify(arrEdition),
+                    genreFilter: JSON.stringify(arrGenre),
+                    scheduleTypeFilter: JSON.stringify(arrScheduleType)
+                }, function (result) {
+                    if (result != "") {
+                        $("#filtered-result").html(result).fadeIn("fast");
+                    } else {
+                        $("#filtered-result").html("<h2>Không tìm thấy film phù hợp với bộ lọc được cung cấp!</h2>");
+                    }
+                });
+            });
+        </script>
+    </div>
 </div>
-
+<script>
+    $(".btn-schedule").click(function () {
+        var id = $(this).attr("data-id");
+        $.get("/Movies/AjaxGetScheduleViewByMovieId", { movieId: id }, function (data) {
+            $("body").remove("#modalSchedule");
+            $(data).appendTo("body").modal("show");
+        });
+    });
+</script>

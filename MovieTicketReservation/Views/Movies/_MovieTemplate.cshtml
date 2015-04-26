@@ -22,20 +22,16 @@
                 <p></p>
                 <span class="detail-header">Giới hạn độ tuổi: </span><span class="badge">@item.AgeLimit</span>
                 <hr>
-                <button class="btn btn-sm btn-success center btn-schedule" data-id="@item.MovieId">Đặt vé</button>
+                @if (item.ScheduleType == 1 || item.ScheduleType == 2) {
+                    <button class="btn btn-sm btn-success center btn-schedule" data-id="@item.MovieId">Đặt vé</button>
+                } else if (item.ScheduleType == 3) {
+                    <button class="btn btn-primary center" disabled>Đang lên lịch</button>
+                } else {
+                    <button class="btn btn-primary center" disabled>Đã hết thời gian chiếu</button>
+                }
                 <hr>
                 <div class="fb-share-button" style="padding-top: 5px" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
             </div>
         </div>
     </div>
 }
-
-<script>
-    $(".btn-schedule").click(function () {
-        var id = $(this).attr("data-id");
-        $.get("/Movies/AjaxGetScheduleViewByMovieId", { movieId: id }, function (data) {
-            $("body").remove("#modalSchedule");
-            $(data).appendTo("body").modal("show");
-        });
-    });
-</script>

@@ -191,7 +191,6 @@
   <ItemGroup>
     <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\choose_cinema.css" />
     <Content Include="Content\cinema.css" />
     <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\dataTables.responsive.css" />
@@ -207,6 +206,10 @@
     <Content Include="Content\Images\exotic_detailsimg.png" />
     <Content Include="Content\Images\FF7_detailsimg.jpg" />
     <Content Include="Content\Images\general-avatar.png" />
+    <Content Include="Content\Images\general-movie-details.jpg" />
+    <Content Include="Content\Images\general-movie-poster.jpg" />
+    <Content Include="Content\Images\gethard_detailsimg.jpg" />
+    <Content Include="Content\Images\gethard_mov.jpg" />
     <Content Include="Content\Images\gunman_detailsimg.jpg" />
     <Content Include="Content\Images\heineken_detailsimg.jpg" />
     <Content Include="Content\Images\henry_detailsimg.jpg" />
@@ -214,9 +217,13 @@
     <Content Include="Content\Images\johnwick_detailsimg.jpg" />
     <Content Include="Content\Images\johnwick_mov.jpg" />
     <Content Include="Content\Images\jupiterascending_detailsimg.jpg" />
+    <Content Include="Content\Images\jurassicworld_detailsimg.jpeg" />
+    <Content Include="Content\Images\jurassicworld_mov.jpg" />
     <Content Include="Content\Images\killme3times_detailsimg.jpg" />
     <Content Include="Content\Images\minions_detailsimg.jpg" />
     <Content Include="Content\Images\minions_mov.jpg" />
+    <Content Include="Content\Images\paulblart_detailsimg.jpg" />
+    <Content Include="Content\Images\paulblart_mov.jpg" />
     <Content Include="Content\Images\runallnight_detailsimg.jpg" />
     <Content Include="Content\Images\screen.png" />
     <Content Include="Content\Images\availseat.png" />
@@ -225,6 +232,7 @@
     <Content Include="Content\Images\spongeboj_detailsimg.jpg" />
     <Content Include="Content\Images\theduff_detailsimg.png" />
     <Content Include="Content\Images\theduff_mov.jpg" />
+    <Content Include="Content\Images\thefalling_mov.jpg" />
     <Content Include="Content\Images\thevoice_detailsimg.jpg" />
     <Content Include="Content\Images\title-bg.png" />
     <Content Include="Content\Images\wildcard_detailsimg.jpg" />

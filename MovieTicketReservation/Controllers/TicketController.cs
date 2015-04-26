@@ -50,7 +50,7 @@ namespace MovieTicketReservation.Controllers {
                 return Redirect("/User/Login");
             }
             var showingDate = _db.Schedules.FirstOrDefault(s => s.ScheduleID == scheduleId).Date;
-            if (showingDate > DateTime.Now) return View("/Shared/Error");
+            if (showingDate < DateTime.Now) return View("/Shared/Error");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
             var seats = _db.Seat_ShowDetails.Where(x => x.ScheduleID == scheduleId).Select(x => new SeatModel {

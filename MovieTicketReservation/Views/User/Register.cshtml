@@ -11,9 +11,8 @@
             <div class="col-panel">
                 <div class="col-sm-4">
                     <h3 class="separator">Liên kết nhanh</h3>
-                    <i class="fa fa-caret-right"></i> <a href="/User/ForgetPassword" class="checkbox-list" data-toggle="#location-list"><h4>Quên mật khẩu</h4></a>
-                    <br />
-                    <i class="fa fa-caret-right"></i> <a href="#" class="checkbox-list" data-toggle="#location-list">Địa điểm</a>
+                    <a href="/User/ForgetPassword" class="checkbox-list" data-toggle="#location-list"><h4><i class="fa fa-caret-right"></i> Quên mật khẩu</h4></a>
+                    <a href="/Ticket/" class="checkbox-list" data-toggle="#location-list"><h4><i class="fa fa-caret-right"></i> Xem vé đã đặt</h4></a>
                 </div>
                 <div class="col-sm-8">
                     <h3 class="separator">Đăng kí thành viên</h3>
@@ -57,6 +56,7 @@
                         </div>
                         <br />
                         <h4><i class="fa fa-caret-right"></i> Thông tin xác thực</h4>
+                        <hr />
                         <div class="form-group">
                             @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
                             <div class="col-sm-8">
@@ -90,10 +90,10 @@
                                 if (data.Success == false) {
                                     $("#emailvalidate").fadeIn();
                                     $("#emailvalidate").text(data.ErrorMessage);
-                                    $("#btnRegister").attr("disabled", 'disabled');
+                                    $("#btnRegister").prop("disabled", true);
                                 } else {
                                     $("#emailvalidate").fadeOut();
-                                    $("#btnRegister").removeAttr("disabled");
+                                    $("#btnRegister").prop("disabled", false);
                                 }
                             });
                         });
@@ -104,10 +104,10 @@
                                 if (data.Success == false) {
                                     $("#idcardvalidate").fadeIn();
                                     $("#idcardvalidate").text(data.ErrorMessage);
-                                    $("#btnRegister").attr("disabled", 'disabled');
+                                    $("#btnRegister").prop("disabled", true);
                                 } else {
                                     $("#idcardvalidate").fadeOut();
-                                    $("#btnRegister").removeAttr("disabled");
+                                    $("#btnRegister").prop("disabled", false);
                                 }
                             });
                         });

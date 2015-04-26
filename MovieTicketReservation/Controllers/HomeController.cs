@@ -56,7 +56,7 @@ namespace MovieTicketReservation.Controllers {
                 MovieId = movie.MovieID,
                 ScheduleType = MoviesController.GetScheduleType((DateTime)movie.BeginShowDate, (int)movie.Duration),
                 ThumbnailUrl = movie.ThumbnailURL,
-                BeginShowDate = ((DateTime)movie.BeginShowDate).ToShortDateString(),
+                BeginShowDate = (DateTime)movie.BeginShowDate,
                 Title = movie.Title
             });
             return movies.ToList();

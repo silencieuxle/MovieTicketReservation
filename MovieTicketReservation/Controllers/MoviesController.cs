@@ -29,10 +29,11 @@ namespace MovieTicketReservation.Controllers {
             return View(result);
         }
 
-        public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter) {
+        public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter, string scheduleTypeFilter) {
             var cinema = JsonConvert.DeserializeObject<string[]>(cinemaFilter);
             var edition = JsonConvert.DeserializeObject<string[]>(editionFilter);
             var genre = JsonConvert.DeserializeObject<string[]>(genreFilter);
+            var schedule = JsonConvert.DeserializeObject<string[]>(scheduleTypeFilter);
             var movies = GetAllMovies();
 
             if (cinema.Count() != 0) {
@@ -46,6 +47,12 @@ namespace MovieTicketReservation.Controllers {
             if (genre.Count() != 0) {
                 movies = movies.Where(m => genre.Any(g => m.Genres.Any(me => me.GenreId == g))).ToList();
             }
+
+            if (schedule.Count() != 0) {
+                movies = movies.Where(m => schedule.Any(g => m.ScheduleType == int.Parse(g))).ToList();
+            }
+
+            movies = movies.OrderByDescending(m => m.BeginShowDate).ToList();
 
             return PartialView("_MovieTemplate", movies);
         }
@@ -96,19 +103,19 @@ namespace MovieTicketReservation.Controllers {
                 Actors = movie.Actors,
                 AgeLimit = movie.AgeLimitation.Description,
                 Available = (bool)movie.Available,
-                WideThumbnail = movie.WideThumbnail,
+                WideThumbnail = movie.WideThumbnail == "" ? "/Content/Images/general-movie-details.jpg" : movie.WideThumbnail,
                 LongDescription = movie.LongDescription,
                 Length = (int)movie.MovieLength,
                 ReleasedDate = ((DateTime)movie.ReleasedDate).ToShortDateString(),
-                BeginShowDate = ((DateTime)movie.BeginShowDate).ToShortDateString(),
-                ThumbnailUrl = movie.ThumbnailURL,
+                BeginShowDate = (DateTime)movie.BeginShowDate,
+                ThumbnailUrl = movie.ThumbnailURL == "" ? "/Content/Images/general-movie-poster.jpg" : movie.ThumbnailURL,
                 TrailerUrl = movie.TrailerURL,
                 ScheduleType = GetScheduleType((DateTime)movie.BeginShowDate, (int)movie.Duration),
                 Genres = movie.Movie_GenreDetails.Join(_db.MovieGenres, mg => mg.GenreID, g => g.GenreID,
                     (mg, g) => new GenreModel { GenreId = g.GenreID, Name = g.Name, Description = g.Description }).ToList(),
                 Editions = movie.Movie_EditionDetails.Join(_db.MovieEditions, mg => mg.EditionID, g => g.EditionID,
                     (mg, g) => new EditionModel { EditionId = g.EditionID, Name = g.Name, Description = g.Description }).ToList()
-            }).ToList();
+            }).OrderByDescending(x => x.BeginShowDate).ToList();
             return result;
         }
 

@@ -33,7 +33,8 @@
     background-color: white !important;
     -moz-box-shadow: 0 0 10px 0 rgba(153,0,0,1);
     box-shadow: 0 0 10px 0 rgba(153,0,0,1);
-    overflow: hidden
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 
 .item {
