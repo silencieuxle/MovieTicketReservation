@@ -87,6 +87,12 @@ namespace MovieTicketReservation.Models
     partial void InsertMember(Member instance);
     partial void UpdateMember(Member instance);
     partial void DeleteMember(Member instance);
+    partial void InsertTag(Tag instance);
+    partial void UpdateTag(Tag instance);
+    partial void DeleteTag(Tag instance);
+    partial void InsertTagDetail(TagDetail instance);
+    partial void UpdateTagDetail(TagDetail instance);
+    partial void DeleteTagDetail(TagDetail instance);
     #endregion
 		
 		public MoviesDbDataContext() : 
@@ -268,6 +274,22 @@ namespace MovieTicketReservation.Models
 			get
 			{
 				return this.GetTable<Member>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Tag> Tags
+		{
+			get
+			{
+				return this.GetTable<Tag>();
+			}
+		}
+		
+		public System.Data.Linq.Table<TagDetail> TagDetails
+		{
+			get
+			{
+				return this.GetTable<TagDetail>();
 			}
 		}
 	}
@@ -3685,6 +3707,8 @@ namespace MovieTicketReservation.Models
 		
 		private System.Nullable<int> _ViewCount;
 		
+		private EntitySet<TagDetail> _TagDetails;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3707,6 +3731,7 @@ namespace MovieTicketReservation.Models
 		
 		public New()
 		{
+			this._TagDetails = new EntitySet<TagDetail>(new Action<TagDetail>(this.attach_TagDetails), new Action<TagDetail>(this.detach_TagDetails));
 			OnCreated();
 		}
 		
@@ -3850,6 +3875,19 @@ namespace MovieTicketReservation.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="New_TagDetail", Storage="_TagDetails", ThisKey="NewsID", OtherKey="NewsID")]
+		public EntitySet<TagDetail> TagDetails
+		{
+			get
+			{
+				return this._TagDetails;
+			}
+			set
+			{
+				this._TagDetails.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -3868,6 +3906,18 @@ namespace MovieTicketReservation.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_TagDetails(TagDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.New = this;
+		}
+		
+		private void detach_TagDetails(TagDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.New = null;
 		}
 	}
 	
@@ -4414,6 +4464,288 @@ namespace MovieTicketReservation.Models
 		{
 			this.SendPropertyChanging();
 			entity.Member = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Tag")]
+	public partial class Tag : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _TagID;
+		
+		private string _Name;
+		
+		private EntitySet<TagDetail> _TagDetails;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnTagIDChanging(int value);
+    partial void OnTagIDChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    #endregion
+		
+		public Tag()
+		{
+			this._TagDetails = new EntitySet<TagDetail>(new Action<TagDetail>(this.attach_TagDetails), new Action<TagDetail>(this.detach_TagDetails));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TagID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int TagID
+		{
+			get
+			{
+				return this._TagID;
+			}
+			set
+			{
+				if ((this._TagID != value))
+				{
+					this.OnTagIDChanging(value);
+					this.SendPropertyChanging();
+					this._TagID = value;
+					this.SendPropertyChanged("TagID");
+					this.OnTagIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_TagDetail", Storage="_TagDetails", ThisKey="TagID", OtherKey="TagID")]
+		public EntitySet<TagDetail> TagDetails
+		{
+			get
+			{
+				return this._TagDetails;
+			}
+			set
+			{
+				this._TagDetails.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_TagDetails(TagDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = this;
+		}
+		
+		private void detach_TagDetails(TagDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Tag = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TagDetails")]
+	public partial class TagDetail : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _NewsID;
+		
+		private int _TagID;
+		
+		private EntityRef<New> _New;
+		
+		private EntityRef<Tag> _Tag;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnNewsIDChanging(int value);
+    partial void OnNewsIDChanged();
+    partial void OnTagIDChanging(int value);
+    partial void OnTagIDChanged();
+    #endregion
+		
+		public TagDetail()
+		{
+			this._New = default(EntityRef<New>);
+			this._Tag = default(EntityRef<Tag>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewsID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int NewsID
+		{
+			get
+			{
+				return this._NewsID;
+			}
+			set
+			{
+				if ((this._NewsID != value))
+				{
+					if (this._New.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnNewsIDChanging(value);
+					this.SendPropertyChanging();
+					this._NewsID = value;
+					this.SendPropertyChanged("NewsID");
+					this.OnNewsIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TagID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int TagID
+		{
+			get
+			{
+				return this._TagID;
+			}
+			set
+			{
+				if ((this._TagID != value))
+				{
+					if (this._Tag.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnTagIDChanging(value);
+					this.SendPropertyChanging();
+					this._TagID = value;
+					this.SendPropertyChanged("TagID");
+					this.OnTagIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="New_TagDetail", Storage="_New", ThisKey="NewsID", OtherKey="NewsID", IsForeignKey=true)]
+		public New New
+		{
+			get
+			{
+				return this._New.Entity;
+			}
+			set
+			{
+				New previousValue = this._New.Entity;
+				if (((previousValue != value) 
+							|| (this._New.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._New.Entity = null;
+						previousValue.TagDetails.Remove(this);
+					}
+					this._New.Entity = value;
+					if ((value != null))
+					{
+						value.TagDetails.Add(this);
+						this._NewsID = value.NewsID;
+					}
+					else
+					{
+						this._NewsID = default(int);
+					}
+					this.SendPropertyChanged("New");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Tag_TagDetail", Storage="_Tag", ThisKey="TagID", OtherKey="TagID", IsForeignKey=true)]
+		public Tag Tag
+		{
+			get
+			{
+				return this._Tag.Entity;
+			}
+			set
+			{
+				Tag previousValue = this._Tag.Entity;
+				if (((previousValue != value) 
+							|| (this._Tag.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Tag.Entity = null;
+						previousValue.TagDetails.Remove(this);
+					}
+					this._Tag.Entity = value;
+					if ((value != null))
+					{
+						value.TagDetails.Add(this);
+						this._TagID = value.TagID;
+					}
+					else
+					{
+						this._TagID = default(int);
+					}
+					this.SendPropertyChanged("Tag");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

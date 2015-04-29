@@ -10,20 +10,54 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-            <div class="col-panel">
-                <img class="img img-responsive" src="@Model.ThumbnailURL" alt="" />
-                <ul class="post-stat">
-                    <li class="hidden-xs"><i class="fa fa-calendar"></i>@{ ((DateTime)Model.PostedDate).ToShortDateString(); }</li>
-                    <li class="hidden-xs"><i class="fa fa-eye"></i> @Model.ViewCount</li>
-                    <li class="hidden-xs"><i class="fa fa-comment"></i> 50 comments</li>
-                </ul>
+            <div class="panel panel-default post">
+                <div class="panel-heading">
+                    <img class="img img-responsive" src="@Model.ThumbnailURL" alt="Heading image">
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <h2>@Model.Title</h2>
+                        <p style="font-weight: 600">
+                            @Model.Description
+                        </p>
+                        <div>
+                            @Html.Raw(System.Web.HttpUtility.HtmlDecode(Model.Content))
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="col-sm-10 col-xs-12">
+                        <ul class="post-stat">
+                            <li class="hidden-xs"><i class="fa fa-calendar"></i>@{ ((DateTime)Model.PostedDate).ToShortDateString(); }</li>
+                            <li class="hidden-xs"><i class="fa fa-eye"></i> @Model.ViewCount</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-2 col-xs-12">
+                        <p>Tags: </p>
+                        @foreach (var item in (List<TagModel>)ViewBag.PostTags) {
+                            <a href="#" class="tag" data-tag="@item.TagId">
+                                <i class="badge">@item.Name</i>
+                            </a>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="col-panel">
-                @{
-                    Html.RenderPartial("_RecentPostTemplate", (List<PostModel>)ViewBag.RecentPost);
-                }
+                <h3 class="separator">
+                    Tags
+                </h3>
+                <div class="tags">
+                    @{ Html.RenderPartial("_TagsTemplate", (List<TagModel>)ViewBag.Tags); }
+                </div>
+
+                <h3 class="separator">
+                    Bài viết gần đây
+                </h3>
+                <div class="recent-post">
+                    @{ Html.RenderPartial("_RecentPostTemplate", (List<PostBasicModel>)ViewBag.RecentPost); }
+                </div>
             </div>
         </div>
     </div>

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 
 namespace MovieTicketReservation.Models {
-    public class PostModel {
+    public class PostBasicModel {
         public int NewId { get; set; }
         public string ThumbnailUrl { get; set; }
         public string PostTitle { get; set; }
+        public int ViewCount { get; set; }
+        public DateTime PostedDate { get; set; }
     }
 }

@@ -49,8 +49,10 @@
     padding-bottom: 15px;
 }
 
-.recent-post-item > img {
-} 
+.tag {
+    text-decoration: none;
+}
 
-.recent-post-item a {
+.tag:hover {
+    text-decoration: none;
 }

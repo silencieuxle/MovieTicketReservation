@@ -8,22 +8,39 @@ using MovieTicketReservation.Models;
 namespace MovieTicketReservation.Controllers {
     public class NewsController : Controller {
         readonly private MoviesDbDataContext _db = new MoviesDbDataContext();
-        // GET: News
+
+        [HttpGet]
         public ActionResult Index() {
+            ViewBag.Tags = GetTags();
             ViewBag.RecentPost = GetRecentPost();
-            return View(_db.News.ToList());
+            return View(GetAllNews());
         }
 
         public ActionResult Details(int newId) {
+            ViewBag.Tags = GetTags();
+            ViewBag.PostTags = _db.TagDetails.Where(t => t.NewsID == newId).Select(x => new TagModel { TagId = x.TagID, Name = x.Tag.Name }).ToList();
             ViewBag.RecentPost = GetRecentPost();
             var result = _db.News.FirstOrDefault(n => n.NewsID == newId);
             UpdateViewCount(newId);
             return View(result);
         }
 
-        private List<PostModel> GetRecentPost() {
-            return _db.News.Where(x => ((DateTime)x.PostedDate) >= DateTime.Now.AddDays(-1))
-                           .Select(p => new PostModel { PostTitle = p.Title, ThumbnailUrl = p.ThumbnailURL, NewId = p.NewsID }).ToList();
+        public ActionResult GetNewsByTagID(int tagId) {
+            var newsId = _db.TagDetails.Where(t => t.TagID == tagId).Select(t => t.NewsID);
+            var news = _db.News.Where(m => newsId.Any(g => m.NewsID == g)).ToList();
+            return PartialView("_NewsTemplate", news);
+        }
+
+        private List<New> GetAllNews() {
+            return _db.News.ToList();
+        }
+
+        private List<TagModel> GetTags() {
+            return _db.Tags.Select(x => new TagModel { TagId = x.TagID, Name = x.Name }).ToList();
+        }
+
+        private List<PostBasicModel> GetRecentPost() {
+            return _db.News.Select(p => new PostBasicModel { PostTitle = p.Title, ThumbnailUrl = p.ThumbnailURL, NewId = p.NewsID }).Take(5).ToList();
         }
 
         private bool UpdateViewCount(int postId) {

@@ -1,0 +1,8 @@
+﻿@using MovieTicketReservation.Models
+@model List<TagModel>
+
+@foreach (var item in Model) {
+    <a href="javascript;" class="tag" data-tag="@item.TagId">
+        <i class="badge">@item.Name</i>
+    </a>
+}

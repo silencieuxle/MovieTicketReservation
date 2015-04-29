@@ -1,1 +1,100 @@
-﻿<h2>Add New Member</h2>
+﻿@using MovieTicketReservation.Models
+@model UserRegisterModel
+
+<h2>Thêm thành viên</h2>
+<hr />
+<div class="col-sm-8 col-sm-push-2">
+    @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @class = "form-horizontal" })) {
+        @Html.ValidationSummary()
+        <h4><i class="fa fa-caret-right"></i> Thông tin đăng nhập</h4>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+                <label id="emailvalidate" class="validate-label"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PasswordRetyped, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.PasswordRetyped, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <br />
+        <h4><i class="fa fa-caret-right"></i> Thông tin cơ bản</h4>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <br />
+        <h4><i class="fa fa-caret-right"></i> Thông tin xác thực</h4>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
+                <label id="idcardvalidate" class="validate-label"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phone, new { @class = "col-sm-4" })
+            <div class="col-sm-8">
+                @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-8">
+                <input id="btnRegister" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Đăng kí" />
+                @Html.ActionLink("Huỷ bỏ", "Index", "Home", null, new { @class = "btn btn-danger", style = "float: right" })
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $("input[name=Email]").blur(function () {
+        var str = $(this).val();
+        $.get("/User/AjaxCheckEmail", { email: str }, function (data) {
+            if (data.Success == false) {
+                $("#emailvalidate").fadeIn();
+                $("#emailvalidate").text(data.ErrorMessage);
+            } else {
+                $("#emailvalidate").fadeOut();
+            }
+        });
+    });
+
+    $("input[name=IdCardNumber]").blur(function () {
+        var str = $(this).val();
+        $.get("/User/AjaxCheckIdCard", { idCardNumber: str }, function (data) {
+            if (data.Success == false) {
+                $("#idcardvalidate").fadeIn();
+                $("#idcardvalidate").text(data.ErrorMessage);
+            } else {
+                $("#idcardvalidate").fadeOut();
+            }
+        });
+    });
+</script>

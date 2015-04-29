@@ -174,6 +174,7 @@
       <Column Name="Content" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="PostedDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="ViewCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="New_TagDetail" Member="TagDetails" ThisKey="NewsID" OtherKey="NewsID" Type="TagDetail" />
     </Type>
   </Table>
   <Table Name="dbo.CinemaImage" Member="CinemaImages">
@@ -200,6 +201,21 @@
       <Column Name="AvatarURL" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Association Name="Member_BookingHeader" Member="BookingHeaders" ThisKey="MemberID" OtherKey="MemberID" Type="BookingHeader" />
       <Association Name="Role_Member" Member="Role1" ThisKey="Role" OtherKey="RoleID" Type="Role" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Tag" Member="Tags">
+    <Type Name="Tag">
+      <Column Name="TagID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Tag_TagDetail" Member="TagDetails" ThisKey="TagID" OtherKey="TagID" Type="TagDetail" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagDetails" Member="TagDetails">
+    <Type Name="TagDetail">
+      <Column Name="NewsID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TagID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="New_TagDetail" Member="New" ThisKey="NewsID" OtherKey="NewsID" Type="New" IsForeignKey="true" />
+      <Association Name="Tag_TagDetail" Member="Tag" ThisKey="TagID" OtherKey="TagID" Type="Tag" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

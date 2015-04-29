@@ -1,1 +1,39 @@
-﻿<h2>Manage Members</h2>
+﻿@using MovieTicketReservation.Models
+@using PagedList.Mvc;
+@model PagedList.IPagedList<Member>
+
+<h2>Tất cả thành viên</h2>
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Mã thành viên</th>
+                <th>Email</th>
+                <th>CMND</th>
+                <th>Số điện thoại</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="result">
+            <!-- Row template  -->
+        </tbody>
+    </table>
+</div>
+<div class="col-sm-6 col-sm-push-3 col-xs-12">
+    <a href="#" id="btnFirst">Đầu</a>
+    <a href="#" id="btnPrevious">Lùi</a>
+    <a href="#" id="btnNext">Tiếp</a>
+    <a href="#" id="btnLast">Cuối</a>
+</div>
+
+<script>
+    $("#btnFirst").click(function (event) {
+        event.preventDefault();
+
+        $.post("/Admin/AjaxGetMember", {}, function (data) {
+
+        });
+    });
+</script>

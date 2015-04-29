@@ -113,7 +113,8 @@
 		</div>
 	</div>
 	<script>
-		$(".nav-second-level > li > a").click(function () {
+        $(".nav-second-level > li > a").click(function (event) {
+            event.preventDefault();
 			var page = $(this).attr("id");
 			if (page != null) {
 				$.get("/Admin/GetPage", { page: page }, function (htmlResponse) {

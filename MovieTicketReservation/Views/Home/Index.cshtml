@@ -207,7 +207,8 @@
 </div>
 
 <script>
-	$("#page-tab>li>a").click(function () {
+    $("#page-tab>li>a").click(function (event) {
+        event.preventDefault();
 		var filter = $(this).attr("data-filter");
 		$(".filtered-movies").empty();
 		index_loadMoviesFilterData(filter);

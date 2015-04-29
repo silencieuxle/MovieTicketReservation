@@ -90,10 +90,8 @@
                                 if (data.Success == false) {
                                     $("#emailvalidate").fadeIn();
                                     $("#emailvalidate").text(data.ErrorMessage);
-                                    $("#btnRegister").prop("disabled", true);
                                 } else {
                                     $("#emailvalidate").fadeOut();
-                                    $("#btnRegister").prop("disabled", false);
                                 }
                             });
                         });
@@ -104,10 +102,8 @@
                                 if (data.Success == false) {
                                     $("#idcardvalidate").fadeIn();
                                     $("#idcardvalidate").text(data.ErrorMessage);
-                                    $("#btnRegister").prop("disabled", true);
                                 } else {
                                     $("#idcardvalidate").fadeOut();
-                                    $("#btnRegister").prop("disabled", false);
                                 }
                             });
                         });

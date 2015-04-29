@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using MovieTicketReservation.Models;
 using Newtonsoft.Json;
-
+    
 namespace MovieTicketReservation.Controllers {
     public class CinemasController : Controller {
         readonly private MoviesDbDataContext _db = new MoviesDbDataContext();
