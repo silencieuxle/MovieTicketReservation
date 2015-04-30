@@ -173,29 +173,30 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BookingDetailsModel.cs" />
-    <Compile Include="Models\CinemaModel.cs" />
-    <Compile Include="Models\DateModel.cs" />
-    <Compile Include="Models\DateShowtimeModel.cs" />
-    <Compile Include="Models\EditionModel.cs" />
-    <Compile Include="Models\GenreModel.cs" />
-    <Compile Include="Models\MovieDetailsModel.cs" />
+    <Compile Include="ViewModels\BookingDetailsModel.cs" />
+    <Compile Include="ViewModels\CinemaModel.cs" />
+    <Compile Include="ViewModels\DateModel.cs" />
+    <Compile Include="ViewModels\DateShowtimeModel.cs" />
+    <Compile Include="ViewModels\EditionModel.cs" />
+    <Compile Include="ViewModels\GenreModel.cs" />
+    <Compile Include="ViewModels\MovieDetailsModel.cs" />
     <Compile Include="Models\MoviesDb.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MoviesDb.dbml</DependentUpon>
     </Compile>
-    <Compile Include="Models\MovieBasicModel.cs" />
-    <Compile Include="Models\CinemaScheduleModel.cs" />
-    <Compile Include="Models\PostBasicModel.cs" />
-    <Compile Include="Models\SeatModel.cs" />
-    <Compile Include="Models\Showtime.cs" />
-    <Compile Include="Models\TagModel.cs" />
-    <Compile Include="Models\TicketList.cs" />
-    <Compile Include="Models\LoginModel.cs" />
-    <Compile Include="Models\MemberModel.cs" />
-    <Compile Include="Models\UserRegisterModel.cs" />
+    <Compile Include="ViewModels\MovieBasicModel.cs" />
+    <Compile Include="ViewModels\CinemaScheduleModel.cs" />
+    <Compile Include="ViewModels\PostBasicModel.cs" />
+    <Compile Include="ViewModels\SeatModel.cs" />
+    <Compile Include="ViewModels\Showtime.cs" />
+    <Compile Include="ViewModels\TagModel.cs" />
+    <Compile Include="ViewModels\TicketList.cs" />
+    <Compile Include="ViewModels\LoginModel.cs" />
+    <Compile Include="ViewModels\MemberModel.cs" />
+    <Compile Include="ViewModels\UserRegisterModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IMemberRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datepicker.min.css" />
@@ -465,7 +466,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="DAL\" />
+    <Folder Include="Services\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

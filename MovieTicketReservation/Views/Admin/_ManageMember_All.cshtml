@@ -21,15 +21,15 @@
         </tbody>
     </table>
 </div>
-<div class="col-sm-6 col-sm-push-3 col-xs-12">
-    <a href="#" id="btnFirst">Đầu</a>
-    <a href="#" id="btnPrevious">Lùi</a>
-    <a href="#" id="btnNext">Tiếp</a>
-    <a href="#" id="btnLast">Cuối</a>
-</div>
+<nav>
+    <ul class="pager">
+        <li class="previous"><a href="#" id="btnOlder"><span aria-hidden="true">&larr;</span> Older</a></li>
+        <li class="next"><a href="#" id="btnNewer">Newer <span aria-hidden="true">&rarr;</span></a></li>
+    </ul>
+</nav>
 
 <script>
-    $("#btnFirst").click(function (event) {
+    $("#btnOlder").click(function (event) {
         event.preventDefault();
 
         $.post("/Admin/AjaxGetMember", {}, function (data) {
