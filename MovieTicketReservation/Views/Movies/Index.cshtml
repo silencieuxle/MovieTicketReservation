@@ -1,11 +1,12 @@
-﻿@using MovieTicketReservation.Models
+﻿@using MovieTicketReservation.ViewModels
+@using MovieTicketReservation.Models
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model List<MovieDetailsModel>
+@model List<MovieExtended>
 <link href="~/Content/movies.css" rel="stylesheet" />
 <div class="container">
     <div class="row">

@@ -1,4 +1,4 @@
-﻿namespace MovieTicketReservation.Models {
+﻿namespace MovieTicketReservation.ViewModels {
 	public class CinemaModel {
 		public string CinemaId { get; set; }
 		public string Name { get; set; }

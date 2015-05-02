@@ -1,5 +1,5 @@
-﻿@using MovieTicketReservation.ViewModels
-@model List<MovieBasicModel>
+﻿@using MovieTicketReservation.Models
+@model IEnumerable<Movie>
 @{
 	ViewBag.Title = "Home Page";
 }
@@ -79,8 +79,8 @@
 					<label for="selMovie">Chọn film</label>
 					<select name="" id="selMovie" class="form-control" required="required">
 						<option value="" disabled selected>Chọn film</option>
-						@foreach (var item in Model.Where(item => item.ScheduleType == 1 || item.ScheduleType == 2)) {
-							<option value="@item.MovieId">@item.Title</option>
+						@foreach (var item in Model) {
+							<option value="@item.MovieID">@item.Title</option>
 						}
 
 					</select>

@@ -1,5 +1,5 @@
 ﻿@using MovieTicketReservation.Models
-@model New
+@model News
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -34,8 +34,8 @@
                     </div>
                     <div class="col-sm-2 col-xs-12">
                         <p>Tags: </p>
-                        @foreach (var item in (List<TagModel>)ViewBag.PostTags) {
-                            <a href="#" class="tag" data-tag="@item.TagId">
+                        @foreach (var item in (List<Tag>)ViewBag.PostTags) {
+                            <a href="#" class="tag" data-tag="@item.TagID">
                                 <i class="badge">@item.Name</i>
                             </a>
                         }
@@ -49,14 +49,14 @@
                     Tags
                 </h3>
                 <div class="tags">
-                    @{ Html.RenderPartial("_TagsTemplate", (List<TagModel>)ViewBag.Tags); }
+                    @{ Html.RenderPartial("_TagsTemplate", (List<Tag>)ViewBag.Tags); }
                 </div>
 
                 <h3 class="separator">
                     Bài viết gần đây
                 </h3>
                 <div class="recent-post">
-                    @{ Html.RenderPartial("_RecentPostTemplate", (List<PostBasicModel>)ViewBag.RecentPost); }
+                    @{ Html.RenderPartial("_RecentPostTemplate", (List<News>)ViewBag.RecentPost); }
                 </div>
             </div>
         </div>

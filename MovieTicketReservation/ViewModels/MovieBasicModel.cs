@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MovieTicketReservation.Models {
+namespace MovieTicketReservation.ViewModels {
 	public class MovieBasicModel {
 		public int MovieId { get; set; }
 		public string Title { get; set; }

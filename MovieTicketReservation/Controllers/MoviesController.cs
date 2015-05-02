@@ -4,52 +4,99 @@ using System.Linq;
 using System.Web.Mvc;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.Models;
+using MovieTicketReservation.ViewModels;
+using MovieTicketReservation.Services;
+using MovieTicketReservation.Services.MovieService;
+using MovieTicketReservation.Services.GenreService;
+using MovieTicketReservation.Services.EditionService;
+using MovieTicketReservation.Services.MemberService;
+using MovieTicketReservation.Services.CinemaService;
+using MovieTicketReservation.Services.ScheduleService;
+using MovieTicketReservation.Services.CinemaMovieDetailsService;
 using Newtonsoft.Json;
 
 namespace MovieTicketReservation.Controllers {
     public class MoviesController : Controller {
-        private readonly MoviesDbDataContext _db = new MoviesDbDataContext();
+        private DbEntities context = new DbEntities();
+        private IMovieRepository movieRepository;
+        private IEditionRepository editionRepository;
+        private IGenreRepository genreRepository;
+        private ICinemaRepository cinemaReppsitory;
+        private IScheduleRepository scheduleRepository;
+        private ICinemaMovieRepository cinemaMovieRepository;
+
+        public MoviesController() {
+            this.movieRepository = new MovieRepository(context);
+            this.genreRepository = new GenreRepository(context);
+            this.editionRepository = new EditionRepository(context);
+            this.cinemaReppsitory = new CinemaRepository(context);
+            this.scheduleRepository = new ScheduleRepository(context);
+            this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
+        }
 
         // GET: Movies
         [HttpGet]
         public ActionResult Index() {
             // Data to display
-            ViewBag.EditionList = _db.MovieEditions;
-            ViewBag.CinemaList = _db.Cinemas;
-            ViewBag.GenreList = _db.MovieGenres;
-            return View(GetAllMovies());
+            ViewBag.EditionList = editionRepository.GetMovieEditions();
+            ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
+            ViewBag.GenreList = genreRepository.GetMovieGenres();
+
+            var movies = movieRepository.GetAllMovies().Select(m => new MovieExtended {
+                Actors = m.Actors,
+                AgeLimitation = m.AgeLimitation,
+                AgeLimitationID = m.AgeLimitationID,
+                Available = m.Available,
+                BeginShowDate = m.BeginShowDate,
+                Cine_MovieDetails = m.Cine_MovieDetails,
+                Description = m.Description,
+                Director = m.Director,
+                Duration = m.Duration,
+                LongDescription = m.LongDescription,
+                MovieEditions = m.MovieEditions,
+                MovieGenres = m.MovieGenres,
+                MovieID = m.MovieID,
+                MovieLength = m.MovieLength,
+                ReleasedDate = m.ReleasedDate,
+                ThumbnailURL = m.ThumbnailURL,
+                Title = m.Title,
+                TrailerURL = m.TrailerURL,
+                WideThumbnail = m.WideThumbnail,
+                ScheduleType = GetScheduleType(m)
+            }).OrderByDescending(i => i.BeginShowDate).ToList();
+            return View(movies);
         }
 
         [HttpPost]
         public ActionResult Index(string query) {
-            ViewBag.EditionList = _db.MovieEditions;
-            ViewBag.CinemaList = _db.Cinemas;
-            ViewBag.GenreList = _db.MovieGenres;
-            var result = GetMoviesTittle(query);
+            ViewBag.EditionList = editionRepository.GetMovieEditions();
+            ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
+            ViewBag.GenreList = genreRepository.GetMovieGenres();
+            var result = movieRepository.GetMoviesByTitle(query);
             return View(result);
         }
 
         public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter, string scheduleTypeFilter) {
-            var cinema = JsonConvert.DeserializeObject<string[]>(cinemaFilter);
-            var edition = JsonConvert.DeserializeObject<string[]>(editionFilter);
-            var genre = JsonConvert.DeserializeObject<string[]>(genreFilter);
-            var schedule = JsonConvert.DeserializeObject<string[]>(scheduleTypeFilter);
-            var movies = GetAllMovies();
+            var cinemas = JsonConvert.DeserializeObject<string[]>(cinemaFilter);
+            var editions = JsonConvert.DeserializeObject<string[]>(editionFilter);
+            var genres = JsonConvert.DeserializeObject<string[]>(genreFilter);
+            var schedules = JsonConvert.DeserializeObject<string[]>(scheduleTypeFilter);
+            var movies = movieRepository.GetAllMovies();
 
-            if (cinema.Count() != 0) {
-                movies = movies.Where(m => cinema.Any(c => m.Cinemas.Any(mc => mc.CinemaId == c))).ToList();
+            if (cinemas.Count() != 0) {
+                movies = movieRepository.GetMoviesByCinemas(cinemas, movies);
             }
 
-            if (edition.Count() != 0) {
-                movies = movies.Where(m => edition.Any(e => m.Editions.Any(me => me.EditionId == e))).ToList();
+            if (editions.Count() != 0) {
+                movies = movieRepository.GetMoviesByEditions(editions, movies);
             }
 
-            if (genre.Count() != 0) {
-                movies = movies.Where(m => genre.Any(g => m.Genres.Any(me => me.GenreId == g))).ToList();
+            if (genres.Count() != 0) {
+                movies = movieRepository.GetMoviesByGenres(genres, movies);
             }
 
-            if (schedule.Count() != 0) {
-                movies = movies.Where(m => schedule.Any(g => m.ScheduleType == int.Parse(g))).ToList();
+            if (schedules.Count() != 0) {
+                movies = movieRepository.GetMoviesByScheduleTypes(schedules, movies);
             }
 
             movies = movies.OrderByDescending(m => m.BeginShowDate).ToList();
@@ -59,7 +106,7 @@ namespace MovieTicketReservation.Controllers {
 
         // GET: Details?ID
         public ActionResult Details(int movieId) {
-            var result = GetAllMovies().FirstOrDefault(movie => movie.MovieId == movieId);
+            var result = movieRepository.GetMovieByID(movieId);
             ViewBag.Schedules = GetScheduleByMovieId(movieId);
             return View(result);
         }
@@ -71,13 +118,13 @@ namespace MovieTicketReservation.Controllers {
 
         #region Private methods
         private List<CinemaScheduleModel> GetScheduleByMovieId(int movieId) {
-            var schedules = _db.Cine_MovieDetails.Where(cine => cine.MovieID == movieId).Select(c => new CinemaScheduleModel {
+            var schedules = cinemaMovieRepository.GetDetailsByMovieID(movieId).Select(c => new CinemaScheduleModel {
                 CinemaId = c.CinemaID,
                 CinemaName = c.Cinema.Name,
-                Dates = _db.Schedules.Where(sc => sc.Cine_MovieDetail.CinemaID == c.CinemaID && sc.Cine_MovieDetail.MovieID == movieId)
+                Dates = scheduleRepository.GetSchedules().Where(sc => sc.Cine_MovieDetails.CinemaID == c.CinemaID && sc.Cine_MovieDetails.MovieID == movieId)
                                      .GroupBy(sch => sch.Date, (key, group) => new DateModel {
                                          ShowingDate = (DateTime)key,
-                                         Showtimes = group.Where(sche => sche.Cine_MovieDetail.CinemaID == c.CinemaID && sche.Date == key)
+                                         Showtimes = group.Where(sche => sche.Cine_MovieDetails.CinemaID == c.CinemaID && sche.Date == key)
                                                           .Select(sh => sh.ShowTime.StartTime != null ? new Showtime {
                                                               ScheduleId = sh.ScheduleID,
                                                               Time = (TimeSpan)sh.ShowTime.StartTime
@@ -87,84 +134,17 @@ namespace MovieTicketReservation.Controllers {
             return schedules.ToList();
         }
 
-        private List<MovieDetailsModel> GetAllMovies() {
-            var result = _db.Movies.Select(movie => new MovieDetailsModel {
-                Cinemas = movie.Cine_MovieDetails.Select(c => new CinemaModel {
-                    CinemaId = c.CinemaID,
-                    Name = c.Cinema.Name,
-                    Address = c.Cinema.Address,
-                    Phone = c.Cinema.Phone,
-                }).ToList(),
-                MovieId = movie.MovieID,
-                Duration = (int)movie.Duration,
-                Title = movie.Title,
-                Description = movie.Description,
-                Director = movie.Director,
-                Actors = movie.Actors,
-                AgeLimit = movie.AgeLimitation.Description,
-                Available = (bool)movie.Available,
-                WideThumbnail = movie.WideThumbnail == "" ? "/Content/Images/general-movie-details.jpg" : movie.WideThumbnail,
-                LongDescription = movie.LongDescription,
-                Length = (int)movie.MovieLength,
-                ReleasedDate = ((DateTime)movie.ReleasedDate).ToShortDateString(),
-                BeginShowDate = (DateTime)movie.BeginShowDate,
-                ThumbnailUrl = movie.ThumbnailURL == "" ? "/Content/Images/general-movie-poster.jpg" : movie.ThumbnailURL,
-                TrailerUrl = movie.TrailerURL,
-                ScheduleType = GetScheduleType((DateTime)movie.BeginShowDate, (int)movie.Duration),
-                Genres = movie.Movie_GenreDetails.Join(_db.MovieGenres, mg => mg.GenreID, g => g.GenreID,
-                    (mg, g) => new GenreModel { GenreId = g.GenreID, Name = g.Name, Description = g.Description }).ToList(),
-                Editions = movie.Movie_EditionDetails.Join(_db.MovieEditions, mg => mg.EditionID, g => g.EditionID,
-                    (mg, g) => new EditionModel { EditionId = g.EditionID, Name = g.Name, Description = g.Description }).ToList()
-            }).OrderByDescending(x => x.BeginShowDate).ToList();
-            return result;
-        }
+        private int GetScheduleType(Movie movie) {
+            var beginShowDate = (DateTime)movie.BeginShowDate;
+            var duration = (int)movie.Duration;
 
-        private List<MovieDetailsModel> GetMoviesTittle(string title) {
-            return GetAllMovies().Where(movie => movie.Title.ToLower().Contains(title.ToLower())).ToList();
-        }
-
-        public static int GetScheduleType(DateTime beginShowTime, int duration) {
-            if (beginShowTime.AddDays(duration) >= DateTime.Now) {
-                if (beginShowTime <= DateTime.Now && DateTime.Now <= beginShowTime.AddDays(duration)) return 1;
-                if (beginShowTime <= DateTime.Now.AddDays(7) && beginShowTime > DateTime.Now) return 2;
-                if (beginShowTime > DateTime.Now.AddDays(7)) return 3;
+            if (beginShowDate.AddDays(duration) >= DateTime.Now) {
+                if (beginShowDate <= DateTime.Now && DateTime.Now <= beginShowDate.AddDays(duration)) return 1; //Now showing Movie
+                if (beginShowDate <= DateTime.Now.AddDays(7) && beginShowDate > DateTime.Now) return 2; //Coming Soon Movies
+                if (beginShowDate > DateTime.Now.AddDays(7)) return 3; // Future Movies
             }
-            return 0;
+            return 0; // Ended Movies
         }
-
-        //private List<MovieDetails> GetMoviesByGenre(IEnumerable<MovieDetails> movieList, string genreId) {
-        //    var movies = movieList.Where(movie => movie.Genres.Any(x => x.GenreId == genreId)).ToList();
-        //    return movies;
-        //}
-
-        //private List<MovieDetails> GetMoviesByEdition(IEnumerable<MovieDetails> movieList, string editionId) {
-        //    var movies = movieList.Where(movie => movie.Editions.Any(m => m.EditionId == editionId)).ToList();
-        //    return movies;
-        //}
-
-        //private List<MovieDetails> GetMoviesByCinema(IEnumerable<MovieDetails> movieList, string cinemaId) {
-        //    var movies = movieList.Join(_db.Cine_MovieDetails.Where(x => x.Cinema.CinemaID == cinemaId), m => m.MovieId, c => c.MovieID, (movie, cine) => new {
-        //        Movie = movie,
-        //        Cinema = cine
-        //    }).Select(x => new MovieDetails {
-        //        MovieId = x.Movie.MovieId,
-        //        Title = x.Movie.Title,
-        //        Description = x.Movie.Description,
-        //        Director = x.Movie.Director,
-        //        Actors = x.Movie.Actors,
-        //        AgeLimit = x.Movie.AgeLimit,
-        //        Available = x.Movie.Available,
-        //        Length = x.Movie.Length,
-        //        ReleasedDate = x.Movie.ReleasedDate,
-        //        BeginShowDate = x.Movie.BeginShowDate,
-        //        ThumbnailUrl = x.Movie.ThumbnailUrl,
-        //        TrailerUrl = x.Movie.TrailerUrl,
-        //        ScheduleType = x.Movie.ScheduleType,
-        //        Genres = x.Movie.Genres,
-        //        Editions = x.Movie.Editions
-        //    }).ToList();
-        //    return movies;
-        //} 
         #endregion
     }
 }

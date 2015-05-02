@@ -4,22 +4,39 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MovieTicketReservation.Models;
-using System.Net;
-using System.Text;
-using System.IO;
+using MovieTicketReservation.Services;
+using MovieTicketReservation.Services.MovieService;
+using MovieTicketReservation.Services.ScheduleService;
+using MovieTicketReservation.Services.ShowtimeService;
+using MovieTicketReservation.Services.CinemaService;
+using MovieTicketReservation.Services.CinemaMovieDetailsService;
 
 namespace MovieTicketReservation.Controllers {
     public class HomeController : Controller {
-        readonly MoviesDbDataContext _db = new MoviesDbDataContext();
+        private DbEntities context = new DbEntities();
+        private IMovieRepository movieRepository;
+        private IScheduleRepository scheduleRepository;
+        private IShowtimeRepository showtimeRepository;
+        private ICinemaRepository cinemaRepository;
+        private ICinemaMovieRepository cinemaMovieRepository;
+
+        public HomeController() {
+            this.movieRepository = new MovieRepository(context);
+            this.scheduleRepository = new ScheduleRepository(context);
+            this.showtimeRepository = new ShowtimeRepository(context);
+            this.cinemaRepository = new CinemaRepository(context);
+            this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
+        }
+
         public ActionResult Index() {
-            return View(GetAllMovies());
+            return View(movieRepository.GetCanBeReservedMovies());
         }
 
         public ActionResult GetShowtimeByScheduleId(int scheduleId, int movieId) {
             var result = new List<dynamic>();
-            var date = _db.Schedules.FirstOrDefault(s => s.ScheduleID == scheduleId).Date;
-            var cinema = _db.Schedules.FirstOrDefault(s => s.ScheduleID == scheduleId).Cine_MovieDetail.CinemaID;
-            var schedule = _db.Schedules.Where(s => s.Date == (DateTime)date && s.Date >= DateTime.Now && s.Cine_MovieDetail.MovieID == movieId && s.Cine_MovieDetail.CinemaID == cinema);
+            var date = scheduleRepository.GetScheduleByID(scheduleId).Date;
+            var cinema = scheduleRepository.GetScheduleByID(scheduleId).Cine_MovieDetails.CinemaID;
+            var schedule = scheduleRepository.GetSchedules().Where(s => s.Date == (DateTime)date && s.Date >= DateTime.Now && s.Cine_MovieDetails.MovieID == movieId && s.Cine_MovieDetails.CinemaID == cinema);
             foreach (var item in schedule) {
                 result.Add(new { Time = item.ShowTime.StartTime, item.ScheduleID });
             }
@@ -27,8 +44,8 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult GetDateByCinemaIdAndMovieId(int movieId, string cinemaId) {
-            var dates = _db.Schedules.Where(s => s.Cine_MovieDetail.MovieID == movieId &&
-                s.Cine_MovieDetail.CinemaID == cinemaId &&
+            var dates = scheduleRepository.GetSchedules().Where(s => s.Cine_MovieDetails.MovieID == movieId &&
+                s.Cine_MovieDetails.CinemaID == cinemaId &&
                 s.Date >= DateTime.Now);
             var result = new List<dynamic>();
             foreach (var item in dates) {
@@ -38,8 +55,8 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult GetCinemasByMovieId(int movieId) {
-            var cinemas = _db.Cine_MovieDetails.Where(x => x.MovieID == movieId);
-            var result = cinemas.Join(_db.Cinemas, c => c.CinemaID, x => x.CinemaID, (c, x) => new {
+            var cinemas = cinemaMovieRepository.GetDetailsByMovieID(movieId);
+            var result = cinemas.Join(cinemaRepository.GetCinemas(), c => c.CinemaID, x => x.CinemaID, (c, x) => new {
                 x.Name,
                 ID = x.CinemaID
             });
@@ -47,19 +64,9 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult GetMoviesByScheduleType(int type) {
-            var movies = GetAllMovies().Where(m => m.ScheduleType == type);
-            return Json(movies, JsonRequestBehavior.AllowGet);
-        }
-
-        public List<MovieBasicModel> GetAllMovies() {
-            var movies = _db.Movies.Select(movie => new MovieBasicModel {
-                MovieId = movie.MovieID,
-                ScheduleType = MoviesController.GetScheduleType((DateTime)movie.BeginShowDate, (int)movie.Duration),
-                ThumbnailUrl = movie.ThumbnailURL,
-                BeginShowDate = (DateTime)movie.BeginShowDate,
-                Title = movie.Title
-            });
-            return movies.ToList();
+            string[] types = { type + "" };
+            var movies = movieRepository.GetMoviesByScheduleTypes(types);
+            return Json(movies.Select(m => new { MovieID = m.MovieID, ThumbnailUrl = m.ThumbnailURL }), JsonRequestBehavior.AllowGet);
         }
     }
 }

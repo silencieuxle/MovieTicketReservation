@@ -1,8 +1,8 @@
 ﻿@using MovieTicketReservation.Models
-@model List<TagModel>
+@model List<Tag>
 
 @foreach (var item in Model) {
-    <a href="javascript;" class="tag" data-tag="@item.TagId">
+    <a href="javascript;" class="tag" data-tag="@item.TagID">
         <i class="badge">@item.Name</i>
     </a>
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace MovieTicketReservation.Models {
+namespace MovieTicketReservation.ViewModels {
     public class MemberModel {
         [Display(Name = "Email")]
         [EmailAddress(ErrorMessage = "Định dạng email không đúng.")]

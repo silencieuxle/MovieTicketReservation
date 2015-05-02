@@ -1,5 +1,5 @@
 ﻿@using MovieTicketReservation.Models
-@model MemberModel
+@model Member
 
 @{
     ViewBag.Title = "Thông tin cá nhân";
@@ -17,7 +17,7 @@
             <div class="col-panel">
                 <div class="col-sm-4">
                     <div class="avatar-container">
-                        <img src="@Model.AvatarUrl" alt="Image" />
+                        <img src="@Model.AvatarURL" alt="Image" />
                         <button class="btn btn-success">Đổi ảnh đại diện</button>
                     </div>
                 </div>
@@ -27,12 +27,12 @@
                             <h2>Thông tin cơ bản</h2>
                             <hr />
                             <div class="form-group">
-                                @Html.LabelFor(model => model.FirstName)
-                                @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+                                @Html.LabelFor(model => model.Firstname)
+                                @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.LastName)
-                                @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
+                                @Html.LabelFor(model => model.Lastname)
+                                @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
                             </div>
 
                             <h4>Thông tin đăng nhập</h4>

@@ -1,5 +1,5 @@
 ﻿@using MovieTicketReservation.Models
-@model List<CinemaModel>
+@model List<Cinema>
 
 @{
     ViewBag.Title = "Index";
@@ -17,8 +17,8 @@
                         <i class="glyphicon glyphicon-chevron-right" style="color: #ff8000;"></i> Chọn rạp
                     </a>
                     @foreach (var item in Model) {
-                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaId" data-toggle="tab" 
-                            onclick="loadCinemaInfo('@item.CinemaId', this);">
+                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaID" data-toggle="tab" 
+                            onclick="loadCinemaInfo('@item.CinemaID', this);">
                             <h5 class="list-group-item-heading">@item.Name</h5>
                         </a>
                     }

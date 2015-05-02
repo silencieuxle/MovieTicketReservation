@@ -4,16 +4,33 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MovieTicketReservation.Models;
+using MovieTicketReservation.Services;
+using MovieTicketReservation.Services.MovieService;
+using MovieTicketReservation.Services.MemberService;
+using MovieTicketReservation.Services.ScheduleService;
+using MovieTicketReservation.Services.ShowtimeService;
 
 namespace MovieTicketReservation.Controllers {
 	public class AdminController : Controller {
-        readonly private MoviesDbDataContext _db = new MoviesDbDataContext();
+        private DbEntities context = new DbEntities();
+        private IMovieRepository movieRepository;
+        private IScheduleRepository scheduleRepository;
+        private IMemberRepository memberRepository;
+        private IShowtimeRepository showtimeRepository;
+
+        public AdminController() {
+            this.movieRepository = new MovieRepository(context);
+            this.scheduleRepository = new ScheduleRepository(context);
+            this.memberRepository = new MemberRepository(context);
+            this.showtimeRepository = new ShowtimeRepository(context);
+        }
+
 		// GET: Admin
 		public ActionResult Index() {
 			return View();
 		}
 
-		public ActionResult GetPage(string page) {
+		public ActionResult GetPage(string page, string[] parameters) {
 			switch (page) {
 				case "moviestats_overall":
 					return PartialView("_MovieStats_Overall");
@@ -24,9 +41,9 @@ namespace MovieTicketReservation.Controllers {
 				case "ticketstats_overall":
 					return PartialView("_TicketStats_Overall");
 				case "ticketstats_movie":
-					return PartialView("_TicketStats_Movie", _db.Movies);
+					return PartialView("_TicketStats_Movie", movieRepository.GetAllMovies());
 				case "ticketstats_showtime":
-					return PartialView("_TicketStats_Showtime");
+					return PartialView("_TicketStats_Showtime", showtimeRepository.GetShowtimes());
 				case "ticketstats_room":
 					return PartialView("_TicketStats_Room");
 				case "systemstats":
@@ -40,11 +57,11 @@ namespace MovieTicketReservation.Controllers {
 				case "manageschedule_edit":
 					return PartialView("_ManageSchedule_Edit");
 				case "mamangemember_all":
-					return PartialView("_ManageMember_All");
+					return PartialView("_ManageMember_All", memberRepository.GetAllMembers());
 				case "managemember_add":
 					return PartialView("_ManageMember_Add");
 				case "managemember_edit":
-					return PartialView("_ManageMember_Edit");
+					return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(parameters[0])));
 				case "promotion_all":
 					return PartialView("_Promotion_All");
 				case "promotion_add": 
@@ -54,18 +71,5 @@ namespace MovieTicketReservation.Controllers {
 				default: return View("Index");
 			}
 		}
-
-        public ActionResult AjaxGetMovieList() {
-            return Json(_db.Movies.Select(x => new { x.Title, x.MovieID }), JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AjaxTicketStats_Movie(int movieId) {
-            var data = _db.Seat_ShowDetails.Where(x => x.Schedule.Cine_MovieDetail.MovieID == movieId && x.Reserved == true).GroupBy(a => a.BookingHeader.ReservedTime)
-                .Select(s => new { 
-                    count = s.Count(),
-                    byDate = s.Key
-                });
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
 	}
 }

@@ -1,9 +1,9 @@
 ﻿@using MovieTicketReservation.Models
-@model List<PostBasicModel>
+@model List<News>
 @foreach (var item in Model) {
     <div class="recent-post-item col-sm-12">
-        <img class="img img-responsive" src="@item.ThumbnailUrl" alt="" />
-        @Html.ActionLink(item.PostTitle, "Detail", "News", routeValues: new { item.NewId }, htmlAttributes: null)
+        <img class="img img-responsive" src="@item.ThumbnailURL" alt="" />
+        @Html.ActionLink(item.Title, "Detail", "News", routeValues: new { item.NewsID }, htmlAttributes: null)
     </div>
 }
 

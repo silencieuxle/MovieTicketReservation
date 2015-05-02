@@ -1,29 +1,29 @@
-﻿@using MovieTicketReservation.Models
-@model List<MovieDetailsModel>
+﻿@using MovieTicketReservation.ViewModels
+@model List<MovieExtended>
 
 @foreach (var item in Model) {
-    <div class="col-sm-12 item" id='@item.MovieId'>
-        <img src="@Url.Content(item.ThumbnailUrl)" alt="" class="col-sm-3 center img-responsive">
+    <div class="col-sm-12 item" id='@item.MovieID'>
+        <img src="@Url.Content(item.ThumbnailURL)" alt="" class="col-sm-3 center img-responsive">
         <div class="col-sm-9">
             <div class="movie-details col-sm-7">
                 <h3 class="movie-title">
-                    @Html.ActionLink(item.Title, "Details", "Movies", new { MovieID = item.MovieId }, null)
+                    @Html.ActionLink(item.Title, "Details", "Movies", new { MovieID = item.MovieID }, null)
                 </h3>
                 <div class="inline-child"><p class="detail-header">Ngày ra mắt: </p>@item.ReleasedDate</div>
-                <div class="inline-child"><p class="detail-header">Độ dài: </p>@item.Length.ToString() phút</div>
+                <div class="inline-child"><p class="detail-header">Độ dài: </p>@item.MovieLength.ToString() phút</div>
                 <p class="detail-header">Tóm tắt: </p>@item.Description
             </div>
             <div class="col-xs-12 col-sm-5 movie-options">
                 <br />
                 <span class="detail-header">Phiên bản: </span>
-                @foreach (var edition in item.Editions) {
+                @foreach (var edition in item.MovieEditions) {
                     <span class="badge">@edition.Name</span>
                 }
                 <p></p>
-                <span class="detail-header">Giới hạn độ tuổi: </span><span class="badge">@item.AgeLimit</span>
+                <span class="detail-header">Giới hạn độ tuổi: </span><span class="badge">@item.AgeLimitation.Description</span>
                 <hr>
                 @if (item.ScheduleType == 1 || item.ScheduleType == 2) {
-                    <button class="btn btn-sm btn-success center btn-schedule" data-id="@item.MovieId">Đặt vé</button>
+                    <button class="btn btn-sm btn-success center btn-schedule" data-id="@item.MovieID">Đặt vé</button>
                 } else if (item.ScheduleType == 3) {
                     <button class="btn btn-primary center" disabled>Đang lên lịch</button>
                 } else {

@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model List<New>
+@model List<News>
 
 <link href="~/Content/news.css" rel="stylesheet">
 <div class="container">
@@ -20,14 +20,14 @@
                     Tags
                 </h3>
                 <div class="tags">
-                    @{ Html.RenderPartial("_TagsTemplate", (List<TagModel>)ViewBag.Tags); }
+                    @{ Html.RenderPartial("_TagsTemplate", (List<Tag>)ViewBag.Tags); }
                 </div>
 
                 <h3 class="separator">
                     Bài viết gần đây
                 </h3>
                 <div class="recent-post">
-                    @{ Html.RenderPartial("_RecentPostTemplate", (List<PostBasicModel>)ViewBag.RecentPost); }
+                    @{ Html.RenderPartial("_RecentPostTemplate", (List<News>)ViewBag.RecentPost); }
                 </div>
             </div>
         </div>

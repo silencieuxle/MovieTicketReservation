@@ -1,4 +1,4 @@
-﻿@using MovieTicketReservation.Models
+﻿@using MovieTicketReservation.ViewModels
 @if (Session["UID"] != null && (int)Session["uid"] != 0) {
     using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })) {
         <ul class="nav navbar-nav navbar-right">
