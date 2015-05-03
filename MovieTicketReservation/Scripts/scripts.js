@@ -1,7 +1,7 @@
 ﻿function index_loadMoviesFilterData(type) {
 	$.getJSON("/Home/GetMoviesByScheduleType", { type: type }, function (data) {
 		$.each(data, function (index, value) {
-			var htmlString = "<div class='col-xs-6 col-md-3 film-thumbnail'><a href='/Movies/Details?movieID=" + value.MovieId + "' class='thumbnail'><img src='" + value.ThumbnailUrl + "' /></a></div>";
+			var htmlString = "<div class='col-xs-6 col-md-3 film-thumbnail'><a href='/Movies/Details?movieID=" + value.MovieID + "' class='thumbnail'><img src='" + value.ThumbnailUrl + "' /></a></div>";
 			$(".filtered-movies").append(htmlString);
 		});
 	});

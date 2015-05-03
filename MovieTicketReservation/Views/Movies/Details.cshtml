@@ -1,9 +1,9 @@
-﻿@using MovieTicketReservation.Models
+﻿@using MovieTicketReservation.ViewModels
 @{
     ViewBag.Title = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model MovieDetailsModel
+@model MovieExtended
 
 <link href="~/Content/film_details.css" rel="stylesheet" />
 <div class="container">
@@ -16,11 +16,11 @@
                         <h1 class="film-title">@Model.Title</h1>
                         <div class="inline-child">
                             <p class="detail-header">Khởi chiếu: </p>
-                            Từ @Model.BeginShowDate.ToShortDateString() đến @Model.BeginShowDate.AddDays(Model.Duration).ToShortDateString();
+                            Từ @(((DateTime)Model.BeginShowDate).ToShortDateString()) đến @(((DateTime)Model.BeginShowDate).AddDays((int)Model.Duration).ToShortDateString());
                         </div>
                         <div class="inline-child">
                             <p class="detail-header">Thể loại: </p>
-                            @foreach (var item in Model.Genres) {
+                            @foreach (var item in Model.MovieGenres) {
                                 <span class="badge">@item.Name</span>
                             }
                         </div>
@@ -32,12 +32,12 @@
                     <div class="col-sm-5">
                         <h2></h2>
                         <p class="detail-header">Phiên bản: </p>
-                        @foreach (var item in Model.Editions) {
+                        @foreach (var item in Model.MovieEditions) {
                             <span class="badge">@item.Name</span>
                         }
                         <hr>
                         @if (Model.ScheduleType == 1 || Model.ScheduleType == 2) {
-                            <button class="btn btn-sm btn-success center btn-schedule" data-id="@Model.MovieId">Đặt vé</button>
+                            <button class="btn btn-sm btn-success center btn-schedule" data-id="@Model.MovieID">Đặt vé</button>
                         } else if (Model.ScheduleType == 3) {
                             <button class="btn btn-primary center" disabled>Đang lên lịch</button>
                         } else {
@@ -78,7 +78,7 @@
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="trailer">
                             <div class="embed-responsive embed-responsive-16by9">
-                                <iframe id="trailer" class="embed-responsive-item" src="@Model.TrailerUrl"></iframe>
+                                <iframe id="trailer" class="embed-responsive-item" src="@Model.TrailerURL"></iframe>
                             </div>
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="scheduler">

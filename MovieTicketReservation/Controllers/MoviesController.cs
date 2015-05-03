@@ -72,7 +72,28 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.EditionList = editionRepository.GetMovieEditions();
             ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
             ViewBag.GenreList = genreRepository.GetMovieGenres();
-            var result = movieRepository.GetMoviesByTitle(query);
+            var result = movieRepository.GetMoviesByTitle(query).Select(m => new MovieExtended {
+                Actors = m.Actors,
+                AgeLimitation = m.AgeLimitation,
+                AgeLimitationID = m.AgeLimitationID,
+                Available = m.Available,
+                BeginShowDate = m.BeginShowDate,
+                Cine_MovieDetails = m.Cine_MovieDetails,
+                Description = m.Description,
+                Director = m.Director,
+                Duration = m.Duration,
+                LongDescription = m.LongDescription,
+                MovieEditions = m.MovieEditions,
+                MovieGenres = m.MovieGenres,
+                MovieID = m.MovieID,
+                MovieLength = m.MovieLength,
+                ReleasedDate = m.ReleasedDate,
+                ThumbnailURL = m.ThumbnailURL,
+                Title = m.Title,
+                TrailerURL = m.TrailerURL,
+                WideThumbnail = m.WideThumbnail,
+                ScheduleType = GetScheduleType(m)
+            }).OrderByDescending(i => i.BeginShowDate).ToList();;
             return View(result);
         }
 
@@ -107,8 +128,30 @@ namespace MovieTicketReservation.Controllers {
         // GET: Details?ID
         public ActionResult Details(int movieId) {
             var result = movieRepository.GetMovieByID(movieId);
+            var movie = new MovieExtended {
+                Actors = result.Actors,
+                AgeLimitation = result.AgeLimitation,
+                AgeLimitationID = result.AgeLimitationID,
+                Available = result.Available,
+                BeginShowDate = result.BeginShowDate,
+                Cine_MovieDetails = result.Cine_MovieDetails,
+                Description = result.Description,
+                Director = result.Director,
+                Duration = result.Duration,
+                LongDescription = result.LongDescription,
+                MovieEditions = result.MovieEditions,
+                MovieGenres = result.MovieGenres,
+                MovieID = result.MovieID,
+                MovieLength = result.MovieLength,
+                ReleasedDate = result.ReleasedDate,
+                ThumbnailURL = result.ThumbnailURL,
+                Title = result.Title,
+                TrailerURL = result.TrailerURL,
+                WideThumbnail = result.WideThumbnail,
+                ScheduleType = GetScheduleType(result)
+            };
             ViewBag.Schedules = GetScheduleByMovieId(movieId);
-            return View(result);
+            return View(movie);
         }
 
         public ActionResult AjaxGetScheduleViewByMovieId(int movieId) {

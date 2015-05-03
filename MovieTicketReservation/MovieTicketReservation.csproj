@@ -302,6 +302,7 @@
     <Content Include="Content\film_details.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\admin.css" />
+    <Content Include="Content\Images\avatar.jpg" />
     <Content Include="Content\Images\avenger_detailsimg.jpg" />
     <Content Include="Content\Images\avenger_mov.jpg" />
     <Content Include="Content\Images\biggame_detailsimg.jpg" />

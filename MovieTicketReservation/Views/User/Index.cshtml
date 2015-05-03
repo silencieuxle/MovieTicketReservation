@@ -15,53 +15,57 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="col-panel">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="avatar-container">
-                        <img src="@Model.AvatarURL" alt="Image" />
-                        <button class="btn btn-success">Đổi ảnh đại diện</button>
+                        <img src="@Model.AvatarURL" class="img img-responsive" alt="Image" />
+                        <button class="btn btn-success" id="btnChangeAvatar">Đổi ảnh đại diện</button>
+                        <button class="btn btn-info" id="btnChangeInfo">Thay đổi thông tin</button>
                     </div>
                 </div>
-                <div class="col-sm-8">
-                    @using (Html.BeginForm("Update", "User", FormMethod.Post, htmlAttributes: null)) {
+                <div class="col-sm-9">
+                    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: null)) {
                         <div class="col-sm-8">
-                            <h2>Thông tin cơ bản</h2>
+                            <h4>Thông tin cơ bản</h4>
                             <hr />
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Firstname)
-                                @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Lastname)
+                                @Html.Label("Họ")
                                 @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
                             </div>
-
+                            <div class="form-group">
+                                @Html.Label("Tên")
+                                @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <br />
                             <h4>Thông tin đăng nhập</h4>
+                            <hr />
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Email)
                                 @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
                             </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Password)
-                                @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
-
+                            @Html.Label("Mật khẩu")
+                            <div class="input-group">
+                                @Html.TextBox("txtPassword", "*********", new { disabled = "disabled", @class = "form-control" })
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" id="btnChangePassword" type="button">Đổi mật khẩu</button>
+                                </span>
                             </div>
-
+                            <br />
                             <h4>Thông tin xác thực</h4>
                             <hr />
                             <div class="form-group">
-                                @Html.LabelFor(model => model.IDCardNumber)
+                                @Html.Label("Số CMND")
                                 @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Address)
+                                @Html.Label("Địa chỉ")
                                 @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Phone)
+                                @Html.Label("Số điện thoại")
                                 @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Gender)
+                                @Html.Label("Giới tính")
                                 @Html.DropDownListFor(model => model.Gender,
                                     new SelectList(
                                         new List<object> {
@@ -76,17 +80,32 @@
                                 )
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Birthday)
+                                @Html.Label("Ngày sinh")
                                 @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker" })
                             </div>
                             <div class="form-group">
-                                <input type="submit" id="btnSave" value="Lưu" />
+                                <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
                             </div>
                         </div>
                     }
                 </div>
                 <script>
                     $("#date-picker").datepicker({});
+
+                    $(document).ready(function () {
+                        $("input[type=text]").prop('disabled', true);
+                        $("#btnChangePassword").prop('disabled', true);
+                    });
+
+                    $("#btnChangeInfo").click(function (event) {
+                        $("input[type=text]").prop('disabled', false);
+                        $("#btnChangePassword").prop('disabled', false);
+                        $("#btnSave").removeClass("hidden");
+                    });
+
+                    $("#btnChangeAvatar").click(function (event) {
+
+                    });
                 </script>
             </div>
         </div>

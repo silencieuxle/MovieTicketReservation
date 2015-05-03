@@ -17,20 +17,20 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Tên")]
         [Required]
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
 
         [Display(Name = "Họ")]
         [Required]
-        public string LastName { get; set; }
+        public string Lastname { get; set; }
 
         [Display(Name = "Địa chỉ")]
         [Required]
         public string Address { get; set; }
 
-        [Display(Name = "CMND")]
+        [Display(Name = "Số CMND")]
         [Required]
         [StringLength(9, MinimumLength = 9, ErrorMessage = "Số chứng minh nhân dân phải có 9 chữ số")]
-        public string IDCardNumber { get; set; }
+        public string IdCardNumber { get; set; }
 
         [Display(Name = "Số điện thoại")]
         [Required]
@@ -39,13 +39,13 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Giới tính")]
         [Required]
-        public bool Gender { get; set; }
+        public bool? Gender { get; set; }
 
         [Display(Name = "Ngày sinh")]
         [Required]
         [DataType(DataType.DateTime)]
         [Range(typeof(DateTime), "1/1/1920", "1/1/2005")]
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         public string AvatarUrl { get; set; }
     }

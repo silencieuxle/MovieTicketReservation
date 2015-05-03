@@ -87,6 +87,13 @@ namespace MovieTicketReservation.Controllers {
             return View(userRegisterModel);
         }
 
+        [HttpPost]
+        public ActionResult UpdateProfile(Member member) {
+            if (!ModelState.IsValid) return View(member);
+            memberRepository.UpdateMember(member);
+            return View("Index");
+        }
+
         #region Ajax methods
         public ActionResult AjaxCheckEmail(string email) {
             if (memberRepository.IsEmailExisted(email))
@@ -109,6 +116,7 @@ namespace MovieTicketReservation.Controllers {
                 return Json(new { Success = true, ErrorMessage = "" });
             return Json(new { Success = false, ErrorMessage = "Sai thông tin đăng nhập." });
         }
+
         #endregion
 
         private int Authenticate(string email, string password) {
