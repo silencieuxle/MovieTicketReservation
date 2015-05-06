@@ -70,14 +70,10 @@ namespace MovieTicketReservation.Controllers {
                 return Redirect("/User/Login");
             }
             var showingDate = scheduleRepository.GetScheduleByID(scheduleId).Date;
-            if (showingDate < DateTime.Now) return View("/Shared/Error");
+            if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movie");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
-            var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).Select(x => new SeatModel {
-                SeatId = x.SeatID,
-                Name = x.Seat.Name,
-                Reserved = (bool)x.Reserved
-            }).ToList();
+            var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
             return View(seats);
         }
 
@@ -117,7 +113,7 @@ namespace MovieTicketReservation.Controllers {
             }
 
             if (error) {
-                return View("/Shared/Error.cshtml");
+                return View("Error", "Yêu cầu của bạn không thể xử lý, vui lòng thử lại sau.");
             } else {
                 Session["Schedule"] = null;
                 Session["ReservedSeats"] = null;
@@ -146,9 +142,9 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxCancelReservation(int bookingHeaderId) {
-            int deletedBookingHeaderId = bookingRepository.DeleteBookingHeader(bookingHeaderId);
-            if (deletedBookingHeaderId != 0) {
-                var seats = seatShowRepository.GetDetailsByBookingHeaderID(deletedBookingHeaderId);
+            var bookingHeader = bookingRepository.GetBookingHeaderByID(bookingHeaderId);
+            if (bookingHeader != null) {
+                var seats = seatShowRepository.GetDetailsByBookingHeaderID(bookingHeaderId);
                 if (seats.Count() != 0) {
                     foreach (var seat in seats) {
                         seat.BookingHeaderID = null;
@@ -156,6 +152,7 @@ namespace MovieTicketReservation.Controllers {
                         seat.Paid = false;
                         seatShowRepository.UpdateSeat(seat);
                     }
+                    bookingRepository.DeleteBookingHeader(bookingHeaderId);
                     return Json(new { Success = true, ErrorMessage = "" }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -216,8 +213,7 @@ namespace MovieTicketReservation.Controllers {
             var bookingHeader = bookingRepository.GetBookingHeaderByID(bookingHeaderId);
             if (bookingHeader != null) {
                 bookingHeader.Total = totalSeat;
-                bookingRepository.UpdateBookingHeader(bookingHeader);
-                return totalSeat;
+                if (bookingRepository.UpdateBookingHeader(bookingHeader) != 0) return totalSeat;
             }
             return -1;
         }

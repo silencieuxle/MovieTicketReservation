@@ -51,7 +51,7 @@ namespace MovieTicketReservation.Services.BookingHeaderService {
         public int UpdateBookingHeader(BookingHeader bookingHeader) {
             using (var transaction = context.Database.BeginTransaction()) {
                 try {
-                    context.BookingHeaders.Add(bookingHeader);
+                    context.Entry(bookingHeader).State = EntityState.Modified;
 
                     context.SaveChanges();
 

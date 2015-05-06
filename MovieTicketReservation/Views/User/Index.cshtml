@@ -10,32 +10,65 @@
 <script type="text/javascript" src="~/Scripts/bootstrap-datepicker.vi.min.js"></script>
 <script type="text/javascript" src="~/Scripts/bootstrap-datepicker.en-GB.min.js"></script>
 <link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="~/Content/member.css" rel="stylesheet" />
+<link href="~/Content/fileupload.min.css" rel="stylesheet" />
 
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="col-panel">
-                <div class="col-sm-3">
+            <div class="col-panel col-sm-8 col-sm-push-2">
+                <h2 class="separator">Thông tin thành viên</h2>
+                <div class="col-sm-4">
                     <div class="avatar-container">
                         <img src="@Model.AvatarURL" class="img img-responsive" alt="Image" />
-                        <button class="btn btn-success" id="btnChangeAvatar">Đổi ảnh đại diện</button>
-                        <button class="btn btn-info" id="btnChangeInfo">Thay đổi thông tin</button>
+                        <ul class="nav nav-pills nav-stacked member-nav">
+                            <li>
+                                <div class="btn btn-primary btn-file">
+                                    <i class="glyphicon glyphicon-folder-open"></i>
+                                    &nbsp;Browse … <input id="btnUploadImage" type="file" multiple="true" class="">
+                                </div>
+                            </li>
+                            <li><a href="/Ticket/">Lịch sử giao dịch</a></li>
+                            <li><a href="/Ticket/">Các bộ film đã xem</a></li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-sm-9">
-                    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: null)) {
-                        <div class="col-sm-8">
-                            <h4>Thông tin cơ bản</h4>
-                            <hr />
-                            <div class="form-group">
-                                @Html.Label("Họ")
-                                @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                <div class="col-sm-8">
+                    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember" })) {
+                        <h4>Thông tin cơ bản</h4>
+                        <hr />
+                        @Html.Label("Họ tên")
+                        <div class="memberName">
+                            <div class="col-sm-6 no-padding">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                                </div>
                             </div>
-                            <div class="form-group">
-                                @Html.Label("Tên")
-                                @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                            <div class="col-sm-6 no-padding">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                                </div>
                             </div>
-                            <br />
+                            <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
+                            <script>
+                                $("#btnChangeName").click(function () {
+                                    var target = $(this);
+                                    switch (target.val()) {
+                                        case "Lưu":
+                                            $(".memberName input[type=text]").prop("disabled", true);
+                                            target.val("Chỉnh sửa");
+                                            break;
+                                        case "Chỉnh sửa":
+                                            $(".memberName input[type=text]").prop("disabled", false);
+                                            target.val("Lưu");
+                                            break;
+                                        default: alert("Invalid action");
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <br />
+                        <div class="loginInfo">
                             <h4>Thông tin đăng nhập</h4>
                             <hr />
                             <div class="form-group">
@@ -43,13 +76,32 @@
                                 @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
                             </div>
                             @Html.Label("Mật khẩu")
-                            <div class="input-group">
-                                @Html.TextBox("txtPassword", "*********", new { disabled = "disabled", @class = "form-control" })
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" id="btnChangePassword" type="button">Đổi mật khẩu</button>
-                                </span>
+                            <div class="password">
+                                <div class="input-group">
+                                    @Html.TextBox("txtPassword", "*********", new { disabled = "disabled", @class = "form-control" })
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" id="btnChangePassword" type="button">Đổi mật khẩu</button>
+                                    </span>
+                                </div>
+                                <div class="" id="frmChangePassword">
+                                    <fieldset>
+                                        <legend class="separator"></legend>
+                                        @Html.TextBox("txtOldPassword", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu cũ", type = "password" })
+                                        <br />
+                                        @Html.TextBox("txtNewPassword1", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu mới", type = "password" })
+                                        <br />
+                                        @Html.TextBox("txtNewPassword2", null, htmlAttributes: new { @class = "form-control", placeholder = "Nhập lại mật khẩu mới", type = "password" })
+                                        <br />
+                                        <span style="float: right">
+                                            <button type="button" id="btnConfirmPasswordChange" class="btn btn-success">Đổi</button>
+                                            <button type="button" id="btnCancelPasswordChange" class="btn btn-danger">Huỷ</button>
+                                        </span>
+                                    </fieldset>
+                                </div>
                             </div>
-                            <br />
+                        </div>
+                        <br />
+                        <div class="identifyInfo">
                             <h4>Thông tin xác thực</h4>
                             <hr />
                             <div class="form-group">
@@ -73,8 +125,7 @@
                                             new {value = 1, text = "Nam"}
                                         },
                                         "value",
-                                        "text",
-                                        1
+                                        "text"
                                     ),
                                     htmlAttributes: new { @class = "form-control" }
                                 )
@@ -86,6 +137,25 @@
                             <div class="form-group">
                                 <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
                             </div>
+                            <div class="col-sm-12 no-padding">
+                                <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
+                            </div>
+                            <script>
+                                $("#btnChangeIdentityInfo").click(function () {
+                                    var target = $(this);
+                                    switch (target.val()) {
+                                        case "Lưu":
+                                            $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", true);
+                                            target.val("Chỉnh sửa");
+                                            break;
+                                        case "Chỉnh sửa":
+                                            $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", false);
+                                            target.val("Lưu");
+                                            break;
+                                        default: alert("Invalid action");
+                                    }
+                                });
+                            </script>
                         </div>
                     }
                 </div>
@@ -93,12 +163,13 @@
                     $("#date-picker").datepicker({});
 
                     $(document).ready(function () {
-                        $("input[type=text]").prop('disabled', true);
-                        $("#btnChangePassword").prop('disabled', true);
+                        $(".frmMember input[type=text]").prop('disabled', true);
+                        $("select").prop('disabled', true);
+                        $("#frmChangePassword").hide();
                     });
 
                     $("#btnChangeInfo").click(function (event) {
-                        $("input[type=text]").prop('disabled', false);
+                        $(".frmMember input[type=text]").prop('disabled', false);
                         $("#btnChangePassword").prop('disabled', false);
                         $("#btnSave").removeClass("hidden");
                     });
@@ -106,6 +177,22 @@
                     $("#btnChangeAvatar").click(function (event) {
 
                     });
+
+                    $("#btnChangePassword").click(function () {
+                        $("#frmChangePassword").slideDown('slow');
+                    });
+
+                    $("#btnConfirmPasswordChange").click(function () {
+                        $("#frmChangePassword").slideUp('slow')
+                    });
+
+                    $("#btnCancelPasswordChange").click(function () {
+                        var oldPassword = $("#txtOldPassword").val();
+
+                        alert(data.Message);
+                        $("#frmChangePassword").slideUp('slow')
+                    });
+
                 </script>
             </div>
         </div>

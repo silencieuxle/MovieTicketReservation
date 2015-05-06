@@ -93,7 +93,7 @@ namespace MovieTicketReservation.Controllers {
                 TrailerURL = m.TrailerURL,
                 WideThumbnail = m.WideThumbnail,
                 ScheduleType = GetScheduleType(m)
-            }).OrderByDescending(i => i.BeginShowDate).ToList();;
+            }).OrderByDescending(i => i.BeginShowDate).ToList(); ;
             return View(result);
         }
 
@@ -120,7 +120,28 @@ namespace MovieTicketReservation.Controllers {
                 movies = movieRepository.GetMoviesByScheduleTypes(schedules, movies);
             }
 
-            movies = movies.OrderByDescending(m => m.BeginShowDate).ToList();
+            movies = movies.OrderByDescending(m => m.BeginShowDate).Select(m => new MovieExtended {
+                Actors = m.Actors,
+                AgeLimitation = m.AgeLimitation,
+                AgeLimitationID = m.AgeLimitationID,
+                Available = m.Available,
+                BeginShowDate = m.BeginShowDate,
+                Cine_MovieDetails = m.Cine_MovieDetails,
+                Description = m.Description,
+                Director = m.Director,
+                Duration = m.Duration,
+                LongDescription = m.LongDescription,
+                MovieEditions = m.MovieEditions,
+                MovieGenres = m.MovieGenres,
+                MovieID = m.MovieID,
+                MovieLength = m.MovieLength,
+                ReleasedDate = m.ReleasedDate,
+                ScheduleType = GetScheduleType(m),
+                ThumbnailURL = m.ThumbnailURL,
+                Title = m.Title,
+                TrailerURL = m.TrailerURL,
+                WideThumbnail = m.WideThumbnail
+            }).ToList();
 
             return PartialView("_MovieTemplate", movies);
         }

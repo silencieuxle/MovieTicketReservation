@@ -1,5 +1,5 @@
 ﻿@using MovieTicketReservation.Models
-@model List<SeatModel>
+@model List<Seat_ShowDetails>
 @{
     ViewBag.Title = "Reserve";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -32,14 +32,14 @@
                             if ((bool)seat.Reserved) {
                                 <div class="col-xs-1 seat taken">
                                     <a class="seat" href="#">
-                                        <text>@seat.Name</text>
+                                        <text>@seat.Seat.Name</text>
                                         <img class="img img-responsive" src="~/Content/Images/takenseat.png" alt="" />
                                     </a>
                                 </div>
                             } else {
                                 <div class="col-xs-1 seat">
-                                    <a class="avail-seat" href="#" data-seat="@seat.SeatId">
-                                        <text>@seat.Name</text>
+                                    <a class="avail-seat" href="#" data-seat="@seat.SeatID">
+                                        <text>@seat.Seat.Name</text>
                                         <img class="img img-responsive" src="~/Content/Images/availseat.png" alt="" />
                                     </a>
                                 </div>
@@ -83,7 +83,7 @@
                     });
                 </script>
                 <span>
-                    @Html.ActionLink("Xác nhận", "Confirm", "Ticket", null, new { @class = "btn btn-success" })
+                    @Html.ActionLink("Xác nhận", "Confirm", "Ticket", null, new { @class = "btn btn-success", id = "btnConfirm" })
                     @Html.ActionLink("Huỷ bỏ", "Index", "Movies", new { }, new { @class = "btn btn-danger" })
                 </span>
             </div>
@@ -104,6 +104,14 @@
                     target.addClass("selected");
                 });
             }
+        });
+
+        $("#btnConfirm").click(function () {
+            if ($(".selected").length == 0) {
+                alert("Bạn phải chọn ghế!");
+                return false
+            }
+            return true;
         });
     </script>
 </div>

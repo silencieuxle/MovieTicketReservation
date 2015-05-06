@@ -20,11 +20,11 @@ namespace MovieTicketReservation.Services.SeatShowDetailsService {
         }
 
         public IEnumerable<Seat_ShowDetails> GetDetailsByScheduleID(int scheduleId) {
-            return context.Seat_ShowDetails.Where(d => d.ScheduleID == scheduleId);
+            return context.Seat_ShowDetails.Where(d => d.ScheduleID == scheduleId).ToList();
         }
 
         public IEnumerable<Seat_ShowDetails> GetDetailsByBookingHeaderID(int bookingHeaderId) {
-            return context.Seat_ShowDetails.Where(d => d.BookingHeaderID == bookingHeaderId);
+            return context.Seat_ShowDetails.Where(d => d.BookingHeaderID == bookingHeaderId).ToList();
         }
 
         public Seat_ShowDetails GetDetailsBySeatID(int seatId) {
