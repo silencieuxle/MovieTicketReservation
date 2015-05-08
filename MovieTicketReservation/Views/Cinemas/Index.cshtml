@@ -1,22 +1,21 @@
 ﻿@using MovieTicketReservation.Models
 @model List<Cinema>
-
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link href="~/Content/cinema.css" rel="stylesheet" />
-
 <div class="main-content">
     <div class="container">
         <div class="row">
+            <!-- BEGIN TEMPLATE -->
             <div class="col-sm-4">
                 <div class="list-group cinema-selector">
                     <a class="list-group-item disabled" data-toggle="collapse" href="#collapseExample">
                         <i class="glyphicon glyphicon-chevron-right" style="color: #ff8000;"></i> Chọn rạp
                     </a>
-                    @foreach (var item in Model) {
+                    @foreach (var item in Model)
+                    {
                         <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaID" data-toggle="tab"
                            onclick="loadCinemaInfo('@item.CinemaID', this);">
                             <h5 class="list-group-item-heading">@item.Name</h5>
@@ -35,48 +34,51 @@
             <div class="col-sm-8">
                 <div id="cineImage" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner" role="listbox">
-
                     </div>
                 </div>
-            <script>
-                $(document).ready(function () {
-                    $(".carousel-inner").empty();
-                    $(".cinema-info").empty();
-                    $.post("/Cinemas/GetCinemaDetails", { cinemaId: 'CINE1' }, function (data) {
-                        updateImages(data.Images);
-                        updateInfo(data);
-                    }, 'json');
-                });
+            </div>
 
-                function updateImages(data) {
-                    $(".carousel-inner").empty();
-                    $.each(data, function (index, value) {
-                        if (index == 0) {
-                            var imageHtml = "<div class='item active'><img src='" + value + "' alt='' class=''></div>";
-                        } else {
-                            var imageHtml = "<div class='item'><img src='" + value + "' alt='' class=''></div>";
-                        }
-                        $(".carousel-inner").append(imageHtml)
-                    });
-                }
-
-                function updateInfo(data) {
-                    $(".cinema-info").empty();
-                    $(".cinema-info").append('<p class="list-group-item-text">Addr: ' + data.CinemaAddress + '<br>Tel: ' + data.CinemaPhone + '</p>');
-                }
-
-                function loadCinemaInfo(cinemaId, source) {
-                    var target = $('.list-group-item');
-                    target.removeClass('active');
-                    $(source).addClass('active');
-
-                    $.post("/Cinemas/GetCinemaDetails", { cinemaId: cinemaId }, function (data) {
-                        updateInfo(data);
-                        updateImages(data.Images);
-                    }, 'json');
-                }
-
-            </script>
+            <!-- END TEMPLATE -->
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $(".carousel-inner").empty();
+        $(".cinema-info").empty();
+        $.post("/Cinemas/GetCinemaDetails", { cinemaId: 'CINE1' }, function (data) {
+            updateImages(data.Images);
+            updateInfo(data);
+        }, 'json');
+    });
+
+    function updateImages(data) {
+        $(".carousel-inner").empty();
+        $.each(data, function (index, value) {
+            if (index == 0) {
+                var imageHtml = "<div class='item active'><img src='" + value + "' alt='' class=''></div>";
+            } else {
+                var imageHtml = "<div class='item'><img src='" + value + "' alt='' class=''></div>";
+            }
+            $(".carousel-inner").append(imageHtml)
+        });
+    }
+
+    function updateInfo(data) {
+        $(".cinema-info").empty();
+        $(".cinema-info").append('<p class="list-group-item-text">Addr: ' + data.CinemaAddress + '<br>Tel: ' + data.CinemaPhone + '</p>');
+    }
+
+    function loadCinemaInfo(cinemaId, source) {
+        var target = $('.list-group-item');
+        target.removeClass('active');
+        $(source).addClass('active');
+
+        $.post("/Cinemas/GetCinemaDetails", { cinemaId: cinemaId }, function (data) {
+            updateInfo(data);
+            updateImages(data.Images);
+        }, 'json');
+    }
+
+</script>
+
