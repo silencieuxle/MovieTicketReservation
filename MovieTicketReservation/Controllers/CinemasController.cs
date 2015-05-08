@@ -26,14 +26,13 @@ namespace MovieTicketReservation.Controllers {
 
         public ActionResult GetCinemaDetails(string cinemaId) {
             var cinemaInfo = cinemaRepository.GetCinemaByID(cinemaId);
-            var cinemaImage = cinemaImageRepository.GetCinemaImagesByCinemaID(cinemaId).Select(x => x.ImageURL);
+            var cinemaImage = cinemaImageRepository.GetCinemaImagesByCinemaID(cinemaId).Select(x => x.ImageURL).ToList();
 
             var result = new {
                 CinemaName = cinemaInfo.Name,
                 CinemaAddress = cinemaInfo.Address,
                 CinemaPhone = cinemaInfo.Phone,
-                Images = JsonConvert.SerializeObject(cinemaImage)
-            };
+                Images = cinemaImage            };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }

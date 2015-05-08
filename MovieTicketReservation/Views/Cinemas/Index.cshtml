@@ -17,8 +17,8 @@
                         <i class="glyphicon glyphicon-chevron-right" style="color: #ff8000;"></i> Chọn rạp
                     </a>
                     @foreach (var item in Model) {
-                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaID" data-toggle="tab" 
-                            onclick="loadCinemaInfo('@item.CinemaID', this);">
+                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaID" data-toggle="tab"
+                           onclick="loadCinemaInfo('@item.CinemaID', this);">
                             <h5 class="list-group-item-heading">@item.Name</h5>
                         </a>
                     }
@@ -33,35 +33,19 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <div class="cinema-scheduler">
-                    <ul class="nav nav-tabs nav-justified" role="tablist" id="page-tab">
-                        <li role="presentation" class="active hidden-xs">
-                            <a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Hình ảnh</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#price" aria-controls="price" role="tab" data-toggle="tab">Giá vé</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content">
-                    <div class="tab-pane fade in active preview-img hidden-xs" role="tabpanel" id="preview">
-                        <div id="cineImage" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner" role="listbox">
-                                
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" role="tabpanel" id="price">
-                        ádas
-                    </div>
-                </div>
-            </div>
+                <div id="cineImage" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox">
 
+                    </div>
+                </div>
             <script>
                 $(document).ready(function () {
-                    $.post("/Cinema/GetCinemaDetails", { cinemaId: 'CINE1' }, function (data) {
-
-                    });
+                    $(".carousel-inner").empty();
+                    $(".cinema-info").empty();
+                    $.post("/Cinemas/GetCinemaDetails", { cinemaId: 'CINE1' }, function (data) {
+                        updateImages(data.Images);
+                        updateInfo(data);
+                    }, 'json');
                 });
 
                 function updateImages(data) {
@@ -76,8 +60,9 @@
                     });
                 }
 
-                function updateSchedule(data) {
-
+                function updateInfo(data) {
+                    $(".cinema-info").empty();
+                    $(".cinema-info").append('<p class="list-group-item-text">Addr: ' + data.CinemaAddress + '<br>Tel: ' + data.CinemaPhone + '</p>');
                 }
 
                 function loadCinemaInfo(cinemaId, source) {
@@ -85,10 +70,12 @@
                     target.removeClass('active');
                     $(source).addClass('active');
 
-                    $.post("/Cinema/GetCinemaDetails", { cinemaId: cinemaId }, function (data) {
-
-                    });
+                    $.post("/Cinemas/GetCinemaDetails", { cinemaId: cinemaId }, function (data) {
+                        updateInfo(data);
+                        updateImages(data.Images);
+                    }, 'json');
                 }
+
             </script>
         </div>
     </div>

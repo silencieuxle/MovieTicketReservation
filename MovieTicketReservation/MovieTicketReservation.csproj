@@ -52,6 +52,22 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ImageResizer, Version=3.4.3.103, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.3.4.3\lib\ImageResizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImageResizer.Mvc, Version=3.4.3.103, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.Mvc.3.4.3\lib\ImageResizer.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImageResizer.Plugins.DiskCache, Version=3.4.3.103, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.Plugins.DiskCache.3.4.3\lib\ImageResizer.Plugins.DiskCache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImageResizer.Plugins.PrettyGifs, Version=3.4.3.103, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.Plugins.PrettyGifs.3.4.3\lib\ImageResizer.Plugins.PrettyGifs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -307,6 +323,21 @@
     <Content Include="Content\Images\biggame_detailsimg.jpg" />
     <Content Include="Content\Images\chappie_detailsimg.jpg" />
     <Content Include="Content\Images\cinderella_detailsimg.png" />
+    <Content Include="Content\Images\cineND_1.png" />
+    <Content Include="Content\Images\cineND_2.png" />
+    <Content Include="Content\Images\cineND_3.png" />
+    <Content Include="Content\Images\cineND_4.jpg" />
+    <Content Include="Content\Images\cineND_5.jpg" />
+    <Content Include="Content\Images\cineNT_1.jpg" />
+    <Content Include="Content\Images\cineNT_2.png" />
+    <Content Include="Content\Images\cineNT_3.png" />
+    <Content Include="Content\Images\cineNT_4.png" />
+    <Content Include="Content\Images\cineNT_5.jpg" />
+    <Content Include="Content\Images\cineQT_1.jpg" />
+    <Content Include="Content\Images\cineQT_2.jpg" />
+    <Content Include="Content\Images\cineQT_3.jpg" />
+    <Content Include="Content\Images\cineQT_4.jpg" />
+    <Content Include="Content\Images\cineQT_5.jpg" />
     <Content Include="Content\Images\divergent_detailsimg.jpg" />
     <Content Include="Content\Images\exotic_detailsimg.png" />
     <Content Include="Content\Images\FF7_detailsimg.jpg" />

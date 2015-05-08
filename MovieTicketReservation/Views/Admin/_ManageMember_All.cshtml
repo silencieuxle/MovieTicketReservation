@@ -1,6 +1,5 @@
 ﻿@using MovieTicketReservation.Models
-@using PagedList.Mvc;
-@model PagedList.IPagedList<Member>
+@model List<Member>
 
 <h2>Tất cả thành viên</h2>
 <hr />
@@ -9,11 +8,12 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Mã thành viên</th>
-                <th>Email</th>
-                <th>CMND</th>
-                <th>Số điện thoại</th>
-                <th>Actions</th>
+                <th width="5%">ID</th>
+                <th width="30%">Email</th>
+                <th width="30%">Họ tên</th>
+                <th width="10%">CMND</th>
+                <th width="10%">Số điện thoại</th>
+                <th width="15%">Actions</th>
             </tr>
         </thead>
         <tbody id="result">
@@ -27,13 +27,29 @@
         <li class="next"><a href="#" id="btnNewer">Newer <span aria-hidden="true">&rarr;</span></a></li>
     </ul>
 </nav>
+<input type="hidden" value="0" id="currentIndex" />
 
 <script>
     $("#btnOlder").click(function (event) {
         event.preventDefault();
+        var currentIndex = $("currentIndex").val();
 
-        $.post("/Admin/AjaxGetMember", {}, function (data) {
+        $.post("/Admin/AjaxGetMember", {currentIndex: parseInt(currentIndex), type : 0 }, function (data) {
+            $("#result").empty();
+            $.each(data, function (index, value) {
 
+            });
+        });
+    });
+
+    $("#btnNewer").click(function (event) {
+        event.preventDefault();
+
+        $.post("/Admin/AjaxGetMember", { currentIndex: parseInt(currentIndex), type : 1 }, function (data) {
+            $("#result").empty();
+            $.each(data, function (index, value) {
+
+            });
         });
     });
 </script>

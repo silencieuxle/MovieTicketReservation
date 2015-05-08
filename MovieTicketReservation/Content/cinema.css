@@ -7,7 +7,7 @@
     font-size: 12px;
 }
 
-.preview-img * {
+.carousel-inner div.item {
     overflow: hidden;
 }
 
