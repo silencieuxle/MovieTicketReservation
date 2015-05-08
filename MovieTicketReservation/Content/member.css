@@ -1,0 +1,36 @@
+﻿.no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+    .no-padding:first-of-type {
+        padding-right: 10px !important;
+    }
+
+.member-nav li a {
+    text-align: center;
+    list-style-type: none;
+    background-color: #EEEEEE;
+}
+
+    .member-nav li a:hover {
+        background-color: #337AB7;
+        color: white;
+    }
+
+.btn-file {
+    border-radius: 4px !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    text-align: center;
+    list-style-type: none;
+    background-color: #EEEEEE;
+    border: none;
+    color: #337ab7;
+}
+
+    .btn-file:hover {
+        background-color: #337AB7;
+        color: white;
+    }
