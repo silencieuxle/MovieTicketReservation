@@ -9,6 +9,8 @@ using MovieTicketReservation.Services.MovieService;
 using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.ScheduleService;
 using MovieTicketReservation.Services.ShowtimeService;
+using MovieTicketReservation.App_Code;
+using MovieTicketReservation.ViewModels;
 
 namespace MovieTicketReservation.Controllers {
     public class AdminController : Controller {
@@ -74,14 +76,51 @@ namespace MovieTicketReservation.Controllers {
 
         #region Member Management
 
-        public ActionResult AjaxGetMember(int currentIndex, int type) {
+        public ActionResult AjaxGetMembers(int headIndex, int type) {
             var result = memberRepository.GetAllMembers();
+            int index = 0;
             switch (type) {
-                case 0: break;
-                case 1: break;
-                default: break;
+                case 0:
+                    result = result.Skip(headIndex - 10).Take(10).ToList();
+                    index = headIndex -10;
+                    break;
+                case 1:
+                    result = result.Skip(headIndex + 10).Take(10).ToList();
+                    index = headIndex - 10;
+                    break;
+                default:
+                    result = result.Skip(headIndex).Take(10).ToList();
+                    index = headIndex;
+                    break;
             }
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(new { Data = result, HeadIndex = index }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UpdateMember(Member member) {
+            return null;
+        }
+
+        public ActionResult AjaxAddMember(UserRegisterModel userRegisterModel) {
+            if (!ModelState.IsValid) return Json(new { Success = false, ErrorMessage = "Model state is invalid" });
+            var userDuplicated = memberRepository.IsIdCardExisted(userRegisterModel.IdCardNumber);
+            if (userDuplicated) {
+                ModelState.AddModelError("IdCardNumber", "SỐ chứng minh nhân dân này đã được sử dụng.");
+                return View(userRegisterModel);
+            }
+            var result = memberRepository.InsertMember(new Member {
+                Address = userRegisterModel.Address,
+                AvatarURL = null,
+                Birthday = userRegisterModel.BirthDay,
+                Email = userRegisterModel.Email,
+                Firstname = userRegisterModel.FirstName,
+                Gender = userRegisterModel.Gender,
+                IDCardNumber = userRegisterModel.IdCardNumber,
+                Lastname = userRegisterModel.LastName,
+                Password = Helper.GenerateSHA1String(userRegisterModel.Password),
+                Phone = userRegisterModel.Phone,
+                RoleID = 4
+            });
+            return Json(new { Success = result, ErrorMessage = result ? "" : "Error occured while process your request." }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

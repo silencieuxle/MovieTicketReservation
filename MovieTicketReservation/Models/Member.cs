@@ -7,31 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MovieTicketReservation.Models
-{
+namespace MovieTicketReservation.Models {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    
-    public partial class Member
-    {
-        public Member()
-        {
+
+    public partial class Member {
+        public Member() {
             this.BookingHeaders = new HashSet<BookingHeader>();
         }
 
         public int MemberID { get; set; }
 
-        [Display(Name = "Số CMND")]
-        [Required]
-        [StringLength(9, MinimumLength = 9, ErrorMessage = "Số chứng minh nhân dân phải có 9 chữ số")]
+        [Display(Name = "Chứng minh nhân dân")]
+        [RegularExpression("\\d{9}", ErrorMessage = "Số CMND không đúng định dạng")]
+        [Required(ErrorMessage = "Bạn phải nhập số CMND.")]
         public string IDCardNumber { get; set; }
 
-        [Display(Name="Tên")]
+        [Display(Name = "Tên")]
         [Required]
         public string Firstname { get; set; }
 
-        [Display(Name="Họ")]
+        [Display(Name = "Họ")]
         [Required]
         public string Lastname { get; set; }
 
@@ -41,12 +38,13 @@ namespace MovieTicketReservation.Models
         public string Email { get; set; }
 
         [Display(Name = "Mật khẩu")]
-        [DataType(DataType.Password, ErrorMessage = "Sai mật khẩu")]
+        [MinLength(9, ErrorMessage = "Mật khẩu phải dài hơn hoặc bằng 9 kí tự")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Display(Name = "Số điện thoại")]
-        [Required]
-        [RegularExpression("^[0]d{9,10}$", ErrorMessage = "Số điện thoại không đúng định dạng")]
+        [RegularExpression("^[0]\\d{9,10}$", ErrorMessage = "Số điện thoại không đúng định dạng")]
+        [Required(ErrorMessage = "Bạn phải nhập số điện thoại.")]
         public string Phone { get; set; }
 
         [Display(Name = "Địa chỉ")]
@@ -64,9 +62,10 @@ namespace MovieTicketReservation.Models
         [Required]
         [DataType(DataType.DateTime)]
         [Range(typeof(DateTime), "1/1/1920", "1/1/2005")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public Nullable<System.DateTime> Birthday { get; set; }
         public string AvatarURL { get; set; }
-    
+
         public virtual ICollection<BookingHeader> BookingHeaders { get; set; }
         public virtual Role Role { get; set; }
     }

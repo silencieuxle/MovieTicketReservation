@@ -69,3 +69,4 @@
 /// <reference path="raphael.min.js" />
 /// <reference path="morris.min.js" />
 /// <reference path="excanvas.min.js" />
+/// <reference path="jquery.signalr-2.2.0.min.js" />

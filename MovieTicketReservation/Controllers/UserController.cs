@@ -61,24 +61,23 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult Register(UserRegisterModel userRegisterModel) {
             if (!ModelState.IsValid) return View(userRegisterModel);
-            string firstName = userRegisterModel.FirstName;
-            string lastName = userRegisterModel.LastName;
-            string idCardNumber = userRegisterModel.IdCardNumber;
-            string email = userRegisterModel.Email;
-            string password = userRegisterModel.Password;
-            string phone = userRegisterModel.Phone;
-            string address = userRegisterModel.Address;
-
-            var userDuplicated = memberRepository.IsIdCardExisted(idCardNumber);
-            if (userDuplicated) return View("DuplicateIDCard");
+            var userDuplicated = memberRepository.IsIdCardExisted(userRegisterModel.IdCardNumber);
+            if (userDuplicated) {
+                ModelState.AddModelError("IdCardNumber", "SỐ chứng minh nhân dân này đã được sử dụng.");
+                return View(userRegisterModel); 
+            }
             var user = new Member {
-                Firstname = firstName,
-                Lastname = lastName,
-                IDCardNumber = idCardNumber,
-                Email = email,
-                Phone = phone,
-                Password = Helper.GenerateSHA1String(password),
-                Address = address
+                Firstname = userRegisterModel.FirstName,
+                Lastname = userRegisterModel.LastName,
+                IDCardNumber = userRegisterModel.IdCardNumber,
+                Email = userRegisterModel.Email,
+                Phone = userRegisterModel.Phone,
+                Password = Helper.GenerateSHA1String(userRegisterModel.Password),
+                Address = userRegisterModel.Address,
+                Gender = userRegisterModel.Gender,
+                Birthday = userRegisterModel.BirthDay,
+                AvatarURL = null,
+                RoleID = 4
             };
             if (memberRepository.InsertMember(user)) {
                 return View("RegisterSucceeded");
@@ -91,7 +90,7 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult UpdateProfile(Member member) {
             if (!ModelState.IsValid) return View(member);
             memberRepository.UpdateMember(member);
-            return View("Index");
+            return View("/User/");
         }
 
         #region Ajax methods
@@ -116,6 +115,8 @@ namespace MovieTicketReservation.Controllers {
                 return Json(new { Success = true, ErrorMessage = "" });
             return Json(new { Success = false, ErrorMessage = "Sai thông tin đăng nhập." });
         }
+
+        [HttpPost]
 
         #endregion
 

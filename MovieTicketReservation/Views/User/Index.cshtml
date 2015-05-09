@@ -20,12 +20,12 @@
                 <h2 class="separator">Thông tin thành viên</h2>
                 <div class="col-sm-4">
                     <div class="avatar-container">
-                        <img src="@Model.AvatarURL" class="img img-responsive" alt="Image" />
+                        <img src="@Model.AvatarURL" class="img img-responsive avatar" height="96" width="96" alt="Image" />
                         <ul class="nav nav-pills nav-stacked member-nav">
                             <li>
                                 <div class="btn btn-primary btn-file">
                                     <i class="glyphicon glyphicon-folder-open"></i>
-                                    &nbsp;Browse … <input id="btnUploadImage" type="file" multiple="true" class="">
+                                    &nbsp;Browse … <input id="btnUploadImage" type="file" class="">
                                 </div>
                             </li>
                             <li><a href="/Ticket/">Lịch sử giao dịch</a></li>
@@ -50,22 +50,6 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
-                            <script>
-                                $("#btnChangeName").click(function () {
-                                    var target = $(this);
-                                    switch (target.val()) {
-                                        case "Lưu":
-                                            $(".memberName input[type=text]").prop("disabled", true);
-                                            target.val("Chỉnh sửa");
-                                            break;
-                                        case "Chỉnh sửa":
-                                            $(".memberName input[type=text]").prop("disabled", false);
-                                            target.val("Lưu");
-                                            break;
-                                        default: alert("Invalid action");
-                                    }
-                                });
-                            </script>
                         </div>
                         <br />
                         <div class="loginInfo">
@@ -121,8 +105,8 @@
                                 @Html.DropDownListFor(model => model.Gender,
                                     new SelectList(
                                         new List<object> {
-                                            new {value = 0, text = "Nữ" },
-                                            new {value = 1, text = "Nam"}
+                                            new {value = false, text = "Nữ" },
+                                            new {value = true, text = "Nam"}
                                         },
                                         "value",
                                         "text"
@@ -132,7 +116,7 @@
                             </div>
                             <div class="form-group">
                                 @Html.Label("Ngày sinh")
-                                @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker" })
+                                @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
                             </div>
                             <div class="form-group">
                                 <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
@@ -140,38 +124,53 @@
                             <div class="col-sm-12 no-padding">
                                 <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
                             </div>
-                            <script>
-                                $("#btnChangeIdentityInfo").click(function () {
-                                    var target = $(this);
-                                    switch (target.val()) {
-                                        case "Lưu":
-                                            $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", true);
-                                            target.val("Chỉnh sửa");
-                                            break;
-                                        case "Chỉnh sửa":
-                                            $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", false);
-                                            target.val("Lưu");
-                                            break;
-                                        default: alert("Invalid action");
-                                    }
-                                });
-                            </script>
                         </div>
                     }
                 </div>
                 <script>
-                    $("#date-picker").datepicker({});
+                    $("#date-picker").datepicker({
+                        format: 'mm/dd/yyyy',
+                        language: 'vi'
+                    });
+
+                    $("#btnChangeName").click(function () {
+                        var target = $(this);
+                        switch (target.val()) {
+                            case "Lưu":
+                                $(".memberName input[type=text]").prop("disabled", true);
+                                target.val("Chỉnh sửa");
+                                var firstName = $("#Firstname").val();
+                                var lastName = $("#Lastname").val();
+
+                                if (firstName != "" && lastName != "") return true;
+                                return false;
+                            case "Chỉnh sửa":
+                                $(".memberName input[type=text]").prop("disabled", false);
+                                target.val("Lưu");
+                                break;
+                            default: alert("Invalid action");
+                        }
+                    });
+
+                    $("#btnChangeIdentityInfo").click(function () {
+                        var target = $(this);
+                        switch (target.val()) {
+                            case "Lưu":
+                                $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", true);
+                                target.val("Chỉnh sửa");
+                                break;
+                            case "Chỉnh sửa":
+                                $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", false);
+                                target.val("Lưu");
+                                break;
+                            default: alert("Invalid action");
+                        }
+                    });
 
                     $(document).ready(function () {
                         $(".frmMember input[type=text]").prop('disabled', true);
                         $("select").prop('disabled', true);
                         $("#frmChangePassword").hide();
-                    });
-
-                    $("#btnChangeInfo").click(function (event) {
-                        $(".frmMember input[type=text]").prop('disabled', false);
-                        $("#btnChangePassword").prop('disabled', false);
-                        $("#btnSave").removeClass("hidden");
                     });
 
                     $("#btnChangeAvatar").click(function (event) {
@@ -183,13 +182,12 @@
                     });
 
                     $("#btnConfirmPasswordChange").click(function () {
+                        //var oldPassword = $("#txtOldPassword").val();
+                        //alert(data.Message);
                         $("#frmChangePassword").slideUp('slow')
                     });
 
                     $("#btnCancelPasswordChange").click(function () {
-                        var oldPassword = $("#txtOldPassword").val();
-
-                        alert(data.Message);
                         $("#frmChangePassword").slideUp('slow')
                     });
 
