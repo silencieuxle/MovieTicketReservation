@@ -26,6 +26,12 @@
     background: url("/Content/Images/b1.png") repeat scroll 0% 0% #F8F8F8;
     box-shadow: 2px 0px 5px 0px #808080;
 }
+.cn4u-box-scheduler {
+    position: relative;
+    background: url("/Content/Images/b1.png") repeat scroll 0% 0% #F8F8F8;
+    box-shadow: 2px 0px 5px 0px #808080;
+    margin-top:30px;
+}
 .cn4u-content {
     padding: 15px 30px;
     box-shadow: 2px 2px 3px 0px #808080;
