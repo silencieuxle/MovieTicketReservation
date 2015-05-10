@@ -32,7 +32,7 @@ namespace MovieTicketReservation.Controllers {
             return View();
         }
 
-        public ActionResult GetPage(string page, string[] parameters) {
+        public ActionResult GetPage(string page, string param) {
             switch (page) {
                 case "moviestats_overall":
                     return PartialView("_MovieStats_Overall");
@@ -59,11 +59,11 @@ namespace MovieTicketReservation.Controllers {
                 case "manageschedule_edit":
                     return PartialView("_ManageSchedule_Edit");
                 case "mamangemember_all":
-                    return PartialView("_ManageMember_All", memberRepository.GetAllMembers());
+                    return PartialView("_ManageMember_All");
                 case "managemember_add":
                     return PartialView("_ManageMember_Add");
                 case "managemember_edit":
-                    return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(parameters[0])));
+                    return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(param)));
                 case "promotion_all":
                     return PartialView("_Promotion_All");
                 case "promotion_add":
@@ -82,22 +82,36 @@ namespace MovieTicketReservation.Controllers {
             switch (type) {
                 case 0:
                     result = result.Skip(headIndex - 10).Take(10).ToList();
-                    index = headIndex -10;
+                    index = headIndex - 10;
                     break;
                 case 1:
                     result = result.Skip(headIndex + 10).Take(10).ToList();
-                    index = headIndex - 10;
+                    index = headIndex + 10;
                     break;
                 default:
-                    result = result.Skip(headIndex).Take(10).ToList();
+                    result = result.Take(10).ToList();
                     index = headIndex;
                     break;
             }
-            return Json(new { Data = result, HeadIndex = index }, JsonRequestBehavior.AllowGet);
+            return Json(new {
+                Data = result.Select(r => new { MemberID = r.MemberID, Email = r.Email, Fullname = r.Lastname + " " + r.Firstname, IDCardNumber = r.IDCardNumber, Phone = r.Phone }),
+                HeadIndex = index
+            }, JsonRequestBehavior.AllowGet);
         }
 
+
+        public ActionResult UpdateMember(int memberId) {
+            var result = memberRepository.GetMemberByID(memberId);
+            return PartialView("_ManageMember_Edit", result);
+        }
+
+        [HttpPost]
         public ActionResult UpdateMember(Member member) {
-            return null;
+            if (ModelState.IsValid) {
+                if (memberRepository.UpdateMember(member))
+                    return Json(new { Success = true, ErrorMessage = "" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Success = false, ErrorMessage = "Cannot update member with provided member ID" }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxAddMember(UserRegisterModel userRegisterModel) {
