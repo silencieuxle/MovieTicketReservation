@@ -642,11 +642,11 @@
     <Content Include="Views\Shared\_HotMoviesSliderTemplate.cshtml" />
     <Content Include="Views\News\_TagsTemplate.cshtml" />
     <Content Include="Views\News\_NewsTemplate.cshtml" />
-    <Content Include="Views\Ticket\Error.cshtml" />
     <Content Include="Views\Schedule\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Hub\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

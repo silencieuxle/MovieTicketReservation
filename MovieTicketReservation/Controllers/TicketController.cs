@@ -194,12 +194,12 @@ namespace MovieTicketReservation.Controllers {
             foreach (var seat in seats) {
                 var seatShowDetails = seatShowRepository.GetDetailsBySeatID(seat);
                 if (seatShowDetails == null) return -1;
+                if ((bool)seatShowDetails.Reserved) return -2;
                 seatShowDetails.Reserved = true;
                 seatShowDetails.Paid = false;
                 seatShowDetails.BookingHeaderID = bookingHeaderId;
                 seatShowRepository.UpdateSeat(seatShowDetails);
             }
-
             return totalSeat;
         }
 
