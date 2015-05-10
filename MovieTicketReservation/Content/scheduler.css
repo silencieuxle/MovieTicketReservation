@@ -21,3 +21,40 @@
 .schedule-detail > table > td {
 	
 }
+.cn4u-box {
+    position: relative;
+    background: url("/Content/Images/b1.png") repeat scroll 0% 0% #F8F8F8;
+    box-shadow: 2px 0px 5px 0px #808080;
+}
+.cn4u-content {
+    padding: 15px 30px;
+    box-shadow: 2px 2px 3px 0px #808080;
+    color:#000000;
+}
+.cn4u-title {
+    border-width: 1px 1px 0px;
+    border-style: solid solid none;
+    border-color: #F8F8F8 #F8F8F8 -moz-use-text-color;
+    -moz-border-top-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    border-image: none;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #FF8000;
+    line-height: 40px;
+    height: 40px;
+    padding-left: 50px;
+    background: url("/Content/Images/7-2.png") no-repeat scroll 30px center #EBEBEB;
+}
+.cn4u-content > .item:hover {
+    color: #FFAC0A;
+}
+.cn4u-content > .item {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding-left: 50px;
+    min-height: 30px;
+    background: url("/Content/Images/check.png") no-repeat scroll left center transparent;
+}
