@@ -9,35 +9,7 @@
     <div class="container">
         <div class="row">
             <!-- BEGIN TEMPLATE -->
-            <div class="col-sm-4">
-                <div class="list-group cinema-selector">
-                    <a class="list-group-item disabled" data-toggle="collapse" href="#collapseExample">
-                        <i class="glyphicon glyphicon-chevron-right" style="color: #ff8000;"></i> Chọn rạp
-                    </a>
-                    @foreach (var item in Model)
-                    {
-                        <a href="#" class="list-group-item list-group-item-success" role="tab" data-id="@item.CinemaID" data-toggle="tab"
-                           onclick="loadCinemaInfo('@item.CinemaID', this);">
-                            <h5 class="list-group-item-heading">@item.Name</h5>
-                        </a>
-                    }
-                </div>
-                <div class="cinema-info hidden-xs">
-                    <!-- get data from server by cinema id and display here -->
-                    <p class="list-group-item-text">Addr: 230 Nguyễn Trãi, Quận 1, TP.HCM.<br>Tel: (08) 3920 6688</p>
-                    <p class="list-group-item-text">Addr: 116 Nguyễn Du, Quận 1, TP.HCM.<br>Tel: (08) 3823 5235</p>
-                    <p class="list-group-item-text">Addr: 246 Nguyễn Hồng Đào, Quận Tân Bình, TP.HCM.<br>Tel: (08) 3849 4567</p>
-                    <p class="list-group-item-text">Addr: 718Bis Kinh Dương Vương, Quận 6, TP.HCM.<br>Tel: (08) 3817 2398</p>
-                    <p class="list-group-item-text">Addr: 304A Quang Trung, Quận Gò Vấp, TP.HCM.<br>Tel: (08)35.897.899</p>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div id="cineImage" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner" role="listbox">
-                    </div>
-                </div>
-            </div>
-
+            
             <!-- END TEMPLATE -->
         </div>
     </div>
