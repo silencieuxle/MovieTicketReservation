@@ -75,9 +75,11 @@ select, input[type="text"] {
 
 .footer {
     border-top: 1px solid orange;
-    background-color: rgba(42,52,62, 0.9);
+    background: url("/Content/Images/footer-bg.jpg") repeat-x bottom center #212121;
     color: white;
-    padding-top: 25px;
+    padding-top: 40px;
+    padding-bottom: 100px;
+    height:auto;
 }
 
 .footer-col-header {
@@ -204,4 +206,35 @@ form[role="search"] {
 
 .carousel.vertical .active.right {
 	top: 100%;
+}
+.footer-list {
+    padding: 0px;
+    margin: 0px;
+    list-style: outside none none;
+    text-align: left;
+}
+.footer-list .item:hover {
+    color: #FF6F00;
+    text-decoration: none;
+}
+.footer-list .item {
+    text-align: left;
+    white-space: nowrap;
+    display: inline-block;
+    color: #FFF;
+    cursor: pointer;
+    line-height: 22px;
+    font-size: 14px;
+    padding-right: 12px;
+    text-transform: uppercase;
+    background: url("/Content/Images/10-2.png") no-repeat scroll left center transparent;
+}
+.footer .info1, .footer .info2 {
+   
+    font-size: 14px;
+    min-height: 171px;
+    padding: 16px 18px 10px;
+    background: none repeat scroll 0px 0px #333;
+    border: 1px solid #3D3D3D;
+    color: #5F5F5F;
 }

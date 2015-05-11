@@ -351,6 +351,7 @@
     <Content Include="Content\Images\divergent_detailsimg.jpg" />
     <Content Include="Content\Images\exotic_detailsimg.png" />
     <Content Include="Content\Images\FF7_detailsimg.jpg" />
+    <Content Include="Content\Images\footer-bg.jpg" />
     <Content Include="Content\Images\general-avatar.png" />
     <Content Include="Content\Images\general-movie-details.jpg" />
     <Content Include="Content\Images\general-movie-poster.jpg" />
