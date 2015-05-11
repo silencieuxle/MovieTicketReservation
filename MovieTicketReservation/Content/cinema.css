@@ -79,3 +79,44 @@
     -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
+.cinema-items {
+    padding: 0px;
+    margin: 0px;
+    list-style: outside none none;
+    text-align: right;
+}
+.cinema-items .item:hover {
+    color: #680F10;
+    text-decoration: none;
+}
+.cinema-items .item {
+    text-align: left;
+    white-space: nowrap;
+    display: inline-block;
+    color: #FFF;
+    cursor: pointer;
+    line-height: 22px;
+    font-size: 14px;
+    padding-right: 12px;
+    text-transform: uppercase;
+    background: url("/Content/Images/10-2.png") no-repeat scroll right center transparent;
+}
+.cinema-title {
+    line-height: 33px;
+    font-size: 27px;
+    font-style: italic;
+    text-transform: uppercase;
+    text-align:right;
+}
+.cinema-desc {
+    margin-bottom: 10px;
+    text-align:right;
+    border-bottom: inset;
+}
+.break-line {
+     margin-top: 355px;
+    margin-bottom: 30px;
+    height: 3px;
+    background: url("/Content/Images/r2.png") repeat-x scroll 0% 0% transparent;
+    width: 100%;
+}

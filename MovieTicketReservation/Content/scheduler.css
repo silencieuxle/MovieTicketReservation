@@ -64,3 +64,8 @@
     min-height: 30px;
     background: url("/Content/Images/check.png") no-repeat scroll left center transparent;
 }
+.cn4u-content > .item.checked {
+    color: #FF5C00;
+    font-weight: bold;
+    background: url("/Content/Images/checked.png") no-repeat scroll left center transparent;
+}

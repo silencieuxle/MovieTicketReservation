@@ -320,6 +320,9 @@
     <Content Include="Content\film_details.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\admin.css" />
+    <Content Include="Content\Images\10-2.png" />
+    <Content Include="Content\Images\2D_KDV.jpg" />
+    <Content Include="Content\Images\3D_KDV.jpg" />
     <Content Include="Content\Images\7-2.png" />
     <Content Include="Content\Images\avatar.jpg" />
     <Content Include="Content\Images\avenger_detailsimg.jpg" />
@@ -367,6 +370,8 @@
     <Content Include="Content\Images\minions_mov.jpg" />
     <Content Include="Content\Images\paulblart_detailsimg.jpg" />
     <Content Include="Content\Images\paulblart_mov.jpg" />
+    <Content Include="Content\Images\r2.png" />
+    <Content Include="Content\Images\Rap1.jpg" />
     <Content Include="Content\Images\runallnight_detailsimg.jpg" />
     <Content Include="Content\Images\screen.png" />
     <Content Include="Content\Images\availseat.png" />
