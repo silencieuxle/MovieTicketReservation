@@ -1,55 +1,90 @@
-﻿@using MovieTicketReservation.Models
-@model List<Member>
-
-<h2>Tất cả thành viên</h2>
-<hr />
-
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th width="5%">ID</th>
-                <th width="30%">Email</th>
-                <th width="30%">Họ tên</th>
-                <th width="10%">CMND</th>
-                <th width="10%">Số điện thoại</th>
-                <th width="15%">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="result">
-            <!-- Row template  -->
-        </tbody>
-    </table>
+﻿<div class="col-sm-12">
+    <h2 class="separator">Tất cả thành viên</h2>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="30%">Email</th>
+                    <th width="25%">Họ tên</th>
+                    <th width="10%">CMND</th>
+                    <th width="15%">Số điện thoại</th>
+                    <th width="15%">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="result">
+                <!-- Row template  -->
+            </tbody>
+        </table>
+    </div>
+    <nav>
+        <ul class="pager">
+            <li class="previous"><a href="#" class="btnNav" data-type="0"><span aria-hidden="true">&larr;</span> Older</a></li>
+            <li class="next"><a href="#" class="btnNav" data-type="1">Newer <span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
+    <input type="hidden" value="0" id="headIndex" />
 </div>
-<nav>
-    <ul class="pager">
-        <li class="previous"><a href="#" id="btnOlder"><span aria-hidden="true">&larr;</span> Older</a></li>
-        <li class="next"><a href="#" id="btnNewer">Newer <span aria-hidden="true">&rarr;</span></a></li>
-    </ul>
-</nav>
-<input type="hidden" value="0" id="currentIndex" />
 
 <script>
-    $("#btnOlder").click(function (event) {
+    $.post("/Admin/AjaxGetMembers", { headIndex: 0, type: -1 }, function (data) {
+        $("#result").empty();
+        updateTable(data.Data);
+        $("#headIndex").val = data.HeadIndex
+    });
+
+    $(".btnNav").click(function (event) {
         event.preventDefault();
-        var currentIndex = $("currentIndex").val();
 
-        $.post("/Admin/AjaxGetMember", {currentIndex: parseInt(currentIndex), type : 0 }, function (data) {
+        var headIndex = $("#headIndex").val();
+        var type = $(this).attr("data-type");
+        if (type == 0 && headIndex == 0) return false;
+
+        $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
             $("#result").empty();
-            $.each(data, function (index, value) {
-
-            });
+            updateTable(data.Data);
+            $("#headIndex").val(data.HeadIndex);
         });
     });
 
-    $("#btnNewer").click(function (event) {
+    $(".btnDeleteMember").click(function (event) {
         event.preventDefault();
-
-        $.post("/Admin/AjaxGetMember", { currentIndex: parseInt(currentIndex), type : 1 }, function (data) {
-            $("#result").empty();
-            $.each(data, function (index, value) {
-
-            });
+        if (!confirm("Bạn thật sự muốn xoá thành viên này?")) { return false; }
+        var id = $(this).attr("data-id");
+        $.post("/Admin/AjaxDeleteMember", { memberId: id }, function (data) {
+            if (data.Success == true) {
+                alert("Đã xoá thành viên!");
+                $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+                    updateTable(data.Data);
+                    $("#headIndex").val(data.HeadIndex);
+                });
+            } else {
+                alert("Không thể xoá thành viên!");
+            }
         });
     });
+
+    $(".btnEditMember").click(function (event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $.get("/Admin/GetPage", { page: 'managemember_edit', memberId: id }, function (htmlResponse) {
+            $("#main_content").html(htmlResponse);
+        });
+    });
+
+    function updateTable(data) {
+        $("#result").empty();
+        $.each(data, function (index, value) {
+            var htmlString =
+                "<tr>" +
+                    "<td>" + value.MemberID + "</td>" +
+                    "<td>" + value.Email + "</td>" +
+                    "<td>" + value.Fullname + "</td>" +
+                    "<td>" + value.IDCardNumber + "</td>" +
+                    "<td>" + value.Phone + "</td>" +
+                    "<td><a href='#' class='btnEditMember' data-id='" + value.MemberID + "'>Sửa</a> | <a href='#' class='btnDeleteMember' data-id='" + value.MemberID + "'>Xoá</a></td>";
+            "</tr>";
+            $("#result").append(htmlString);
+        });
+    }
 </script>
