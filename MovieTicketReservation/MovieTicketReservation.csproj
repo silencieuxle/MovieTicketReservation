@@ -310,6 +310,7 @@
     <Compile Include="Services\IMemberRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\about.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\dataTables.responsive.css" />
@@ -333,6 +334,7 @@
     <Content Include="Content\Images\check.png" />
     <Content Include="Content\Images\checked.png" />
     <Content Include="Content\Images\cinderella_detailsimg.png" />
+    <Content Include="Content\Images\cinema_neon.jpg" />
     <Content Include="Content\Images\cineND_1.png" />
     <Content Include="Content\Images\cineND_2.png" />
     <Content Include="Content\Images\cineND_3.png" />
@@ -376,6 +378,9 @@
     <Content Include="Content\Images\paulblart_mov.jpg" />
     <Content Include="Content\Images\r2.png" />
     <Content Include="Content\Images\Rap1.jpg" />
+    <Content Include="Content\Images\Rap2.jpg" />
+    <Content Include="Content\Images\Rap3.jpg" />
+    <Content Include="Content\Images\Rap5.jpg" />
     <Content Include="Content\Images\runallnight_detailsimg.jpg" />
     <Content Include="Content\Images\screen.png" />
     <Content Include="Content\Images\availseat.png" />
