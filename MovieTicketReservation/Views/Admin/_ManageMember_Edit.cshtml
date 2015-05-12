@@ -1,76 +1,77 @@
 ﻿@using MovieTicketReservation.Models
 @model Member
 
-<h2 class="separator">Thông tin thành viên</h2>
-@using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember" })) {
-    <h4>Thông tin cơ bản</h4>
-    <hr />
-    @Html.Label("Họ tên")
-    <div class="memberName">
-        <div class="col-sm-6 no-padding">
-            <div class="form-group">
-                @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="col-sm-6 no-padding">
-            <div class="form-group">
-                @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
-    </div>
-    <br />
-    <div class="loginInfo">
-        <h4>Thông tin đăng nhập</h4>
+<div class="col-sm-8 col-sm-8-push-2">
+    <h2 class="separator">Thông tin thành viên</h2>
+    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember" })) {
+        <h4>Thông tin cơ bản</h4>
         <hr />
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email)
-            @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
-        </div>
-        @Html.Label("Mật khẩu")
-        <div class="password">
-            <div class="input-group">
-                @Html.TextBox("txtPassword", "*********", new { disabled = "disabled", @class = "form-control" })
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" id="btnChangePassword" type="button">Đổi mật khẩu</button>
-                </span>
+        @Html.Label("Họ tên")
+        <div class="memberName">
+            <div class="col-sm-6 no-padding">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                </div>
             </div>
-            <div class="" id="frmChangePassword">
-                <fieldset>
-                    <legend class="separator"></legend>
-                    @Html.TextBox("txtOldPassword", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu cũ", type = "password" })
-                    <br />
-                    @Html.TextBox("txtNewPassword1", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu mới", type = "password" })
-                    <br />
-                    @Html.TextBox("txtNewPassword2", null, htmlAttributes: new { @class = "form-control", placeholder = "Nhập lại mật khẩu mới", type = "password" })
-                    <br />
-                    <span style="float: right">
-                        <button type="button" id="btnConfirmPasswordChange" class="btn btn-success">Đổi</button>
-                        <button type="button" id="btnCancelPasswordChange" class="btn btn-danger">Huỷ</button>
+            <div class="col-sm-6 no-padding">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
+        </div>
+        <br />
+        <div class="loginInfo">
+            <h4>Thông tin đăng nhập</h4>
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+            </div>
+            @Html.Label("Mật khẩu")
+            <div class="password">
+                <div class="input-group">
+                    @Html.TextBox("txtPassword", "*********", new { disabled = "disabled", @class = "form-control" })
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" id="btnChangePassword" type="button">Đổi mật khẩu</button>
                     </span>
-                </fieldset>
+                </div>
+                <div class="" id="frmChangePassword">
+                    <fieldset>
+                        <legend class="separator"></legend>
+                        @Html.TextBox("txtOldPassword", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu cũ", type = "password" })
+                        <br />
+                        @Html.TextBox("txtNewPassword1", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu mới", type = "password" })
+                        <br />
+                        @Html.TextBox("txtNewPassword2", null, htmlAttributes: new { @class = "form-control", placeholder = "Nhập lại mật khẩu mới", type = "password" })
+                        <br />
+                        <span style="float: right">
+                            <button type="button" id="btnConfirmPasswordChange" class="btn btn-success">Đổi</button>
+                            <button type="button" id="btnCancelPasswordChange" class="btn btn-danger">Huỷ</button>
+                        </span>
+                    </fieldset>
+                </div>
             </div>
         </div>
-    </div>
-    <br />
-    <div class="identifyInfo">
-        <h4>Thông tin xác thực</h4>
-        <hr />
-        <div class="form-group">
-            @Html.Label("Số CMND")
-            @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
-        </div>
-        <div class="form-group">
-            @Html.Label("Địa chỉ")
-            @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
-        </div>
-        <div class="form-group">
-            @Html.Label("Số điện thoại")
-            @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
-        </div>
-        <div class="form-group">
-            @Html.Label("Giới tính")
-            @Html.DropDownListFor(model => model.Gender,
+        <br />
+        <div class="identifyInfo">
+            <h4>Thông tin xác thực</h4>
+            <hr />
+            <div class="form-group">
+                @Html.Label("Số CMND")
+                @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Địa chỉ")
+                @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Số điện thoại")
+                @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Giới tính")
+                @Html.DropDownListFor(model => model.Gender,
                                     new SelectList(
                                         new List<object> {
                                             new {value = false, text = "Nữ" },
@@ -81,16 +82,17 @@
                                     ),
                                     htmlAttributes: new { @class = "form-control" }
                                 )
+            </div>
+            <div class="form-group">
+                @Html.Label("Ngày sinh")
+                @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
+            </div>
+            <div class="form-group">
+                <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
+            </div>
+            <div class="col-sm-12 no-padding">
+                <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
+            </div>
         </div>
-        <div class="form-group">
-            @Html.Label("Ngày sinh")
-            @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
-        </div>
-        <div class="form-group">
-            <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
-        </div>
-        <div class="col-sm-12 no-padding">
-            <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
-        </div>
-    </div>
-}
+    }
+</div>

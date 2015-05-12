@@ -33,7 +33,7 @@
         $("#headIndex").val = data.HeadIndex
     });
 
-    $(".btnNav").click(function (event) {
+    $(document).on("click", ".btnNav", function (event) {
         event.preventDefault();
 
         var headIndex = $("#headIndex").val();
@@ -47,7 +47,7 @@
         });
     });
 
-    $(".btnDeleteMember").click(function (event) {
+    $(document).on("click", ".btnDeleteMember", function (event) {
         event.preventDefault();
         if (!confirm("Bạn thật sự muốn xoá thành viên này?")) { return false; }
         var id = $(this).attr("data-id");
@@ -59,15 +59,15 @@
                     $("#headIndex").val(data.HeadIndex);
                 });
             } else {
-                alert("Không thể xoá thành viên!");
+                alert(data.ErrorMessage);
             }
         });
     });
 
-    $(".btnEditMember").click(function (event) {
+    $(document).on("click", ".btnEditMember", function (event) {
         event.preventDefault();
         var id = $(this).attr("data-id");
-        $.get("/Admin/GetPage", { page: 'managemember_edit', memberId: id }, function (htmlResponse) {
+        $.get("/Admin/GetPage", { page: 'managemember_edit', param : id }, function (htmlResponse) {
             $("#main_content").html(htmlResponse);
         });
     });

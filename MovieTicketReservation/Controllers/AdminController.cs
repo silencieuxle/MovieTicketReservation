@@ -63,7 +63,7 @@ namespace MovieTicketReservation.Controllers {
                 case "managemember_add":
                     return PartialView("_ManageMember_Add");
                 case "managemember_edit":
-                    return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(param)));
+                    return PartialView("_ManageMember_Edit",memberRepository.GetMemberByID(Convert.ToInt32(param)));
                 case "promotion_all":
                     return PartialView("_Promotion_All");
                 case "promotion_add":
@@ -99,14 +99,14 @@ namespace MovieTicketReservation.Controllers {
             }, JsonRequestBehavior.AllowGet);
         }
 
-
-        public ActionResult UpdateMember(int memberId) {
-            var result = memberRepository.GetMemberByID(memberId);
-            return PartialView("_ManageMember_Edit", result);
+        [HttpPost]
+        public ActionResult AjaxDeleteMember(int memberId) {
+            var result = memberRepository.DeleteMember(memberId);
+            return Json(new { Success = result, ErrorMessage = "Cannot delete member" }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult UpdateMember(Member member) {
+        public ActionResult AjaxUpdateMember(Member member) {
             if (ModelState.IsValid) {
                 if (memberRepository.UpdateMember(member))
                     return Json(new { Success = true, ErrorMessage = "" }, JsonRequestBehavior.AllowGet);
@@ -114,12 +114,16 @@ namespace MovieTicketReservation.Controllers {
             return Json(new { Success = false, ErrorMessage = "Cannot update member with provided member ID" }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
         public ActionResult AjaxAddMember(UserRegisterModel userRegisterModel) {
-            if (!ModelState.IsValid) return Json(new { Success = false, ErrorMessage = "Model state is invalid" });
+            if (!ModelState.IsValid) {
+                var errors = ModelState.Values.SelectMany(e => e.ToString() + "\n").ToList();
+                return Json(new { Success = false, ErrorList = errors });
+            }
             var userDuplicated = memberRepository.IsIdCardExisted(userRegisterModel.IdCardNumber);
             if (userDuplicated) {
-                ModelState.AddModelError("IdCardNumber", "SỐ chứng minh nhân dân này đã được sử dụng.");
-                return View(userRegisterModel);
+                var error = "Số chứng minh nhân dân đã được sử dụng \n";
+                return Json(new { Success = false, ErrorList = error });
             }
             var result = memberRepository.InsertMember(new Member {
                 Address = userRegisterModel.Address,

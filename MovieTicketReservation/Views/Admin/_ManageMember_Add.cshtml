@@ -1,79 +1,108 @@
 ﻿@using MovieTicketReservation.ViewModels
 @model UserRegisterModel
 
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.vi.min.js"></script>
+<link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+
 <h2>Thêm thành viên</h2>
 <hr />
-<div class="col-sm-8 col-sm-push-2">
-    @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @class = "form-horizontal" })) {
-        @Html.ValidationSummary()
-        <h4><i class="fa fa-caret-right"></i> Thông tin đăng nhập</h4>
-        <hr />
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
-                <label id="emailvalidate" class="validate-label"></label>
-            </div>
+@using (Ajax.BeginForm("AjaxAddMember", "Admin", new AjaxOptions { HttpMethod = "Post", OnSuccess = "memberAdded" }, new { @class = "form-horizontal" })) {
+    @Html.ValidationSummary()
+    <h4><i class="fa fa-caret-right"></i> Thông tin đăng nhập</h4>
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+            <label id="emailvalidate" class="validate-label"></label>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.PasswordFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.PasswordRetyped, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.PasswordRetyped, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.PasswordRetyped, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.PasswordFor(model => model.PasswordRetyped, htmlAttributes: new { @class = "form-control" })
         </div>
-        <br />
-        <h4><i class="fa fa-caret-right"></i> Thông tin cơ bản</h4>
-        <hr />
-        <div class="form-group">
-            @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <br />
+    <h4><i class="fa fa-caret-right"></i> Thông tin cơ bản</h4>
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
         </div>
-        <br />
-        <h4><i class="fa fa-caret-right"></i> Thông tin xác thực</h4>
-        <hr />
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
-                <label id="idcardvalidate" class="validate-label"></label>
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BirthDay, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.DropDownListFor(model => model.Gender,
+                                    new SelectList(
+                                        new List<object> {
+                                            new {value = false, text = "Nữ" },
+                                            new {value = true, text = "Nam"}
+                                        },
+                                        "value",
+                                        "text"
+                                    ),
+                                    htmlAttributes: new { @class = "form-control" }
+                                )
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Address, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BirthDay, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.BirthDay, htmlAttributes: new { @class = "form-control", id = "date-picker" })
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Phone, new { @class = "col-sm-4" })
-            <div class="col-sm-8">
-                @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <br />
+    <h4><i class="fa fa-caret-right"></i> Thông tin xác thực</h4>
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
+            <label id="idcardvalidate" class="validate-label"></label>
         </div>
-        <div class="form-group">
-            <div class="col-sm-8">
-                <input id="btnRegister" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Đăng kí" />
-                @Html.ActionLink("Huỷ bỏ", "Index", "Home", null, new { @class = "btn btn-danger", style = "float: right" })
-            </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
         </div>
-    }
-</div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Phone, new { @class = "col-sm-4" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-8">
+            <input id="btnRegister" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Thêm" />
+            <input id="btnCancel" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Huỷ" />
+        </div>
+    </div>
+}
 
 <script>
+    $("#date-picker").datepicker({
+        format: 'mm/dd/yyyy',
+        language: 'vi'
+    });
+
     $("input[name=Email]").blur(function () {
         var str = $(this).val();
         $.get("/User/AjaxCheckEmail", { email: str }, function (data) {
@@ -97,4 +126,17 @@
             }
         });
     });
+
+    function memberAdded(data) {
+        if (data.Success) {
+            alert("Thêm thành viên thành công!");
+        }
+        else {
+            var errors = "\nErrors: ";
+            $.each(data, function (index, value) {
+                errors += value;
+            });
+            alert("Không thể thêm thành viên" + errors);
+        }
+    }
 </script>
