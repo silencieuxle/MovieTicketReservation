@@ -6,13 +6,13 @@
 .seats {
     padding-top: 20px;
     padding-bottom: 20px;
-    overflow: hidden;
 }
 
 .seat {
     padding: 0 !important;
     margin: 0 !important;
-    text-align: center
+    text-align: center;
+    overflow: hidden;
 }
 
     .seat text {
@@ -21,6 +21,10 @@
         color: black;
         font-size: 12px;
         font-family: 'Courier New';
+    }
+
+    .seat img {
+        margin: 0 auto
     }
 
  .selected {
@@ -37,18 +41,4 @@
 
 .options {
     text-align: center;
-}
-
-.item {
-    overflow: hidden;
-    padding-top: 15px;
-    border-bottom: 1px dashed black;
-}
-
-.item:last-of-type {
-    border-bottom: none !important
-}
-
-.detail-header {
-    font-weight: 600;
 }

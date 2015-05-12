@@ -1,1 +1,41 @@
-﻿<h2>Create New Schedule</h2>
+﻿<div class="col-sm-12">
+    <h2 class="separator">Thêm suất chiếu</h2>
+    <div class="form-group">
+        <label>Chọn film</label>
+        <select class="form-control" id="selMovies">
+
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Chọn film</label>
+        <select class="form-control" id="selDates"></select>
+    </div>
+    <div class="form-group">
+        <label>Chọn film</label>
+        <select class="form-control" id="selShowTimes"></select>
+    </div>
+</div>
+
+<script>
+    $.get("/Admin/GetShowingMovies", function (data) {
+        $("#selMovies").empty();
+        $.each(data, function (index, value) {
+            var htmlString = "<option value='" + value.MovieID + "'>" + value.Title + "</option>";
+            $("#selMovies").append(htmlString);
+        });
+    });
+
+    $("#selMovies").change(function () {
+        var movieId = $(this).val();
+        $.get("/Admin/GetDatesByMovieID", { movieId: movieId }, function (data) {
+
+        });
+    });
+
+    $("#selDates").change(function () {
+        var movieId = $(this).val();
+        $.get("/Admin/GetDatesByMovieID", { movieId: movieId }, function (data) {
+
+        });
+    });
+</script>

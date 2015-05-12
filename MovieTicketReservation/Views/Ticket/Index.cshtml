@@ -45,7 +45,8 @@
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <button id="btnCancel" class="btn btn-danger" onclick="cancelReservation(@item.BookingHeaderId);">Huỷ vé</button>
+                                <button id="btnCancelTicket" class="btn btn-danger" onclick="cancelReservation(@item.BookingHeaderId);">Huỷ vé</button>
+                                <button id="btnChangeSeat" class="btn btn-danger" onclick="changeSeat(@item.BookingHeaderId);">Huỷ vé</button>
                             </div>
                             <div class="table-responsive col-sm-12">
                                 <table class="table table-hover">
@@ -78,6 +79,10 @@
 </div>
 
 <script>
+    function changeSeat(bookingHeaderId) {
+
+    }
+
     function cancelReservation(bookingHeaderId) {
         if (!confirm("Bạn chắc chắn muốn huỷ đặt vé?")) {
             return false;
