@@ -43,14 +43,12 @@
                     <li class="nav-link"><a href="/News">tin tức/ưu đãi</a></li>
                     <li class="nav-link"><a href="/Home/About">giới thiệu</a></li>
                 </ul>
-
                 @using (Html.BeginForm("Index", "Movies", new { }, FormMethod.Post, htmlAttributes: new { @class = "navbar-form navbar-right" })) {
                     <div class="form-group">
                         <input type="text" name="query" class="form-control search-box" placeholder="Tìm phim">
                     </div>
                     <button type="submit" class="btn btn-info search-btn"><i class="fa fa-search"></i></button>
                 }
-
                 @{
                     Html.RenderPartial("_LoginTemplate");
                 }
@@ -71,18 +69,14 @@
                     <h4 class="footer-col-header">Điều hướng</h4>
                     <ul class="footer-list1">
                         <li><a class="ftitem" value="">Rạp</a></li>
-
                         <li><a class="ftitem" value="">Phim</a></li>
-
                         <li><a class="ftitem" value="">Lịch chiếu</a></li>
-
                         <li><a class="ftitem" value="">Giới thiệu</a></li>
-
                         <li><a class="ftitem" value="">Tin tức/ưu đãi</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
-                   <h4 class="footer-col-header">Địa chỉ</h4>
+                    <h4 class="footer-col-header">Địa chỉ</h4>
                     <div class="info1">
                         <p>
                             <strong>Công ty Cinema 4U</strong><br />
@@ -92,7 +86,7 @@
                             Điện thoại: 0918273645
 
                         </p>
-                    </div>    
+                    </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <h4 class="footer-col-header">Liên hệ</h4>
@@ -104,7 +98,7 @@
                             Nguyen Nhat Khanh<br />
                             Cinema 4U
                         </p>
-                    </div>    
+                    </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <h4 class="footer-col-header">Follow us</h4>
@@ -123,6 +117,9 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     <div class="modal fade in" id="modalLogin" tabindex="-1" role="dialog" aria-hidden="true">
