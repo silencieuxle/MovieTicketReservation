@@ -77,8 +77,8 @@ select, input[type="text"] {
     border-top: 1px solid orange;
     background: url("/Content/Images/footer-bg.jpg") repeat-x bottom center #212121;
     color: white;
-    padding-top: 40px;
-    padding-bottom: 100px;
+    padding-top: 60px;
+    padding-bottom: 60px;
     height:auto;
 }
 
@@ -207,17 +207,17 @@ form[role="search"] {
 .carousel.vertical .active.right {
 	top: 100%;
 }
-.footer-list {
+.footer-list1 {
     padding: 0px;
     margin: 0px;
     list-style: outside none none;
     text-align: left;
 }
-.footer-list .item:hover {
+.footer-list1 .ftitem:hover {
     color: #FF6F00;
     text-decoration: none;
 }
-.footer-list .item {
+.footer-list1 .ftitem {
     text-align: left;
     white-space: nowrap;
     display: inline-block;
@@ -227,14 +227,22 @@ form[role="search"] {
     font-size: 14px;
     padding-right: 12px;
     text-transform: uppercase;
-    background: url("/Content/Images/10-2.png") no-repeat scroll left center transparent;
+    width:100%;
+    border-bottom:1px groove rgb(54, 54, 54);
+    padding: 10px 0px 10px 0px;
 }
 .footer .info1, .footer .info2 {
    
     font-size: 14px;
     min-height: 171px;
     padding: 16px 18px 10px;
-    background: none repeat scroll 0px 0px #333;
+    background: none repeat scroll 0px 0px #101010;
     border: 1px solid #3D3D3D;
-    color: #5F5F5F;
+    color: #fff;
+}
+.fticons a{
+    display:block;
+    padding-right:5px;
+    text-decoration:none;
+    color:#fff;
 }

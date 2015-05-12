@@ -350,6 +350,7 @@
     <Content Include="Content\Images\cineQT_5.jpg" />
     <Content Include="Content\Images\divergent_detailsimg.jpg" />
     <Content Include="Content\Images\exotic_detailsimg.png" />
+    <Content Include="Content\Images\facebook.jpg" />
     <Content Include="Content\Images\FF7_detailsimg.jpg" />
     <Content Include="Content\Images\footer-bg.jpg" />
     <Content Include="Content\Images\general-avatar.png" />
@@ -357,6 +358,7 @@
     <Content Include="Content\Images\general-movie-poster.jpg" />
     <Content Include="Content\Images\gethard_detailsimg.jpg" />
     <Content Include="Content\Images\gethard_mov.jpg" />
+    <Content Include="Content\Images\google-plus.jpg" />
     <Content Include="Content\Images\gunman_detailsimg.jpg" />
     <Content Include="Content\Images\heineken_detailsimg.jpg" />
     <Content Include="Content\Images\henry_detailsimg.jpg" />
@@ -367,6 +369,7 @@
     <Content Include="Content\Images\jurassicworld_detailsimg.jpeg" />
     <Content Include="Content\Images\jurassicworld_mov.jpg" />
     <Content Include="Content\Images\killme3times_detailsimg.jpg" />
+    <Content Include="Content\Images\linkdin.jpg" />
     <Content Include="Content\Images\minions_detailsimg.jpg" />
     <Content Include="Content\Images\minions_mov.jpg" />
     <Content Include="Content\Images\paulblart_detailsimg.jpg" />
@@ -384,6 +387,7 @@
     <Content Include="Content\Images\thefalling_mov.jpg" />
     <Content Include="Content\Images\thevoice_detailsimg.jpg" />
     <Content Include="Content\Images\title-bg.png" />
+    <Content Include="Content\Images\twitter.jpg" />
     <Content Include="Content\Images\wildcard_detailsimg.jpg" />
     <Content Include="Content\Images\womaningold_mov.jpg" />
     <Content Include="Content\index.css" />
