@@ -28,6 +28,10 @@ namespace MovieTicketReservation.Controllers {
             this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
         }
 
+        public ActionResult About() {
+            return View();
+        }
+
         public ActionResult Index() {
             return View(movieRepository.GetCanBeReservedMovies());
         }
