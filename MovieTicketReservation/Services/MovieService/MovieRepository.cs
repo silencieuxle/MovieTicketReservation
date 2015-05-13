@@ -101,8 +101,11 @@ namespace MovieTicketReservation.Services.MovieService {
             return context.Movies.Where(m => m.Title.ToLower().Contains(title.ToLower())).ToList();
         }
 
-        public IEnumerable<Movie> GetHotMovies() {
-            return context.Movies.Where(m => m.HotMovie == true).ToList();
+        public IEnumerable<Movie> GetHotMovies(IEnumerable<Movie> data = null) {
+            if (data == null) {
+                return context.Movies.Where(m => (bool)m.HotMovie).ToList();
+            }
+            return data.ToList().Where(m => m.HotMovie == true).ToList();
         }
 
         public Movie GetMovieByID(int movieId) {

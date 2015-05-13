@@ -44,6 +44,7 @@
         <EntityTypeShape EntityType="DbModel.Promote" Width="1.5" PointX="8" PointY="0.5" />
         <AssociationConnector Association="DbModel.FK_Promote_News" />
         <AssociationConnector Association="DbModel.FK_Schedule_Promote" />
+        <AssociationConnector Association="DbModel.Cine_PromoteDetails" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

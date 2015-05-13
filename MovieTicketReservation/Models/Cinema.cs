@@ -19,6 +19,7 @@ namespace MovieTicketReservation.Models
             this.Cine_MovieDetails = new HashSet<Cine_MovieDetails>();
             this.CinemaImages = new HashSet<CinemaImage>();
             this.Rooms = new HashSet<Room>();
+            this.Promotes = new HashSet<Promote>();
         }
     
         public string CinemaID { get; set; }
@@ -29,5 +30,6 @@ namespace MovieTicketReservation.Models
         public virtual ICollection<Cine_MovieDetails> Cine_MovieDetails { get; set; }
         public virtual ICollection<CinemaImage> CinemaImages { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
+        public virtual ICollection<Promote> Promotes { get; set; }
     }
 }

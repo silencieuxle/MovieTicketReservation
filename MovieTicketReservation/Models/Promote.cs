@@ -17,6 +17,7 @@ namespace MovieTicketReservation.Models
         public Promote()
         {
             this.Schedules = new HashSet<Schedule>();
+            this.Cinemas = new HashSet<Cinema>();
         }
     
         public int PromoteID { get; set; }
@@ -25,5 +26,6 @@ namespace MovieTicketReservation.Models
     
         public virtual News News { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
+        public virtual ICollection<Cinema> Cinemas { get; set; }
     }
 }
