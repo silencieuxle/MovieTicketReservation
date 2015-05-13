@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AgeLimitation">
           <Key>
             <PropertyRef Name="LimitationID" />
@@ -86,6 +86,8 @@
           <Property Name="AgeLimitationID" Type="varchar" MaxLength="3" />
           <Property Name="LongDescription" Type="nvarchar(max)" />
           <Property Name="WideThumbnail" Type="varchar(max)" />
+          <Property Name="HotMovie" Type="bit" />
+          <Property Name="Rate" Type="float" />
         </EntityType>
         <EntityType Name="Movie_EditionDetails">
           <Key>
@@ -131,6 +133,14 @@
           <Property Name="PostedDate" Type="date" />
           <Property Name="ViewCount" Type="int" />
         </EntityType>
+        <EntityType Name="Promote">
+          <Key>
+            <PropertyRef Name="PromoteID" />
+          </Key>
+          <Property Name="PromoteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PriceOff" Type="int" />
+          <Property Name="NewsID" Type="int" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="RoleID" />
@@ -155,6 +165,7 @@
           <Property Name="ShowTimeID" Type="int" Nullable="false" />
           <Property Name="Cine_MovieDetailsID" Type="int" Nullable="false" />
           <Property Name="RoomID" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="PromoteID" Type="int" />
         </EntityType>
         <EntityType Name="Seat">
           <Key>
@@ -175,6 +186,7 @@
           <Property Name="SeatID" Type="int" Nullable="false" />
           <Property Name="Reserved" Type="bit" />
           <Property Name="Paid" Type="bit" />
+          <Property Name="ClassID" Type="int" />
         </EntityType>
         <EntityType Name="ShowTime">
           <Key>
@@ -203,7 +215,7 @@
             <PropertyRef Name="ClassID" />
           </Key>
           <Property Name="ClassID" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="5" />
+          <Property Name="Name" Type="varchar" MaxLength="20" />
           <Property Name="Price" Type="money" />
         </EntityType>
         <Association Name="FK_BookingHeader_Member">
@@ -326,6 +338,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Promote_News">
+          <End Role="News" Type="Self.News" Multiplicity="0..1" />
+          <End Role="Promote" Type="Self.Promote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="News">
+              <PropertyRef Name="NewsID" />
+            </Principal>
+            <Dependent Role="Promote">
+              <PropertyRef Name="NewsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Room_Cinema">
           <End Role="Cinema" Type="Self.Cinema" Multiplicity="0..1" />
           <End Role="Room" Type="Self.Room" Multiplicity="*" />
@@ -347,6 +371,18 @@
             </Principal>
             <Dependent Role="Schedule">
               <PropertyRef Name="Cine_MovieDetailsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Schedule_Promote">
+          <End Role="Promote" Type="Self.Promote" Multiplicity="0..1" />
+          <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Promote">
+              <PropertyRef Name="PromoteID" />
+            </Principal>
+            <Dependent Role="Schedule">
+              <PropertyRef Name="PromoteID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -471,6 +507,7 @@
           <EntitySet Name="MovieEdition" EntityType="Self.MovieEdition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MovieGenre" EntityType="Self.MovieGenre" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="News" EntityType="Self.News" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Promote" EntityType="Self.Promote" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
@@ -520,12 +557,20 @@
             <End Role="Movie" EntitySet="Movie" />
             <End Role="Movie_GenreDetails" EntitySet="Movie_GenreDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_Promote_News" Association="Self.FK_Promote_News">
+            <End Role="News" EntitySet="News" />
+            <End Role="Promote" EntitySet="Promote" />
+          </AssociationSet>
           <AssociationSet Name="FK_Room_Cinema" Association="Self.FK_Room_Cinema">
             <End Role="Cinema" EntitySet="Cinema" />
             <End Role="Room" EntitySet="Room" />
           </AssociationSet>
           <AssociationSet Name="FK_Schedule_Cine_MovieDetails" Association="Self.FK_Schedule_Cine_MovieDetails">
             <End Role="Cine_MovieDetails" EntitySet="Cine_MovieDetails" />
+            <End Role="Schedule" EntitySet="Schedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Schedule_Promote" Association="Self.FK_Schedule_Promote">
+            <End Role="Promote" EntitySet="Promote" />
             <End Role="Schedule" EntitySet="Schedule" />
           </AssociationSet>
           <AssociationSet Name="FK_Schedule_Room1" Association="Self.FK_Schedule_Room1">
@@ -565,8 +610,7 @@
             <End Role="TagDetails" EntitySet="TagDetails" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -667,6 +711,8 @@
           <NavigationProperty Name="Cine_MovieDetails" Relationship="Self.FK_Cine_MovieDetails_Movie" FromRole="Movie" ToRole="Cine_MovieDetails" />
           <NavigationProperty Name="MovieEditions" Relationship="Self.Movie_EditionDetails" FromRole="Movie" ToRole="MovieEdition" />
           <NavigationProperty Name="MovieGenres" Relationship="Self.Movie_GenreDetails" FromRole="Movie" ToRole="MovieGenre" />
+          <Property Name="HotMovie" Type="Boolean" />
+          <Property Name="Rate" Type="Double" />
         </EntityType>
         <EntityType Name="MovieEdition">
           <Key>
@@ -698,6 +744,7 @@
           <Property Name="PostedDate" Type="DateTime" Precision="0" />
           <Property Name="ViewCount" Type="Int32" />
           <NavigationProperty Name="Tags" Relationship="Self.TagDetails" FromRole="News" ToRole="Tag" />
+          <NavigationProperty Name="Promotes" Relationship="DbModel.FK_Promote_News" FromRole="News" ToRole="Promote" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -731,6 +778,8 @@
           <NavigationProperty Name="Room" Relationship="Self.FK_Schedule_Room1" FromRole="Schedule" ToRole="Room" />
           <NavigationProperty Name="ShowTime" Relationship="Self.FK_Schedule_ShowTime" FromRole="Schedule" ToRole="ShowTime" />
           <NavigationProperty Name="Seat_ShowDetails" Relationship="Self.FK_Seat_ShowDetails_Schedule" FromRole="Schedule" ToRole="Seat_ShowDetails" />
+          <Property Name="PromoteID" Type="Int32" />
+          <NavigationProperty Name="Promote" Relationship="DbModel.FK_Schedule_Promote" FromRole="Schedule" ToRole="Promote" />
         </EntityType>
         <EntityType Name="Seat">
           <Key>
@@ -757,6 +806,7 @@
           <NavigationProperty Name="BookingHeader" Relationship="Self.FK_Seat_ShowDetails_BookingHeader" FromRole="Seat_ShowDetails" ToRole="BookingHeader" />
           <NavigationProperty Name="Schedule" Relationship="Self.FK_Seat_ShowDetails_Schedule" FromRole="Seat_ShowDetails" ToRole="Schedule" />
           <NavigationProperty Name="Seat" Relationship="Self.FK_Seat_ShowTimeDetails_Seat" FromRole="Seat_ShowDetails" ToRole="Seat" />
+          <Property Name="ClassID" Type="Int32" />
         </EntityType>
         <EntityType Name="ShowTime">
           <Key>
@@ -779,7 +829,7 @@
             <PropertyRef Name="ClassID" />
           </Key>
           <Property Name="ClassID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
           <NavigationProperty Name="Seats" Relationship="Self.FK_Seat_TicketClass" FromRole="TicketClass" ToRole="Seat" />
         </EntityType>
@@ -1066,7 +1116,50 @@
             <End Role="News" EntitySet="News" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
+          <EntitySet Name="Promotes" EntityType="DbModel.Promote" />
+          <AssociationSet Name="FK_Promote_News" Association="DbModel.FK_Promote_News">
+            <End Role="News" EntitySet="News" />
+            <End Role="Promote" EntitySet="Promotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Schedule_Promote" Association="DbModel.FK_Schedule_Promote">
+            <End Role="Promote" EntitySet="Promotes" />
+            <End Role="Schedule" EntitySet="Schedules" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Promote">
+          <Key>
+            <PropertyRef Name="PromoteID" />
+          </Key>
+          <Property Name="PromoteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PriceOff" Type="Int32" />
+          <Property Name="NewsID" Type="Int32" />
+          <NavigationProperty Name="News" Relationship="DbModel.FK_Promote_News" FromRole="Promote" ToRole="News" />
+          <NavigationProperty Name="Schedules" Relationship="DbModel.FK_Schedule_Promote" FromRole="Promote" ToRole="Schedule" />
+        </EntityType>
+        <Association Name="FK_Promote_News">
+          <End Type="DbModel.News" Role="News" Multiplicity="0..1" />
+          <End Type="DbModel.Promote" Role="Promote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="News">
+              <PropertyRef Name="NewsID" />
+            </Principal>
+            <Dependent Role="Promote">
+              <PropertyRef Name="NewsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Schedule_Promote">
+          <End Type="DbModel.Promote" Role="Promote" Multiplicity="0..1" />
+          <End Type="DbModel.Schedule" Role="Schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Promote">
+              <PropertyRef Name="PromoteID" />
+            </Principal>
+            <Dependent Role="Schedule">
+              <PropertyRef Name="PromoteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1144,6 +1237,8 @@
           <EntitySetMapping Name="Movies">
             <EntityTypeMapping TypeName="DbModel.Movie">
               <MappingFragment StoreEntitySet="Movie">
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="HotMovie" ColumnName="HotMovie" />
                 <ScalarProperty Name="MovieID" ColumnName="MovieID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -1213,6 +1308,7 @@
           <EntitySetMapping Name="Schedules">
             <EntityTypeMapping TypeName="DbModel.Schedule">
               <MappingFragment StoreEntitySet="Schedule">
+                <ScalarProperty Name="PromoteID" ColumnName="PromoteID" />
                 <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="ShowTimeID" ColumnName="ShowTimeID" />
@@ -1234,6 +1330,7 @@
           <EntitySetMapping Name="Seat_ShowDetails">
             <EntityTypeMapping TypeName="DbModel.Seat_ShowDetails">
               <MappingFragment StoreEntitySet="Seat_ShowDetails">
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
                 <ScalarProperty Name="BookingHeaderID" ColumnName="BookingHeaderID" />
                 <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
                 <ScalarProperty Name="SeatID" ColumnName="SeatID" />
@@ -1291,6 +1388,15 @@
               <ScalarProperty Name="TagID" ColumnName="TagID" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Promotes">
+            <EntityTypeMapping TypeName="DbModel.Promote">
+              <MappingFragment StoreEntitySet="Promote">
+                <ScalarProperty Name="NewsID" ColumnName="NewsID" />
+                <ScalarProperty Name="PriceOff" ColumnName="PriceOff" />
+                <ScalarProperty Name="PromoteID" ColumnName="PromoteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

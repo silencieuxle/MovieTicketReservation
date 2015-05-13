@@ -237,6 +237,9 @@
     <Compile Include="Models\News.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Promote.cs">
+      <DependentUpon>MovieDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Role.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
@@ -261,12 +264,14 @@
     <Compile Include="Models\TicketClass.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\AgeLimitationService\AgeLimitationRepository.cs" />
     <Compile Include="Services\BookingHeaderService\BookingHeaderRepository.cs" />
     <Compile Include="Services\CinemaImageService\CinemaImageRepository.cs" />
     <Compile Include="Services\CinemaMovieDetailsService\CinemaMovieDetailsRepository.cs" />
     <Compile Include="Services\CinemaService\CinemaRepository.cs" />
     <Compile Include="Services\EditionService\EditionRepository.cs" />
     <Compile Include="Services\GenreService\GenreRepository.cs" />
+    <Compile Include="Services\IAgeLimitationRepository.cs" />
     <Compile Include="Services\IBookingRepository.cs" />
     <Compile Include="Services\ICinemaImagesRepositorycs.cs" />
     <Compile Include="Services\ICinemaMovieRepository.cs" />
@@ -288,7 +293,6 @@
     <Compile Include="Services\SeatShowDetailsService\SeatShowRepository.cs" />
     <Compile Include="Services\ShowtimeService\ShowtimeRepository.cs" />
     <Compile Include="Services\TagRepository\TagRepository.cs" />
-    <Compile Include="Services\UnitOfWork.cs" />
     <Compile Include="ViewModels\BookingDetailsModel.cs" />
     <Compile Include="ViewModels\CinemaModel.cs" />
     <Compile Include="ViewModels\DateModel.cs" />

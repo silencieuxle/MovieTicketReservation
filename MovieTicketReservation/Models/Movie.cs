@@ -36,6 +36,8 @@ namespace MovieTicketReservation.Models
         public string AgeLimitationID { get; set; }
         public string LongDescription { get; set; }
         public string WideThumbnail { get; set; }
+        public Nullable<bool> HotMovie { get; set; }
+        public Nullable<double> Rate { get; set; }
     
         public virtual AgeLimitation AgeLimitation { get; set; }
         public virtual ICollection<Cine_MovieDetails> Cine_MovieDetails { get; set; }

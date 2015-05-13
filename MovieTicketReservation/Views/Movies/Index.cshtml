@@ -29,6 +29,23 @@
                     <br>
                 </div>
                 <hr />
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#rate-list">Điểm số</a></h4>
+                <div id="rate-list">
+                    <input type="checkbox" class="chkRate" value="hot"> Phim bom tấn
+                    <br>
+                    <input type="checkbox" class="chkRate" value="rate"> Phim có điểm cao
+                    <br />
+                </div>
+                <hr />
+                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#ageLimitation-list">Độ tuổi</a></h4>
+                <div id="ageLimitation-list">
+                    @foreach (var item in ViewBag.AgeList) {
+                        <input type="checkbox" class="chkCinema" value="@item.LimitationID">
+                        @item.Description
+                        <br>
+                    }
+                </div>
+                <hr />
                 <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#location-list">Địa điểm</a></h4>
                 <div id="location-list">
                     @foreach (var item in ViewBag.CinemaList) {

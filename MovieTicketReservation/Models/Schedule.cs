@@ -24,10 +24,12 @@ namespace MovieTicketReservation.Models
         public int ShowTimeID { get; set; }
         public int Cine_MovieDetailsID { get; set; }
         public string RoomID { get; set; }
+        public Nullable<int> PromoteID { get; set; }
     
         public virtual Cine_MovieDetails Cine_MovieDetails { get; set; }
         public virtual Room Room { get; set; }
         public virtual ShowTime ShowTime { get; set; }
         public virtual ICollection<Seat_ShowDetails> Seat_ShowDetails { get; set; }
+        public virtual Promote Promote { get; set; }
     }
 }

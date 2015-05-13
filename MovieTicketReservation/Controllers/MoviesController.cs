@@ -13,6 +13,7 @@ using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.CinemaService;
 using MovieTicketReservation.Services.ScheduleService;
 using MovieTicketReservation.Services.CinemaMovieDetailsService;
+using MovieTicketReservation.Services.AgeLimitationService;
 using Newtonsoft.Json;
 
 namespace MovieTicketReservation.Controllers {
@@ -24,6 +25,7 @@ namespace MovieTicketReservation.Controllers {
         private ICinemaRepository cinemaReppsitory;
         private IScheduleRepository scheduleRepository;
         private ICinemaMovieRepository cinemaMovieRepository;
+        private IAgeLimitationRepository ageLimitationRepository;
 
         public MoviesController() {
             this.movieRepository = new MovieRepository(context);
@@ -32,6 +34,7 @@ namespace MovieTicketReservation.Controllers {
             this.cinemaReppsitory = new CinemaRepository(context);
             this.scheduleRepository = new ScheduleRepository(context);
             this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
+            this.ageLimitationRepository = new AgeLimitationRepository(context);
         }
 
         // GET: Movies
@@ -41,6 +44,7 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.EditionList = editionRepository.GetMovieEditions();
             ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
             ViewBag.GenreList = genreRepository.GetMovieGenres();
+            ViewBag.AgeList = ageLimitationRepository.GetAgeLimitations();
 
             var movies = movieRepository.GetAllMovies().Select(m => new MovieExtended {
                 Actors = m.Actors,
@@ -97,11 +101,14 @@ namespace MovieTicketReservation.Controllers {
             return View(result);
         }
 
-        public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter, string scheduleTypeFilter) {
+        public ActionResult AjaxFilter(string cinemaFilter, string editionFilter, string genreFilter, string scheduleTypeFilter, string rateFilter, string ageFilter) {
             var cinemas = JsonConvert.DeserializeObject<string[]>(cinemaFilter);
             var editions = JsonConvert.DeserializeObject<string[]>(editionFilter);
             var genres = JsonConvert.DeserializeObject<string[]>(genreFilter);
             var schedules = JsonConvert.DeserializeObject<string[]>(scheduleTypeFilter);
+            var rates = JsonConvert.DeserializeObject<string[]>(rateFilter);
+            var ages = JsonConvert.DeserializeObject<string[]>(ageFilter);
+
             var movies = movieRepository.GetAllMovies();
 
             if (cinemas.Count() != 0) {
@@ -118,6 +125,19 @@ namespace MovieTicketReservation.Controllers {
 
             if (schedules.Count() != 0) {
                 movies = movieRepository.GetMoviesByScheduleTypes(schedules, movies);
+            }
+
+            if (rates.Count() != 0) {
+                if (rates.Contains("hot")) {
+                    movies = movieRepository.GetHotMovies(movies);
+                }
+                if (rates.Contains("rate")) {
+                    movies = movieRepository.GetMoviesByRate(movies);
+                }
+            }
+
+            if (ages.Count() != 0) {
+                movies = movieRepository.GetMoviesByAgeLitmitation(ages, movies);
             }
 
             movies = movies.OrderByDescending(m => m.BeginShowDate).Select(m => new MovieExtended {

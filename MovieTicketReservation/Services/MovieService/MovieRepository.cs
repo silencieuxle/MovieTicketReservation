@@ -77,8 +77,32 @@ namespace MovieTicketReservation.Services.MovieService {
             }
         }
 
+        public IEnumerable<Movie> GetMoviesByAgeLitmitation(string[] ageLimitationIds, IEnumerable<Movie> data = null) {
+            if (data == null) {
+                if (ageLimitationIds.Count() == 0) return context.Movies.ToList();
+                var movies = context.Movies.ToList();
+                return movies.Where(m => ageLimitationIds.Any(c => m.AgeLimitationID == c)).ToList();
+            } else {
+                if (ageLimitationIds.Count() == 0) return data.ToList();
+                var movies = data.ToList();
+                return movies.Where(m => ageLimitationIds.Any(e => m.AgeLimitationID == e)).ToList();
+            }
+        }
+
+        public IEnumerable<Movie> GetMoviesByRate(IEnumerable<Movie> data = null) {
+            if (data == null) {
+                return context.Movies.Where(m => m.Rate >= 6).ToList();
+            } else {
+                return data.ToList().Where(m => m.Rate >= 6).ToList();
+            }
+        }
+
         public IEnumerable<Movie> GetMoviesByTitle(string title) {
             return context.Movies.Where(m => m.Title.ToLower().Contains(title.ToLower())).ToList();
+        }
+
+        public IEnumerable<Movie> GetHotMovies() {
+            return context.Movies.Where(m => m.HotMovie == true).ToList();
         }
 
         public Movie GetMovieByID(int movieId) {

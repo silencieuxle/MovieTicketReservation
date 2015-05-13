@@ -12,17 +12,18 @@ namespace MovieTicketReservation.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Seat_ShowDetails
+    public partial class Promote
     {
-        public Nullable<int> BookingHeaderID { get; set; }
-        public int ScheduleID { get; set; }
-        public int SeatID { get; set; }
-        public Nullable<bool> Reserved { get; set; }
-        public Nullable<bool> Paid { get; set; }
-        public Nullable<int> ClassID { get; set; }
+        public Promote()
+        {
+            this.Schedules = new HashSet<Schedule>();
+        }
     
-        public virtual BookingHeader BookingHeader { get; set; }
-        public virtual Schedule Schedule { get; set; }
-        public virtual Seat Seat { get; set; }
+        public int PromoteID { get; set; }
+        public Nullable<int> PriceOff { get; set; }
+        public Nullable<int> NewsID { get; set; }
+    
+        public virtual News News { get; set; }
+        public virtual ICollection<Schedule> Schedules { get; set; }
     }
 }

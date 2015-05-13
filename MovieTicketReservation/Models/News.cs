@@ -17,6 +17,7 @@ namespace MovieTicketReservation.Models
         public News()
         {
             this.Tags = new HashSet<Tag>();
+            this.Promotes = new HashSet<Promote>();
         }
     
         public int NewsID { get; set; }
@@ -28,5 +29,6 @@ namespace MovieTicketReservation.Models
         public Nullable<int> ViewCount { get; set; }
     
         public virtual ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<Promote> Promotes { get; set; }
     }
 }
