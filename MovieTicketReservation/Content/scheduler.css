@@ -57,6 +57,7 @@
 }
 
 .box div.item {
+    text-transform: uppercase;
     cursor: pointer;
     padding: 10px 50px;
     min-height: 30px;

@@ -77,13 +77,14 @@ select, input[type="text"] {
     border-top: 1px solid orange;
     background: url("/Content/Images/footer-bg.jpg") repeat-x bottom center #212121;
     color: white;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding-top: 40px;
+    padding-bottom: 40px;
     height:auto;
 }
 
 .footer-col-header {
-    color: white;
+    color: #AAAAAA;
+    text-transform: uppercase
 }
 
 .footer-list {
@@ -214,7 +215,7 @@ form[role="search"] {
     text-align: left;
 }
 .footer-list1 .ftitem:hover {
-    color: #FF6F00;
+    color: yellow;
     text-decoration: none;
 }
 .footer-list1 .ftitem {

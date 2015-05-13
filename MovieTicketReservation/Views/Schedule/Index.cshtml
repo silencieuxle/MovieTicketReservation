@@ -1,7 +1,11 @@
-﻿@{
+﻿@using MovieTicketReservation.Models
+@model List<Movie>
+
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link href="~/Content/scheduler.css" rel="stylesheet" />
 <div class="container">
     <div class="row">
@@ -11,7 +15,9 @@
                     Chọn phim
                 </div>
                 <div class="panel-body box-content">
-                    <div class="item">NGỦ VỚI HỒN MA 16+</div>
+                    @foreach (var item in Model) {
+                        <div class="item">@item.Title</div>
+                    }
                 </div>
             </div>
         </div>
