@@ -91,9 +91,9 @@ namespace MovieTicketReservation.Services.MovieService {
 
         public IEnumerable<Movie> GetMoviesByRate(IEnumerable<Movie> data = null) {
             if (data == null) {
-                return context.Movies.Where(m => m.Rate >= 6).ToList();
+                return context.Movies.Where(m => m.Rate >= 7).ToList();
             } else {
-                return data.ToList().Where(m => m.Rate >= 6).ToList();
+                return data.ToList().Where(m => m.Rate >= 7).ToList();
             }
         }
 

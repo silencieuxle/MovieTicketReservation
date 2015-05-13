@@ -40,7 +40,7 @@
                 <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#ageLimitation-list">Độ tuổi</a></h4>
                 <div id="ageLimitation-list">
                     @foreach (var item in ViewBag.AgeList) {
-                        <input type="checkbox" class="chkCinema" value="@item.LimitationID">
+                        <input type="checkbox" class="chkAge" value="@item.LimitationID">
                         @item.Description
                         <br>
                     }
@@ -86,6 +86,16 @@
                 var arrEdition = [];
                 var arrGenre = [];
                 var arrScheduleType = [];
+                var arrRate = [];
+                var arrAge = [];
+
+                $(".chkAge:checked").each(function () {
+                    arrAge.push($(this).val());
+                });
+
+                $(".chkRate:checked").each(function () {
+                    arrRate.push($(this).val());
+                });
 
                 $(".chkCinema:checked").each(function () {
                     arrCinema.push($(this).val());
@@ -107,7 +117,9 @@
                     cinemaFilter: JSON.stringify(arrCinema),
                     editionFilter: JSON.stringify(arrEdition),
                     genreFilter: JSON.stringify(arrGenre),
-                    scheduleTypeFilter: JSON.stringify(arrScheduleType)
+                    scheduleTypeFilter: JSON.stringify(arrScheduleType),
+                    rateFilter: JSON.stringify(arrRate),
+                    ageFilter: JSON.stringify(arrAge)
                 }, function (result) {
                     if (result != "") {
                         $("#filtered-result").html(result).fadeIn("fast");

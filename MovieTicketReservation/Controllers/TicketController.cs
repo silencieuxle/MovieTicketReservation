@@ -70,7 +70,7 @@ namespace MovieTicketReservation.Controllers {
                 return Redirect("/User/Login");
             }
             var showingDate = scheduleRepository.GetScheduleByID(scheduleId).Date;
-            if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movie");
+            if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movies");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
             var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
