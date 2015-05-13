@@ -27,6 +27,10 @@ namespace MovieTicketReservation.Services.ScheduleService {
             return context.Schedules.Where(s => s.RoomID == roomId).ToList();
         }
 
+        public IEnumerable<Schedule> GetSchedulesByCinemaIDAndMovieID(string cinemaId, int movieId) {
+            return context.Schedules.Where(s => s.Cine_MovieDetails.CinemaID == cinemaId && s.Cine_MovieDetails.MovieID == movieId).ToList();
+        }
+
         public Schedule GetScheduleByID(int scheduleId) {
             return context.Schedules.Find(scheduleId);
         }

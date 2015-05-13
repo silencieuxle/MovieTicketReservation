@@ -71,5 +71,21 @@ namespace MovieTicketReservation.App_Code {
             return returnValue.ToString();
         }
         #endregion
-	}
+
+        #region Convert C# Timespan to normal time string hh:mm
+        /// <summary>
+        /// Convert C# Timespan to normal time string (hh:mm)
+        /// </summary>
+        /// <param name="time">Input time to be converted</param>
+        /// <returns>Converted time</returns>
+        public static string ToTimeString(this TimeSpan time) {
+            // Get hours
+            var hours = time.Hours.ToString();
+
+            // Get minutes
+            var minutes = time.Minutes.ToString();
+            return hours + ":" + minutes;
+        }
+        #endregion
+    }
 }

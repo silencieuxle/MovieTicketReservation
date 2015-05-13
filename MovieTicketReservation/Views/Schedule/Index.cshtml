@@ -1,6 +1,4 @@
 ﻿@using MovieTicketReservation.Models
-@model List<Movie>
-
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,9 +12,9 @@
                 <div class="panel-heading box-title">
                     Chọn phim
                 </div>
-                <div class="panel-body box-content">
-                    @foreach (var item in Model) {
-                        <div class="item">@item.Title</div>
+                <div id="movieList" class="panel-body box-content">
+                    @foreach (var item in ViewBag.Movies) {
+                        <div class="item" data-id="@item.MovieID">@item.Title</div>
                     }
                 </div>
             </div>
@@ -26,8 +24,8 @@
                 <div class="panel-heading box-title">
                     Chọn rạp
                 </div>
-                <div class="panel-body box-content">
-                    <div class="item">CINE4U Nguyễn Trãi</div>
+                <div id="cinemaList" class="panel-body box-content">
+
                 </div>
             </div>
 
@@ -35,8 +33,8 @@
                 <div class="panel-heading box-title">
                     Lịch chiếu
                 </div>
-                <div class="panel-body box-content">
-                    <table></table>
+                <div id="result" class="panel-body box-content">
+                   
                 </div>
             </div>
         </div>
@@ -45,3 +43,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    $("#movieList div.item").click(function () {
+        $("#movieList div.item").removeClass("checked");
+        $(this).addClass("checked");
+        var id = $(this).attr("data-id");
+        $("#result").empty();
+        $.get("/Schedule/AjaxGetCinemaByMovieID", { movieId: id }, function (data) {
+            $("#cinemaList").empty();
+            $.each(data, function (index, value) {
+                var htmlString = "<div class='item' data-cid='" + value.CinemaID + "' data-mid='" + id + "'>" + value.Name + "</div>";
+                $("#cinemaList").append(htmlString).fadeIn('slow');
+            });
+        });
+    });
+
+    $("#cinemaList").on("click", "div.item", function () {
+        $("#cinemaList div.item").removeClass("checked");
+        $(this).addClass("checked");
+        var cid = $(this).attr("data-cid");
+        var mid = $(this).attr("data-mid");
+        $("#result").empty();
+        $.get("/Schedule/AjaxGetScheduleByCinemaIDAndModieID", { cinemaId: cid, movieId: mid }, function (data) {
+            $.each(data, function (index, value) {
+                var htmlDateString = "<div class='schedule'><span class='schedule-time'>" + value.ShowingDate + ": </span>";
+                $.each(value.Times, function (id, time) {
+                    var htmlTimeString = "<span class='schedule-time'><a href='/Ticket/Reserve?scheduleId=" + time.ScheduleID + "'>" + time.ShowTime + "</a></span>";
+                    htmlDateString += htmlTimeString;
+                });
+                $("#result").append(htmlDateString).fadeIn('slow');
+            });
+        });
+    });
+</script>

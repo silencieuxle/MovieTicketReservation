@@ -10,6 +10,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Schedule> GetSchedules();
         IEnumerable<Schedule> GetSchedulesByDate(DateTime date);
         IEnumerable<Schedule> GetSchedulesByRoomID(string roomId);
+        IEnumerable<Schedule> GetSchedulesByCinemaIDAndMovieID(string cinemaId, int movieId);
         Schedule GetScheduleByID(int scheduleId);
         bool InsertSchedule(Schedule schedule);
         bool UpdateSchedule(Schedule schedule);
