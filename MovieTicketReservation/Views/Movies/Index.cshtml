@@ -19,8 +19,8 @@
         </div>
         <div class="col-sm-3 filter-container">
             <div class="filter">
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#scheduletype-list">Phân loại</a></h4>
-                <div id="scheduletype-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#scheduletype-list">Phân loại</a></h4>
+                <div class="filter-list" id="scheduletype-list">
                     <input type="checkbox" class="chkSchedule" value="1"> Phim đang chiếu
                     <br>
                     <input type="checkbox" class="chkSchedule" value="2"> Phim sắp chiếu
@@ -28,44 +28,39 @@
                     <input type="checkbox" class="chkSchedule" value="3"> Phim sắp ra mắt
                     <br>
                 </div>
-                <hr />
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#rate-list">Điểm số</a></h4>
-                <div id="rate-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#rate-list">Điểm số</a></h4>
+                <div class="filter-list" id="rate-list">
                     <input type="checkbox" class="chkRate" value="hot"> Phim bom tấn
                     <br>
                     <input type="checkbox" class="chkRate" value="rate"> Phim có điểm cao
                     <br />
                 </div>
-                <hr />
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#ageLimitation-list">Độ tuổi</a></h4>
-                <div id="ageLimitation-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#ageLimitation-list">Độ tuổi</a></h4>
+                <div class="filter-list" id="ageLimitation-list">
                     @foreach (var item in ViewBag.AgeList) {
                         <input type="checkbox" class="chkAge" value="@item.LimitationID">
                         @item.Description
                         <br>
                     }
                 </div>
-                <hr />
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#location-list">Địa điểm</a></h4>
-                <div id="location-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a href="" class="checkbox-list" data-toggle="#location-list">Địa điểm</a></h4>
+                <div class="filter-list" id="location-list">
                     @foreach (var item in ViewBag.CinemaList) {
                         <input type="checkbox" class="chkCinema" value="@item.CinemaID">
                         @item.Name
                         <br>
                     }
                 </div>
-                <hr>
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#edition-list">Phiên bản</a></h4>
-                <div id="edition-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#edition-list">Phiên bản</a></h4>
+                <div class="filter-list" id="edition-list">
                     @foreach (var item in ViewBag.EditionList) {
                         <input type="checkbox" class="chkEdition" value="@item.EditionID">
                         @item.Name
                         <br>
                     }
                 </div>
-                <hr>
-                <h4 class="separator"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#genre-list">Thể loại</a></h4>
-                <div id="genre-list">
+                <h4 class="separator filter-heading"><i class="fa fa-caret-right"></i> <a class="checkbox-list" href="" data-toggle="#genre-list">Thể loại</a></h4>
+                <div class="filter-list" id="genre-list">
                     @foreach (var item in ViewBag.GenreList) {
                         <input type="checkbox" class="chkGenre" value="@item.GenreID">
                         @item.Name

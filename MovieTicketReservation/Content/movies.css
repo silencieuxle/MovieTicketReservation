@@ -43,9 +43,9 @@
     overflow: hidden;
 }
 
-.item:last-of-type {
-    border-bottom: none !important;
-}
+    .item:last-of-type {
+        border-bottom: none !important;
+    }
 
 
 .movie-details {
@@ -74,10 +74,10 @@
         padding-left: 0 !important;
     }
 
-.rate {
-    padding-top: 15px;
+.filter-heading {
+    margin-bottom: 10px;
 }
 
-    .rate > i:hover {
-        color: orange;
-    }
+.filter-list {
+    padding-bottom: 20px;
+}
