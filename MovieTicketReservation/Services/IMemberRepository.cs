@@ -8,7 +8,6 @@ using MovieTicketReservation.Models;
 namespace MovieTicketReservation.Services {
     public interface IMemberRepository: IDisposable  {
         IEnumerable<Member> GetAllMembers();
-        IEnumerable<Member> GetMembersByRole(int roleId);
         Member GetMemberByID(int memberId);
         Member GetMemberByEmailAndPassword(string email, string password);
         bool InsertMember(Member member);

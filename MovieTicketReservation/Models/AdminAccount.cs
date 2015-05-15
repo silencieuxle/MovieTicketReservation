@@ -12,16 +12,14 @@ namespace MovieTicketReservation.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Role
+    public partial class AdminAccount
     {
-        public Role()
-        {
-            this.AdminAccounts = new HashSet<AdminAccount>();
-        }
+        public int AdminAccountID { get; set; }
+        public string Section { get; set; }
+        public Nullable<int> MemberID { get; set; }
+        public Nullable<int> RoleID { get; set; }
     
-        public int RoleID { get; set; }
-        public string Description { get; set; }
-    
-        public virtual ICollection<AdminAccount> AdminAccounts { get; set; }
+        public virtual Member Member { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

@@ -192,6 +192,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdminAccount.cs">
+      <DependentUpon>MovieDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AgeLimitation.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
@@ -280,6 +283,7 @@
     <Compile Include="Services\IGenreRepository.cs" />
     <Compile Include="Services\IMovieRepository.cs" />
     <Compile Include="Services\INewsRepository.cs" />
+    <Compile Include="Services\IRoomRepository.cs" />
     <Compile Include="Services\IScheduleRepository.cs" />
     <Compile Include="Services\ISeatRepository.cs" />
     <Compile Include="Services\ISeatShowRepository.cs" />
@@ -288,6 +292,7 @@
     <Compile Include="Services\MemberService\MemberRepository.cs" />
     <Compile Include="Services\MovieService\MovieRepository.cs" />
     <Compile Include="Services\NewsService\NewsRepository.cs" />
+    <Compile Include="Services\RoomService\RoomRepository.cs" />
     <Compile Include="Services\ScheduleService\ScheduleRepository.cs" />
     <Compile Include="Services\SeatService\SeatRepository.cs" />
     <Compile Include="Services\SeatShowDetailsService\SeatShowRepository.cs" />

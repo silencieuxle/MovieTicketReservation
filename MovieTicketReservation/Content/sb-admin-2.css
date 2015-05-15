@@ -352,3 +352,9 @@ table.dataTable thead .sorting:after {
 .panel-yellow a:hover {
     color: #df8a13;
 }
+
+.separator {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+ytrjkPcuAAAAAAnRSTlMAeChNNDYAAAASSURBVAgdYxBkEmRSYnJhgNIAB5wBHRJ1Jg0AAAAASUVORK5CYII=') /*../Content/Images/title-bg.png*/ repeat-x bottom;
+}

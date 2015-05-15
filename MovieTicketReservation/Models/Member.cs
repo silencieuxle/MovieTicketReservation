@@ -17,6 +17,7 @@ namespace MovieTicketReservation.Models
         public Member()
         {
             this.BookingHeaders = new HashSet<BookingHeader>();
+            this.AdminAccounts = new HashSet<AdminAccount>();
         }
     
         public int MemberID { get; set; }
@@ -27,12 +28,11 @@ namespace MovieTicketReservation.Models
         public string Password { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
-        public Nullable<int> RoleID { get; set; }
         public Nullable<bool> Gender { get; set; }
         public Nullable<System.DateTime> Birthday { get; set; }
         public string AvatarURL { get; set; }
     
         public virtual ICollection<BookingHeader> BookingHeaders { get; set; }
-        public virtual Role Role { get; set; }
+        public virtual ICollection<AdminAccount> AdminAccounts { get; set; }
     }
 }

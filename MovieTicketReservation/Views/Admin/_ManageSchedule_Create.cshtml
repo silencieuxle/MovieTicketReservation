@@ -1,54 +1,102 @@
-﻿<div class="col-sm-12">
+﻿@using MovieTicketReservation.Models
+@model List<Movie>
+
+<div class="col-sm-8 col-sm-push-2">
     <h2 class="separator">Thêm suất chiếu</h2>
     <div class="form-group">
         <label>Chọn film</label>
-        <select class="form-control" id="selMovie"></select>
+        <select class="form-control" id="selMovie">
+            <option value="-1" disabled selected>Chọn film</option>
+            @foreach (var item in Model) {
+                <option value="@item.MovieID">@item.Title</option>
+            }
+        </select>
     </div>
     <div class="form-group">
         <label>Chọn phòng</label>
-        <select class="form-control" id="selRoom"></select>
+        <select class="form-control" id="selRoom">
+            <option value="-1" disabled selected>Chọn film</option>
+            @foreach (var item in ViewBag.Rooms) {
+                <option value="@item.RoomID">@item.Name</option>
+            }
+        </select>
     </div>
     <div class="form-group">
         <label>Chọn ngày</label>
-        <select class="form-control" id="selDate"></select>
+        <select class="form-control" id="selDate">
+            <option value="-1" disabled selected>Chọn ngày</option>
+        </select>
+    </div>
+    <div class="row form-group">
+        <div class="col-xs-6"><input type="radio" name="createOptions" checked id="rdManually" /> Tự tạo</div>
+        <div class="col-xs-6"><input type="radio" name="createOptions" id="rdAuto" /> Tạo tự động</div>
+    </div>
+    <div class="form-group" id="manuallyCreate">
+        <label>Chọn thời gian</label>
+        <select class="form-control" id="selShowtime">
+
+            @foreach (var item in ViewBag.Showtimes) {
+                <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
+            }
+        </select>
+    </div>
+    <div id="autoCreate" class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Suất đầu tiên</label>
+                <select class="form-control" id="selFirstShowtime">
+                    @foreach (var item in ViewBag.Showtimes) {
+                        <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Số suất cần tạo</label>
+                <input type="number" class="form-control" placeholder="Số suất cần tạo" value="" />
+            </div>
+        </div>
     </div>
     <div class="form-group">
-        <label>Chọn thời gian</label>
-        <select class="form-control" id="selShowtime"></select>
+        <label>Khuyến mãi</label>
+        <select class="form-control" id="selPromote"></select>
     </div>
-    <span>
+    <span style="float: right">
+        <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
         <button id="btnFilter" class="btn btn-success">Thêm</button>
-        <button id="btnCancel" class="btn btn-danger">Huỷ</button>
     </span>
 </div>
 
 <script>
-    $.get("/Admin/GetShowingMovies", function (data) {
-        $("#selMovie").empty();
-        $.each(data, function (index, value) {
-            var htmlString = "<option value='" + value.MovieID + "'>" + value.Title + "</option>";
-            $("#selMovie").append(htmlString);
-        });
-    });
+    $("#autoCreate").hide();
+    $("#manuallyCreate").show();
 
-    $("#selMovie").change(function () {
+    $(document).on("change", "#selMovie", function () {
         var movieId = $(this).val();
+        $("#selDate").empty();
         $.get("/Admin/GetDatesByMovieID", { movieId: movieId }, function (data) {
-            var htmlString = "<option>" + value.Date + "</option>";
-            $("#selMovie").append(htmlString);
+            $("#selDate").append('<option value="-1" disabled selected>Chọn ngày</option>');
+            $.each(data, function (index, value) {
+                var htmlString = "<option>" + value + "</option>";
+                $("#selDate").append(htmlString);
+            });
         });
     });
 
-    $("#selDate").change(function () {
-        var movieId = $(this).val();
-        $.get("/Admin/GetDatesByMovieID", { movieId: movieId }, function (data) {
-
-        });
-    });
-
-    $("#btnCancel").click(function () {
+    $(document).on("click", "#btnCancel", function () {
         $.get("/Admin/GetPage", { page: 'manageschedule_all' }, function (htmlResponse) {
             $("#main_content").html(htmlResponse);
         });
+    });
+
+    $(document).on("click", "#rdManually", function () {
+        $("#autoCreate").slideUp();
+        $("#manuallyCreate").slideDown();
+    });
+
+    $(document).on("click", "#rdAuto", function () {
+        $("#autoCreate").slideDown();
+        $("#manuallyCreate").slideUp();
     });
 </script>

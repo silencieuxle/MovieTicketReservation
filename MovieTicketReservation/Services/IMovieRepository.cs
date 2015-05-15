@@ -18,6 +18,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Movie> GetMoviesByRate(IEnumerable<Movie> data = null);
         IEnumerable<Movie> GetHotMovies(IEnumerable<Movie> data = null);
         IEnumerable<Movie> GetMoviesByTitle(string title);
+        IEnumerable<Movie> GetMoviesByCinemaID(string cinemaId);
         Movie GetMovieByID(int movieId);
         bool InsertMovie(Movie movie);
         bool UpdateMovie(Movie movie);

@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AdminAccount">
+          <Key>
+            <PropertyRef Name="AdminAccountID" />
+          </Key>
+          <Property Name="AdminAccountID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Section" Type="varchar(max)" />
+          <Property Name="MemberID" Type="int" />
+          <Property Name="RoleID" Type="int" />
+        </EntityType>
         <EntityType Name="AgeLimitation">
           <Key>
             <PropertyRef Name="LimitationID" />
@@ -70,7 +79,6 @@
           <Property Name="Password" Type="varchar(max)" Nullable="false" />
           <Property Name="Phone" Type="varchar" MaxLength="11" />
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
-          <Property Name="RoleID" Type="int" />
           <Property Name="Gender" Type="bit" />
           <Property Name="Birthday" Type="date" />
           <Property Name="AvatarURL" Type="varchar(max)" />
@@ -226,6 +234,30 @@
           <Property Name="Name" Type="varchar" MaxLength="20" />
           <Property Name="Price" Type="money" />
         </EntityType>
+        <Association Name="FK_AdminAccount_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="0..1" />
+          <End Role="AdminAccount" Type="Self.AdminAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="AdminAccount">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdminAccount_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="AdminAccount" Type="Self.AdminAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="AdminAccount">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BookingHeader_Member">
           <End Role="Member" Type="Self.Member" Multiplicity="0..1" />
           <End Role="BookingHeader" Type="Self.BookingHeader" Multiplicity="*" />
@@ -295,18 +327,6 @@
             </Principal>
             <Dependent Role="CinemaImage">
               <PropertyRef Name="CinemaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Member_Role">
-          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
-          <End Role="Member" Type="Self.Member" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="RoleID" />
-            </Principal>
-            <Dependent Role="Member">
-              <PropertyRef Name="RoleID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -527,6 +547,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DbModelStoreContainer">
+          <EntitySet Name="AdminAccount" EntityType="Self.AdminAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AgeLimitation" EntityType="Self.AgeLimitation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookingHeader" EntityType="Self.BookingHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cine_MovieDetails" EntityType="Self.Cine_MovieDetails" Schema="dbo" store:Type="Tables" />
@@ -550,6 +571,14 @@
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagDetails" EntityType="Self.TagDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TicketClass" EntityType="Self.TicketClass" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AdminAccount_Member" Association="Self.FK_AdminAccount_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="AdminAccount" EntitySet="AdminAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdminAccount_Role" Association="Self.FK_AdminAccount_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="AdminAccount" EntitySet="AdminAccount" />
+          </AssociationSet>
           <AssociationSet Name="FK_BookingHeader_Member" Association="Self.FK_BookingHeader_Member">
             <End Role="Member" EntitySet="Member" />
             <End Role="BookingHeader" EntitySet="BookingHeader" />
@@ -573,10 +602,6 @@
           <AssociationSet Name="FK_CinemaImage_Cinema" Association="Self.FK_CinemaImage_Cinema">
             <End Role="Cinema" EntitySet="Cinema" />
             <End Role="CinemaImage" EntitySet="CinemaImage" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Member_Role" Association="Self.FK_Member_Role">
-            <End Role="Role" EntitySet="Role" />
-            <End Role="Member" EntitySet="Member" />
           </AssociationSet>
           <AssociationSet Name="FK_Movie_AgeLimitation" Association="Self.FK_Movie_AgeLimitation">
             <End Role="AgeLimitation" EntitySet="AgeLimitation" />
@@ -723,12 +748,11 @@
           <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Phone" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="RoleID" Type="Int32" />
           <Property Name="Gender" Type="Boolean" />
           <Property Name="Birthday" Type="DateTime" Precision="0" />
           <Property Name="AvatarURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BookingHeaders" Relationship="Self.FK_BookingHeader_Member" FromRole="Member" ToRole="BookingHeader" />
-          <NavigationProperty Name="Role" Relationship="Self.FK_Member_Role" FromRole="Member" ToRole="Role" />
+          <NavigationProperty Name="AdminAccounts" Relationship="DbModel.FK_AdminAccount_Member" FromRole="Member" ToRole="AdminAccount" />
         </EntityType>
         <EntityType Name="Movie">
           <Key>
@@ -794,7 +818,7 @@
           </Key>
           <Property Name="RoleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Members" Relationship="Self.FK_Member_Role" FromRole="Role" ToRole="Member" />
+          <NavigationProperty Name="AdminAccounts" Relationship="DbModel.FK_AdminAccount_Role" FromRole="Role" ToRole="AdminAccount" />
         </EntityType>
         <EntityType Name="Room">
           <Key>
@@ -971,18 +995,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Member_Role">
-          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
-          <End Role="Member" Type="Self.Member" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="RoleID" />
-            </Principal>
-            <Dependent Role="Member">
-              <PropertyRef Name="RoleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Schedule_Room1">
           <End Role="Room" Type="Self.Room" Multiplicity="1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
@@ -1118,10 +1130,6 @@
             <End Role="Cinema" EntitySet="Cinemas" />
             <End Role="Room" EntitySet="Rooms" />
           </AssociationSet>
-          <AssociationSet Name="FK_Member_Role" Association="Self.FK_Member_Role">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="Member" EntitySet="Members" />
-          </AssociationSet>
           <AssociationSet Name="FK_Schedule_Room1" Association="Self.FK_Schedule_Room1">
             <End Role="Room" EntitySet="Rooms" />
             <End Role="Schedule" EntitySet="Schedules" />
@@ -1171,6 +1179,15 @@
             <End Role="Cinema" EntitySet="Cinemas" />
             <End Role="Promote" EntitySet="Promotes" />
           </AssociationSet>
+          <EntitySet Name="AdminAccounts" EntityType="DbModel.AdminAccount" />
+          <AssociationSet Name="FK_AdminAccount_Member" Association="DbModel.FK_AdminAccount_Member">
+            <End Role="Member" EntitySet="Members" />
+            <End Role="AdminAccount" EntitySet="AdminAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdminAccount_Role" Association="DbModel.FK_AdminAccount_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="AdminAccount" EntitySet="AdminAccounts" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Promote">
           <Key>
@@ -1210,6 +1227,41 @@
         <Association Name="Cine_PromoteDetails">
           <End Type="DbModel.Cinema" Role="Cinema" Multiplicity="*" />
           <End Type="DbModel.Promote" Role="Promote" Multiplicity="*" />
+        </Association>
+        <EntityType Name="AdminAccount">
+          <Key>
+            <PropertyRef Name="AdminAccountID" />
+          </Key>
+          <Property Name="AdminAccountID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Section" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="Int32" />
+          <Property Name="RoleID" Type="Int32" />
+          <NavigationProperty Name="Member" Relationship="DbModel.FK_AdminAccount_Member" FromRole="AdminAccount" ToRole="Member" />
+          <NavigationProperty Name="Role" Relationship="DbModel.FK_AdminAccount_Role" FromRole="AdminAccount" ToRole="Role" />
+        </EntityType>
+        <Association Name="FK_AdminAccount_Member">
+          <End Type="DbModel.Member" Role="Member" Multiplicity="0..1" />
+          <End Type="DbModel.AdminAccount" Role="AdminAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberID" />
+            </Principal>
+            <Dependent Role="AdminAccount">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdminAccount_Role">
+          <End Type="DbModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="DbModel.AdminAccount" Role="AdminAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="AdminAccount">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1278,7 +1330,6 @@
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
                 <ScalarProperty Name="Birthday" ColumnName="Birthday" />
                 <ScalarProperty Name="AvatarURL" ColumnName="AvatarURL" />
@@ -1456,6 +1507,16 @@
               <ScalarProperty Name="CinemaID" ColumnName="CinemaID" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="AdminAccounts">
+            <EntityTypeMapping TypeName="DbModel.AdminAccount">
+              <MappingFragment StoreEntitySet="AdminAccount">
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="AdminAccountID" ColumnName="AdminAccountID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

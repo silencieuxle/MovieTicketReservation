@@ -19,10 +19,6 @@ namespace MovieTicketReservation.Services.MemberService {
             return context.Members.ToList();
         }
 
-        public IEnumerable<Member> GetMembersByRole(int roleId) {
-            return context.Members.Where(m => m.Role.RoleID == roleId);
-        }
-
         public Member GetMemberByID(int memberId) {
             return context.Members.Find(memberId);
         }

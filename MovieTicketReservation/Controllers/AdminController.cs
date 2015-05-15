@@ -9,6 +9,8 @@ using MovieTicketReservation.Services.MovieService;
 using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.ScheduleService;
 using MovieTicketReservation.Services.ShowtimeService;
+using MovieTicketReservation.Services.CinemaMovieDetailsService;
+using MovieTicketReservation.Services.RoomService;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.ViewModels;
 
@@ -17,14 +19,18 @@ namespace MovieTicketReservation.Controllers {
         private DbEntities context = new DbEntities();
         private IMovieRepository movieRepository;
         private IScheduleRepository scheduleRepository;
+        private IRoomRepository roomRepository;
         private IMemberRepository memberRepository;
         private IShowtimeRepository showtimeRepository;
+        private ICinemaMovieRepository cinemaMovieRepository;
 
         public AdminController() {
             this.movieRepository = new MovieRepository(context);
             this.scheduleRepository = new ScheduleRepository(context);
             this.memberRepository = new MemberRepository(context);
             this.showtimeRepository = new ShowtimeRepository(context);
+            this.roomRepository = new RoomRepository(context);
+            this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
         }
 
         // GET: Admin
@@ -53,7 +59,9 @@ namespace MovieTicketReservation.Controllers {
                 case "managemovie_all":
                     return PartialView("_ManageMovie_All");
                 case "manageschedule_create":
-                    return PartialView("_ManageSchedule_Create");
+                    ViewBag.Rooms = roomRepository.GetRoomsByCinemaID("CINE1");
+                    ViewBag.Showtimes = showtimeRepository.GetShowtimes();
+                    return PartialView("_ManageSchedule_Create", movieRepository.GetMoviesByCinemaID("CINE1"));
                 case "manageschedule_all":
                     return PartialView("_ManageSchedule_All");
                 case "manageschedule_edit":
@@ -63,7 +71,7 @@ namespace MovieTicketReservation.Controllers {
                 case "managemember_add":
                     return PartialView("_ManageMember_Add");
                 case "managemember_edit":
-                    return PartialView("_ManageMember_Edit",memberRepository.GetMemberByID(Convert.ToInt32(param)));
+                    return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(param)));
                 case "promotion_all":
                     return PartialView("_Promotion_All");
                 case "promotion_add":
@@ -136,9 +144,24 @@ namespace MovieTicketReservation.Controllers {
                 Lastname = userRegisterModel.LastName,
                 Password = Helper.GenerateSHA1String(userRegisterModel.Password),
                 Phone = userRegisterModel.Phone,
-                RoleID = 4
             });
             return Json(new { Success = result, ErrorMessage = result ? "" : "Error occured while process your request." }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Schedule Management
+
+        public ActionResult GetDatesByMovieID(int movieId) {
+            var beginDate = DateTime.Now;
+            var details = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId);
+            var endDate = ((DateTime)details.BeginShowDate).AddDays((int)details.Duration);
+            if (beginDate >= endDate) return null;
+            List<String> result = new List<string>();
+            for (var d = beginDate; d <= endDate; d = d.AddDays(1)) {
+                result.Add(d.ToShortDateString());
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

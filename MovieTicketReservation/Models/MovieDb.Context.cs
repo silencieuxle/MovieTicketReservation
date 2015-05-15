@@ -44,5 +44,6 @@ namespace MovieTicketReservation.Models
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TicketClass> TicketClasses { get; set; }
         public virtual DbSet<Promote> Promotes { get; set; }
+        public virtual DbSet<AdminAccount> AdminAccounts { get; set; }
     }
 }

@@ -64,7 +64,7 @@ namespace MovieTicketReservation.Controllers {
             var userDuplicated = memberRepository.IsIdCardExisted(userRegisterModel.IdCardNumber);
             if (userDuplicated) {
                 ModelState.AddModelError("IdCardNumber", "SỐ chứng minh nhân dân này đã được sử dụng.");
-                return View(userRegisterModel); 
+                return View(userRegisterModel);
             }
             var user = new Member {
                 Firstname = userRegisterModel.FirstName,
@@ -76,8 +76,7 @@ namespace MovieTicketReservation.Controllers {
                 Address = userRegisterModel.Address,
                 Gender = userRegisterModel.Gender,
                 Birthday = userRegisterModel.BirthDay,
-                AvatarURL = null,
-                RoleID = 4
+                AvatarURL = null
             };
             if (memberRepository.InsertMember(user)) {
                 return View("RegisterSucceeded");

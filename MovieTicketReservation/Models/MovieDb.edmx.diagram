@@ -31,7 +31,6 @@
         <AssociationConnector Association="DbModel.FK_Schedule_Cine_MovieDetails" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_CinemaImage_Cinema" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Room_Cinema" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Member_Role" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Schedule_Room1" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Seat_Room" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Schedule_ShowTime" ManuallyRouted="false" />
@@ -45,6 +44,9 @@
         <AssociationConnector Association="DbModel.FK_Promote_News" />
         <AssociationConnector Association="DbModel.FK_Schedule_Promote" />
         <AssociationConnector Association="DbModel.Cine_PromoteDetails" />
+        <EntityTypeShape EntityType="DbModel.AdminAccount" Width="1.5" PointX="8.5" PointY="18.5" />
+        <AssociationConnector Association="DbModel.FK_AdminAccount_Member" />
+        <AssociationConnector Association="DbModel.FK_AdminAccount_Role" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
