@@ -171,5 +171,13 @@ namespace MovieTicketReservation.Controllers {
         }
 
         #endregion
+
+        #region News Management
+
+        public ActionResult AjaxAddNews(string title, string description, ) {
+            return null;
+        }
+
+        #endregion
     }
 }

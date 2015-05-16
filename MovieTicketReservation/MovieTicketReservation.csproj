@@ -301,16 +301,9 @@
     <Compile Include="ViewModels\BookingDetailsModel.cs" />
     <Compile Include="ViewModels\CinemaModel.cs" />
     <Compile Include="ViewModels\DateModel.cs" />
-    <Compile Include="ViewModels\DateShowtimeModel.cs" />
-    <Compile Include="ViewModels\EditionModel.cs" />
-    <Compile Include="ViewModels\GenreModel.cs" />
     <Compile Include="ViewModels\MovieExtended.cs" />
-    <Compile Include="ViewModels\MovieBasicModel.cs" />
     <Compile Include="ViewModels\CinemaScheduleModel.cs" />
-    <Compile Include="ViewModels\PostBasicModel.cs" />
-    <Compile Include="ViewModels\SeatModel.cs" />
     <Compile Include="ViewModels\Showtime.cs" />
-    <Compile Include="ViewModels\TagModel.cs" />
     <Compile Include="ViewModels\TicketList.cs" />
     <Compile Include="ViewModels\LoginModel.cs" />
     <Compile Include="ViewModels\MemberModel.cs" />

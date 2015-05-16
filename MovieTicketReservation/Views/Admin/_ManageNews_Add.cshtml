@@ -14,26 +14,40 @@
 
 <div class="col-sm-8 col-sm-push-2">
     <h2 class="separator">Thêm tin tức</h2>
-    <div class="form-group">
-        <label>Tên bài viết</label>
-        <input type="text" class="form-control" placeholder="Nhập tên bài viết" aria-describedby="basic-addon1">
-    </div><br />
-    <div class="form-group">
-        <label>Mô tả </label>
-        <input type="text" class="form-control" placeholder="Nhập giá mô tả ngắn" aria-describedby="basic-addon1">
-    </div><br />
-    <div class="form-group">
-        <div class="btn btn-primary btn-file">
-            <i class="glyphicon glyphicon-folder-open"></i>
-            &nbsp;Chọn hình ảnh …<input id="btnUploadImage" type="file" class="">
+    <form id="form">
+        <div class="form-group">
+            <label>Tên bài viết</label>
+            <input type="text" class="form-control" name="Title" id="txtTitle" placeholder="Tên bài viết">
+        </div><br />
+        <div class="form-group">
+            <label>Mô tả ngắn</label>
+            <input type="text" class="form-control" name="Description" id="txtDescription" placeholder="Mô tả ngắn">
+        </div><br />
+        <div class="form-group">
+            <div class="btn btn-primary btn-file">
+                <i class="glyphicon glyphicon-folder-open"></i>
+                &nbsp;Hình cover …<input accept="image/*" name="ThumbnailURL" id="flImage" type="file">
+            </div>
         </div>
-    </div>
-    <div>
-        <textarea name="content" style="width:100%"></textarea>
-    </div>
-    <br />
-    <div class="form-group">
-        <button id="btnFilter" style="float: right" class="btn btn-success">Thêm</button>
-        <button id="btnCancel" style="float: right; margin-right: 50px;" class="btn btn-danger">Huỷ</button>
-    </div>
+        <div>
+            <textarea id="txtContent" name="Content" style="width:100%"></textarea>
+        </div>
+        <br />
+        <div class="form-group">
+            <button id="btnSubmit" type="button" style="float: right" class="btn btn-success">Thêm</button>
+            <button id="btnCancel" type="button" style="float: right; margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+        </div>
+    </form>
 </div>
+
+<script>
+    $("#btnSubmit").click(function () {
+        var title = $("#txtTitle").val();
+        var desc = $("#txtDescription").val();
+        var file = $("#flImage").files[0];
+        var content = $("#txtContent").val();
+        $.post("/Admin/AjaxAddNews", { title: title, description: desc, file: file, content: content }, function (data) {
+
+        });
+    });
+</script>
