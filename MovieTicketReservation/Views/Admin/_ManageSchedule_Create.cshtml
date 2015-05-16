@@ -1,71 +1,77 @@
 ﻿@using MovieTicketReservation.Models
 @model List<Movie>
 
-<div class="col-sm-8 col-sm-push-2">
+<div class="col-sm-12">
     <h2 class="separator">Thêm suất chiếu</h2>
-    <div class="form-group">
-        <label>Chọn film</label>
-        <select class="form-control" id="selMovie">
-            <option value="-1" disabled selected>Chọn film</option>
-            @foreach (var item in Model) {
-                <option value="@item.MovieID">@item.Title</option>
-            }
-        </select>
+    <div class="col-sm-6">
+        Suất chiếu
     </div>
-    <div class="form-group">
-        <label>Chọn phòng</label>
-        <select class="form-control" id="selRoom">
-            <option value="-1" disabled selected>Chọn film</option>
-            @foreach (var item in ViewBag.Rooms) {
-                <option value="@item.RoomID">@item.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Chọn ngày</label>
-        <select class="form-control" id="selDate">
-            <option value="-1" disabled selected>Chọn ngày</option>
-        </select>
-    </div>
-    <div class="row form-group">
-        <div class="col-xs-6"><input type="radio" name="createOptions" checked id="rdManually" /> Tự tạo</div>
-        <div class="col-xs-6"><input type="radio" name="createOptions" id="rdAuto" /> Tạo tự động</div>
-    </div>
-    <div class="form-group" id="manuallyCreate">
-        <label>Chọn thời gian</label>
-        <select class="form-control" id="selShowtime">
+    <form class="col-sm-6">
+        <div class="form-group">
+            <label>Chọn film</label>
+            <select class="form-control" id="selMovie">
+                <option value="-1" disabled selected>Chọn film</option>
+                @foreach (var item in Model) {
+                    <option value="@item.MovieID">@item.Title</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Chọn phòng</label>
+            <select class="form-control" id="selRoom">
+                <option value="-1" disabled selected>Chọn film</option>
+                @foreach (var item in ViewBag.Rooms) {
+                    <option value="@item.RoomID">@item.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Chọn ngày</label>
+            <select class="form-control" id="selDate">
+                <option value="-1" disabled selected>Chọn ngày</option>
+            </select>
+        </div>
+        <div class="row form-group">
+            <div class="col-xs-6"><input type="radio" name="createOptions" checked id="rdManually" /> Tự tạo</div>
+            <div class="col-xs-6"><input type="radio" name="createOptions" id="rdAuto" /> Tạo tự động</div>
+        </div>
+        <div class="form-group" id="manuallyCreate">
+            <label>Chọn thời gian</label>
+            <select class="form-control" id="selShowtime">
 
-            @foreach (var item in ViewBag.Showtimes) {
-                <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
-            }
-        </select>
-    </div>
-    <div id="autoCreate" class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label>Suất đầu tiên</label>
-                <select class="form-control" id="selFirstShowtime">
-                    @foreach (var item in ViewBag.Showtimes) {
-                        <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
-                    }
-                </select>
+                @foreach (var item in ViewBag.Showtimes) {
+                    <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
+                }
+            </select>
+        </div>
+        <div id="autoCreate" class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Suất đầu tiên</label>
+                    <select class="form-control" id="selFirstShowtime">
+                        @foreach (var item in ViewBag.Showtimes) {
+                            <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Số suất cần tạo</label>
+                    <input type="number" id="txtNumberOfSchedule" class="form-control" placeholder="Số suất cần tạo" value="" />
+                </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label>Số suất cần tạo</label>
-                <input type="number" class="form-control" placeholder="Số suất cần tạo" value="" />
-            </div>
+        <div class="form-group">
+            <label>Khuyến mãi</label>
+            <select class="form-control" id="selPromote"></select>
         </div>
-    </div>
-    <div class="form-group">
-        <label>Khuyến mãi</label>
-        <select class="form-control" id="selPromote"></select>
-    </div>
-    <span style="float: right">
-        <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
-        <button id="btnFilter" class="btn btn-success">Thêm</button>
-    </span>
+        <span style="float: right">
+            <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+            <button id="btnCreate" type="submit" class="btn btn-success">Thêm</button>
+        </span>
+    </form>
+    
 </div>
 
 <script>
@@ -92,11 +98,15 @@
 
     $(document).on("click", "#rdManually", function () {
         $("#autoCreate").slideUp();
+        $("#selFirstShowtime").prop("disabled", true);
+        $("#txtNumberOfSchedule").prop("disabled", true);
         $("#manuallyCreate").slideDown();
     });
 
     $(document).on("click", "#rdAuto", function () {
         $("#autoCreate").slideDown();
+        $("#selFirstShowtime").prop("disabled", false);
+        $("#txtNumberOfSchedule").prop("disabled", false);
         $("#manuallyCreate").slideUp();
     });
 </script>
