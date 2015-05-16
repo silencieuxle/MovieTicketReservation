@@ -77,7 +77,13 @@ namespace MovieTicketReservation.Controllers {
                 case "promotion_add":
                     return PartialView("_Promotion_Add");
                 case "promotion_edit":
-                    return PartialView("_Promotion_Edit"); ;
+                    return PartialView("_Promotion_Edit");
+                case "managenews_all":
+                    return PartialView("_ManageNews_All");
+                case "managenews_add":
+                    return PartialView("_ManageNews_Add");
+                case "managenews_edit":
+                    return PartialView("_ManageNews_Edit");
                 default: return View("Index");
             }
         }

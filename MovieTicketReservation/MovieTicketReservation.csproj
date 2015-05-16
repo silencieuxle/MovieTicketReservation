@@ -656,6 +656,9 @@
     <Content Include="Views\News\_NewsTemplate.cshtml" />
     <Content Include="Views\Ticket\Error.cshtml" />
     <Content Include="Views\Schedule\Index.cshtml" />
+    <Content Include="Views\Admin\_ManageNews_All.cshtml" />
+    <Content Include="Views\Admin\_ManageNews_Add.cshtml" />
+    <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
