@@ -153,7 +153,7 @@
           <Key>
             <PropertyRef Name="PromoteID" />
           </Key>
-          <Property Name="PromoteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PromoteID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="PriceOff" Type="float" />
           <Property Name="NewsID" Type="int" />
         </EntityType>
@@ -202,7 +202,7 @@
           <Property Name="SeatID" Type="int" Nullable="false" />
           <Property Name="Reserved" Type="bit" />
           <Property Name="Paid" Type="bit" />
-          <Property Name="ClassID" Type="int" />
+          <Property Name="ClassID" Type="varchar" MaxLength="9" />
         </EntityType>
         <EntityType Name="ShowTime">
           <Key>
@@ -498,6 +498,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Seat_ShowDetails_TicketClass">
+          <End Role="TicketClass" Type="Self.TicketClass" Multiplicity="0..1" />
+          <End Role="Seat_ShowDetails" Type="Self.Seat_ShowDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketClass">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="Seat_ShowDetails">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Seat_ShowTimeDetails_Seat">
           <End Role="Seat" Type="Self.Seat" Multiplicity="1" />
           <End Role="Seat_ShowDetails" Type="Self.Seat_ShowDetails" Multiplicity="*" />
@@ -657,6 +669,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Seat_ShowDetails_Schedule" Association="Self.FK_Seat_ShowDetails_Schedule">
             <End Role="Schedule" EntitySet="Schedule" />
+            <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Seat_ShowDetails_TicketClass" Association="Self.FK_Seat_ShowDetails_TicketClass">
+            <End Role="TicketClass" EntitySet="TicketClass" />
             <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_Seat_ShowTimeDetails_Seat" Association="Self.FK_Seat_ShowTimeDetails_Seat">
@@ -872,7 +888,8 @@
           <NavigationProperty Name="BookingHeader" Relationship="Self.FK_Seat_ShowDetails_BookingHeader" FromRole="Seat_ShowDetails" ToRole="BookingHeader" />
           <NavigationProperty Name="Schedule" Relationship="Self.FK_Seat_ShowDetails_Schedule" FromRole="Seat_ShowDetails" ToRole="Schedule" />
           <NavigationProperty Name="Seat" Relationship="Self.FK_Seat_ShowTimeDetails_Seat" FromRole="Seat_ShowDetails" ToRole="Seat" />
-          <Property Name="ClassID" Type="Int32" />
+          <Property Name="ClassID" Type="String" MaxLength="9" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="TicketClass" Relationship="DbModel.FK_Seat_ShowDetails_TicketClass" FromRole="Seat_ShowDetails" ToRole="TicketClass" />
         </EntityType>
         <EntityType Name="ShowTime">
           <Key>
@@ -898,6 +915,7 @@
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
           <NavigationProperty Name="Seats" Relationship="Self.FK_Seat_TicketClass" FromRole="TicketClass" ToRole="Seat" />
+          <NavigationProperty Name="Seat_ShowDetails" Relationship="DbModel.FK_Seat_ShowDetails_TicketClass" FromRole="TicketClass" ToRole="Seat_ShowDetails" />
         </EntityType>
         <Association Name="FK_Movie_AgeLimitation">
           <End Role="AgeLimitation" Type="Self.AgeLimitation" Multiplicity="0..1" />
@@ -1188,6 +1206,10 @@
             <End Role="Role" EntitySet="Roles" />
             <End Role="AdminAccount" EntitySet="AdminAccounts" />
           </AssociationSet>
+          <AssociationSet Name="FK_Seat_ShowDetails_TicketClass" Association="DbModel.FK_Seat_ShowDetails_TicketClass">
+            <End Role="TicketClass" EntitySet="TicketClasses" />
+            <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Promote">
           <Key>
@@ -1260,6 +1282,18 @@
             </Principal>
             <Dependent Role="AdminAccount">
               <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Seat_ShowDetails_TicketClass">
+          <End Type="DbModel.TicketClass" Role="TicketClass" Multiplicity="0..1" />
+          <End Type="DbModel.Seat_ShowDetails" Role="Seat_ShowDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketClass">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="Seat_ShowDetails">
+              <PropertyRef Name="ClassID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

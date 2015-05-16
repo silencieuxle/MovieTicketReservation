@@ -17,6 +17,7 @@ namespace MovieTicketReservation.Models
         public TicketClass()
         {
             this.Seats = new HashSet<Seat>();
+            this.Seat_ShowDetails = new HashSet<Seat_ShowDetails>();
         }
     
         public string ClassID { get; set; }
@@ -24,5 +25,6 @@ namespace MovieTicketReservation.Models
         public Nullable<decimal> Price { get; set; }
     
         public virtual ICollection<Seat> Seats { get; set; }
+        public virtual ICollection<Seat_ShowDetails> Seat_ShowDetails { get; set; }
     }
 }

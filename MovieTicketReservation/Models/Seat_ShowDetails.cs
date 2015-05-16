@@ -19,10 +19,11 @@ namespace MovieTicketReservation.Models
         public int SeatID { get; set; }
         public Nullable<bool> Reserved { get; set; }
         public Nullable<bool> Paid { get; set; }
-        public Nullable<int> ClassID { get; set; }
+        public string ClassID { get; set; }
     
         public virtual BookingHeader BookingHeader { get; set; }
         public virtual Schedule Schedule { get; set; }
         public virtual Seat Seat { get; set; }
+        public virtual TicketClass TicketClass { get; set; }
     }
 }

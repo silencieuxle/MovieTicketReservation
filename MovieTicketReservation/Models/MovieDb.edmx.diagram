@@ -47,6 +47,7 @@
         <EntityTypeShape EntityType="DbModel.AdminAccount" Width="1.5" PointX="8.5" PointY="18.5" />
         <AssociationConnector Association="DbModel.FK_AdminAccount_Member" />
         <AssociationConnector Association="DbModel.FK_AdminAccount_Role" />
+        <AssociationConnector Association="DbModel.FK_Seat_ShowDetails_TicketClass" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
