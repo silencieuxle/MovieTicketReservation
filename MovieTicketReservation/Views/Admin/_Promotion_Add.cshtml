@@ -1,3 +1,43 @@
-﻿Template _ManageNews_Add
-PriceOff
-Checkbox List (Cinemas)
+﻿<script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>
+<div class="col-sm-12">
+    <h2 class="separator">Thêm khuyến mãi</h2>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Tên bài viết</span>
+        <input type="text" class="form-control" placeholder="Nhập tên bài viết" aria-describedby="basic-addon1">
+    </div><br/>
+
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Giá khuyến mãi</span>
+        <input type="text" class="form-control" placeholder="Nhập giá khuyến mãi" aria-describedby="basic-addon1">
+    </div><br/>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Chọn rạp</span>
+        <select class="form-control" id="selMovie">
+            <option value="-1" disabled selected>Chọn rạp</option>
+        </select>
+    </div><br/>
+
+    <div class="abc">
+        <script type="text/javascript">
+            tinymce.init({
+                selector: "textarea",
+                plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table contextmenu paste"
+                ],
+                toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            });
+        </script>
+    </div>
+
+    <span>
+        <button id="btnFilter" class="btn btn-success">Thêm</button>
+        <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+    </span>
+
+        <form method="post" action="somepage">
+            <textarea name="content" style="width:100%"></textarea>
+        </form>
+        <input type="hidden" value="0" id="headIndex" />
+    </div>

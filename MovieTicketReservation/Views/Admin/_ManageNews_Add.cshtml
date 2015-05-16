@@ -1,2 +1,42 @@
 ﻿<script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>
+<div class="col-sm-12">
+    <h2 class="separator">Thêm tin tức</h2>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Tên bài viết</span>
+        <input type="text" class="form-control" placeholder="Nhập tên bài viết" aria-describedby="basic-addon1">
+    </div><br />
 
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Mô tả </span>
+        <input type="text" class="form-control" placeholder="Nhập giá mô tả ngắn" aria-describedby="basic-addon1">
+    </div><br />
+
+    <div class="btn btn-primary btn-file">
+        <i class="glyphicon glyphicon-folder-open"></i>
+        &nbsp;Browse…<input id="btnUploadImage" type="file" class="">
+    </div>
+
+    <div class="abc">
+        <script type="text/javascript">
+            tinymce.init({
+                selector: "textarea",
+                plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table contextmenu paste"
+                ],
+                toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            });
+        </script>
+    </div>
+
+    <span>
+        <button id="btnFilter" class="btn btn-success">Thêm</button>
+        <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+    </span>
+
+    <form method="post" action="somepage">
+        <textarea name="content" style="width:100%"></textarea>
+    </form>
+    <input type="hidden" value="0" id="headIndex" />
+</div>
