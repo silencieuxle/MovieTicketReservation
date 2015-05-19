@@ -36,7 +36,6 @@
         <AssociationConnector Association="DbModel.FK_Schedule_ShowTime" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Seat_ShowDetails_Schedule" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Seat_ShowTimeDetails_Seat" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Seat_TicketClass" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.Movie_EditionDetails" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.Movie_GenreDetails" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.TagDetails" ManuallyRouted="false" />

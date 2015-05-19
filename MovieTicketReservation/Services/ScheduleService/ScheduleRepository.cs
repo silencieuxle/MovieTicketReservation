@@ -31,11 +31,15 @@ namespace MovieTicketReservation.Services.ScheduleService {
             return context.Schedules.Where(s => s.Cine_MovieDetails.CinemaID == cinemaId && s.Cine_MovieDetails.MovieID == movieId).ToList();
         }
 
+        public IEnumerable<Schedule> GetAvailableSchedules() {
+            return context.Schedules.ToList().Where(s => ((DateTime)s.Cine_MovieDetails.Movie.BeginShowDate).AddDays((int)s.Cine_MovieDetails.Duration) >= DateTime.Now).ToList();
+        }
+
         public Schedule GetScheduleByID(int scheduleId) {
             return context.Schedules.Find(scheduleId);
         }
 
-        public bool InsertSchedule(Schedule schedule) {
+        public Int32 InsertSchedule(Schedule schedule) {
             using (var transaction = context.Database.BeginTransaction()) {
                 try {
                     context.Schedules.Add(schedule);
@@ -46,10 +50,10 @@ namespace MovieTicketReservation.Services.ScheduleService {
                 } catch (Exception ex) {
                     Console.Write(ex.StackTrace);
                     transaction.Rollback();
-                    return false;
+                    return 0;
                 }
             }
-            return true;
+            return schedule.ScheduleID;
         }
 
         public bool UpdateSchedule(Schedule schedule) {

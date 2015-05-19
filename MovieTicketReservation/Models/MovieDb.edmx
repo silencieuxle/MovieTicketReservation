@@ -11,7 +11,7 @@
           </Key>
           <Property Name="AdminAccountID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Section" Type="varchar(max)" />
-          <Property Name="MemberID" Type="int" />
+          <Property Name="MemberID" Type="bigint" />
           <Property Name="RoleID" Type="int" />
         </EntityType>
         <EntityType Name="AgeLimitation">
@@ -25,8 +25,8 @@
           <Key>
             <PropertyRef Name="HeaderID" />
           </Key>
-          <Property Name="HeaderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MemberID" Type="int" />
+          <Property Name="HeaderID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="bigint" />
           <Property Name="SessionID" Type="varchar(max)" />
           <Property Name="Took" Type="bit" />
           <Property Name="Total" Type="money" />
@@ -36,7 +36,7 @@
           <Key>
             <PropertyRef Name="DetailsID" />
           </Key>
-          <Property Name="DetailsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DetailsID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MovieID" Type="int" Nullable="false" />
           <Property Name="CinemaID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="Duration" Type="int" />
@@ -71,7 +71,7 @@
           <Key>
             <PropertyRef Name="MemberID" />
           </Key>
-          <Property Name="MemberID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IDCardNumber" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Firstname" Type="nvarchar" MaxLength="50" />
           <Property Name="Lastname" Type="nvarchar" MaxLength="50" />
@@ -153,7 +153,7 @@
           <Key>
             <PropertyRef Name="PromoteID" />
           </Key>
-          <Property Name="PromoteID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PromoteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PriceOff" Type="float" />
           <Property Name="NewsID" Type="int" />
         </EntityType>
@@ -176,10 +176,10 @@
           <Key>
             <PropertyRef Name="ScheduleID" />
           </Key>
-          <Property Name="ScheduleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ScheduleID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Date" Type="date" />
           <Property Name="ShowTimeID" Type="int" Nullable="false" />
-          <Property Name="Cine_MovieDetailsID" Type="int" Nullable="false" />
+          <Property Name="Cine_MovieDetailsID" Type="bigint" Nullable="false" />
           <Property Name="RoomID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="PromoteID" Type="int" />
         </EntityType>
@@ -189,7 +189,6 @@
           </Key>
           <Property Name="SeatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoomID" Type="varchar" MaxLength="5" Nullable="false" />
-          <Property Name="ClassID" Type="varchar" MaxLength="9" />
           <Property Name="Name" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Seat_ShowDetails">
@@ -197,8 +196,8 @@
             <PropertyRef Name="ScheduleID" />
             <PropertyRef Name="SeatID" />
           </Key>
-          <Property Name="BookingHeaderID" Type="int" />
-          <Property Name="ScheduleID" Type="int" Nullable="false" />
+          <Property Name="BookingHeaderID" Type="bigint" />
+          <Property Name="ScheduleID" Type="bigint" Nullable="false" />
           <Property Name="SeatID" Type="int" Nullable="false" />
           <Property Name="Reserved" Type="bit" />
           <Property Name="Paid" Type="bit" />
@@ -522,18 +521,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Seat_TicketClass">
-          <End Role="TicketClass" Type="Self.TicketClass" Multiplicity="0..1" />
-          <End Role="Seat" Type="Self.Seat" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TicketClass">
-              <PropertyRef Name="ClassID" />
-            </Principal>
-            <Dependent Role="Seat">
-              <PropertyRef Name="ClassID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_TagDetails_News">
           <End Role="News" Type="Self.News" Multiplicity="1" />
           <End Role="TagDetails" Type="Self.TagDetails" Multiplicity="*" />
@@ -678,10 +665,6 @@
           <AssociationSet Name="FK_Seat_ShowTimeDetails_Seat" Association="Self.FK_Seat_ShowTimeDetails_Seat">
             <End Role="Seat" EntitySet="Seat" />
             <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Seat_TicketClass" Association="Self.FK_Seat_TicketClass">
-            <End Role="TicketClass" EntitySet="TicketClass" />
-            <End Role="Seat" EntitySet="Seat" />
           </AssociationSet>
           <AssociationSet Name="FK_TagDetails_News" Association="Self.FK_TagDetails_News">
             <End Role="News" EntitySet="News" />
@@ -869,11 +852,9 @@
           </Key>
           <Property Name="SeatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RoomID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="ClassID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="Room" Relationship="Self.FK_Seat_Room" FromRole="Seat" ToRole="Room" />
           <NavigationProperty Name="Seat_ShowDetails" Relationship="Self.FK_Seat_ShowTimeDetails_Seat" FromRole="Seat" ToRole="Seat_ShowDetails" />
-          <NavigationProperty Name="TicketClass" Relationship="Self.FK_Seat_TicketClass" FromRole="Seat" ToRole="TicketClass" />
         </EntityType>
         <EntityType Name="Seat_ShowDetails">
           <Key>
@@ -914,7 +895,6 @@
           <Property Name="ClassID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
-          <NavigationProperty Name="Seats" Relationship="Self.FK_Seat_TicketClass" FromRole="TicketClass" ToRole="Seat" />
           <NavigationProperty Name="Seat_ShowDetails" Relationship="DbModel.FK_Seat_ShowDetails_TicketClass" FromRole="TicketClass" ToRole="Seat_ShowDetails" />
         </EntityType>
         <Association Name="FK_Movie_AgeLimitation">
@@ -1073,18 +1053,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Seat_TicketClass">
-          <End Role="TicketClass" Type="Self.TicketClass" Multiplicity="0..1" />
-          <End Role="Seat" Type="Self.Seat" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TicketClass">
-              <PropertyRef Name="ClassID" />
-            </Principal>
-            <Dependent Role="Seat">
-              <PropertyRef Name="ClassID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="Movie_EditionDetails">
           <End Role="MovieEdition" Type="Self.MovieEdition" Multiplicity="*" />
           <End Role="Movie" Type="Self.Movie" Multiplicity="*" />
@@ -1167,10 +1135,6 @@
           <AssociationSet Name="FK_Seat_ShowTimeDetails_Seat" Association="Self.FK_Seat_ShowTimeDetails_Seat">
             <End Role="Seat" EntitySet="Seats" />
             <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Seat_TicketClass" Association="Self.FK_Seat_TicketClass">
-            <End Role="TicketClass" EntitySet="TicketClasses" />
-            <End Role="Seat" EntitySet="Seats" />
           </AssociationSet>
           <AssociationSet Name="Movie_EditionDetails" Association="Self.Movie_EditionDetails">
             <End Role="MovieEdition" EntitySet="MovieEditions" />
@@ -1458,7 +1422,6 @@
               <MappingFragment StoreEntitySet="Seat">
                 <ScalarProperty Name="SeatID" ColumnName="SeatID" />
                 <ScalarProperty Name="RoomID" ColumnName="RoomID" />
-                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>

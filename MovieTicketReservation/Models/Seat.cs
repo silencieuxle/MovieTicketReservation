@@ -21,11 +21,9 @@ namespace MovieTicketReservation.Models
     
         public int SeatID { get; set; }
         public string RoomID { get; set; }
-        public string ClassID { get; set; }
         public string Name { get; set; }
     
         public virtual Room Room { get; set; }
         public virtual ICollection<Seat_ShowDetails> Seat_ShowDetails { get; set; }
-        public virtual TicketClass TicketClass { get; set; }
     }
 }

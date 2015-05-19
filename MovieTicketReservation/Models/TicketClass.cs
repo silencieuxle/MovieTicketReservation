@@ -16,7 +16,6 @@ namespace MovieTicketReservation.Models
     {
         public TicketClass()
         {
-            this.Seats = new HashSet<Seat>();
             this.Seat_ShowDetails = new HashSet<Seat_ShowDetails>();
         }
     
@@ -24,7 +23,6 @@ namespace MovieTicketReservation.Models
         public string Name { get; set; }
         public Nullable<decimal> Price { get; set; }
     
-        public virtual ICollection<Seat> Seats { get; set; }
         public virtual ICollection<Seat_ShowDetails> Seat_ShowDetails { get; set; }
     }
 }

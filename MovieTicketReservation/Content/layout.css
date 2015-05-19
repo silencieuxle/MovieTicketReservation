@@ -240,7 +240,7 @@ form[role="search"] {
     font-size: 14px;
     min-height: 171px;
     padding: 16px 18px 10px;
-    background: none repeat scroll 0px 0px #101010;
+    background: none repeat scroll 0 0 #101010;
     border: 1px solid #3D3D3D;
     color: #fff;
 }
@@ -250,4 +250,21 @@ form[role="search"] {
     padding-right: 5px;
     text-decoration: none;
     color: #fff;
+}
+
+/* Scrollbar styling */
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #F90;
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
 }

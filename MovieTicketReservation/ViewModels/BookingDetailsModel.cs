@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MovieTicketReservation.ViewModels {
 	public class BookingDetailsModel {
-        public int ScheduleId { get; set; }
+        public Int32 ScheduleId { get; set; }
         public string MovieTitle { get; set; }
         public string Cinema { get; set; }
         public string Room { get; set; }

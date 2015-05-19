@@ -274,6 +274,7 @@
     <Compile Include="Services\CinemaService\CinemaRepository.cs" />
     <Compile Include="Services\EditionService\EditionRepository.cs" />
     <Compile Include="Services\GenreService\GenreRepository.cs" />
+    <Compile Include="Services\IAdminRepository.cs" />
     <Compile Include="Services\IAgeLimitationRepository.cs" />
     <Compile Include="Services\IBookingRepository.cs" />
     <Compile Include="Services\ICinemaImagesRepositorycs.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Services\ISeatShowRepository.cs" />
     <Compile Include="Services\IShowtimeRepository.cs" />
     <Compile Include="Services\ITagRepository.cs" />
+    <Compile Include="Services\ITicketClassRepository.cs" />
     <Compile Include="Services\MemberService\MemberRepository.cs" />
     <Compile Include="Services\MovieService\MovieRepository.cs" />
     <Compile Include="Services\NewsService\NewsRepository.cs" />
@@ -298,11 +300,14 @@
     <Compile Include="Services\SeatShowDetailsService\SeatShowRepository.cs" />
     <Compile Include="Services\ShowtimeService\ShowtimeRepository.cs" />
     <Compile Include="Services\TagRepository\TagRepository.cs" />
+    <Compile Include="Services\TicketClassService\TicketClassRepository.cs" />
     <Compile Include="ViewModels\BookingDetailsModel.cs" />
     <Compile Include="ViewModels\CinemaModel.cs" />
     <Compile Include="ViewModels\DateModel.cs" />
     <Compile Include="ViewModels\MovieExtended.cs" />
     <Compile Include="ViewModels\CinemaScheduleModel.cs" />
+    <Compile Include="ViewModels\PostUploadModel.cs" />
+    <Compile Include="ViewModels\PromoteUploadModel.cs" />
     <Compile Include="ViewModels\Showtime.cs" />
     <Compile Include="ViewModels\TicketList.cs" />
     <Compile Include="ViewModels\LoginModel.cs" />
@@ -652,6 +657,8 @@
     <Content Include="Views\Admin\_ManageNews_All.cshtml" />
     <Content Include="Views\Admin\_ManageNews_Add.cshtml" />
     <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
+    <Content Include="Views\Admin\ManageSchedule_Add.cshtml" />
+    <Content Include="Views\Admin\_Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

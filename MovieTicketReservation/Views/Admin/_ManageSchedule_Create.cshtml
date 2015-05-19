@@ -4,14 +4,38 @@
 <div class="col-sm-12">
     <h2 class="separator">Thêm suất chiếu</h2>
     <div class="col-sm-6">
-        Suất chiếu
+        <label>Suất chiếu theo phim</label>
+        <div class="table-responsive">
+            <table class="table table-hover" style="height: auto; max-height: 300px; overflow-y: scroll !important;">
+                <thead>
+                    <tr>
+                        <th width="5%">ID</th>
+                        <th width="55%">Film</th>
+                        <th width="15%">Ngày</th>
+                        <th width="10%">Giờ</th>
+                        <th width="5%">Phòng</th>
+                        <th width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="result">
+                    <!-- Row template  -->
+                </tbody>
+            </table>
+        </div>
+        <nav>
+            <ul class="pager">
+                <li class="previous"><a href="#" class="btnNav" data-type="0"><span aria-hidden="true">&larr;</span> Older</a></li>
+                <li class="next"><a href="#" class="btnNav" data-type="1">Newer <span aria-hidden="true">&rarr;</span></a></li>
+            </ul>
+        </nav>
+        <input type="hidden" value="0" id="headIndex" />
     </div>
     <form class="col-sm-6">
         <div class="form-group">
             <label>Chọn film</label>
             <select class="form-control" id="selMovie">
                 <option value="-1" disabled selected>Chọn film</option>
-                @foreach (var item in Model) {
+                @foreach (var item in ViewBag.Movies) {
                     <option value="@item.MovieID">@item.Title</option>
                 }
             </select>
@@ -19,7 +43,7 @@
         <div class="form-group">
             <label>Chọn phòng</label>
             <select class="form-control" id="selRoom">
-                <option value="-1" disabled selected>Chọn film</option>
+                <option value="-1" disabled selected>Chọn phòng</option>
                 @foreach (var item in ViewBag.Rooms) {
                     <option value="@item.RoomID">@item.Name</option>
                 }
@@ -32,13 +56,13 @@
             </select>
         </div>
         <div class="row form-group">
-            <div class="col-xs-6"><input type="radio" name="createOptions" checked id="rdManually" /> Tự tạo</div>
-            <div class="col-xs-6"><input type="radio" name="createOptions" id="rdAuto" /> Tạo tự động</div>
+            <div class="col-xs-6"><input type="radio" name="createOptions" value="0" checked id="rdManually" /> Tự tạo</div>
+            <div class="col-xs-6"><input type="radio" name="createOptions" value="1" id="rdAuto" /> Tạo tự động</div>
         </div>
         <div class="form-group" id="manuallyCreate">
             <label>Chọn thời gian</label>
             <select class="form-control" id="selShowtime">
-
+                <option value="-1" disabled selected>Chọn thời gian chiếu</option>
                 @foreach (var item in ViewBag.Showtimes) {
                     <option value="@item.ShowTimeID">@(((TimeSpan)item.StartTime).Hours):@(((TimeSpan)item.StartTime).Minutes)</option>
                 }
@@ -58,36 +82,68 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Số suất cần tạo</label>
-                    <input type="number" id="txtNumberOfSchedule" class="form-control" placeholder="Số suất cần tạo" value="" />
+                    <input type="number" min="0" max="10" id="txtNumberOfSchedule" class="form-control" placeholder="Số suất cần tạo" value="" />
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label>Loại vé</label>
+            <select class="form-control" id="selTicketClass">
+                <option value="-1" disabled selected>Chọn loại vé</option>
+                @foreach (var item in ViewBag.TicketClasses) {
+                    <option value="@item.ClassID">@item.Name</option>
+                }
+            </select>
         </div>
         <div class="form-group">
             <label>Khuyến mãi</label>
             <select class="form-control" id="selPromote"></select>
         </div>
         <span style="float: right">
-            <button id="btnCancel" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
-            <button id="btnCreate" type="submit" class="btn btn-success">Thêm</button>
+            <button id="btnCancel" type="button" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+            <button id="btnCreate" type="button" class="btn btn-success">Thêm</button>
         </span>
     </form>
-    
 </div>
 
 <script>
     $("#autoCreate").hide();
     $("#manuallyCreate").show();
 
+    function updateTable(movieId) {
+        $.post("/Admin/AjaxGetAvailableSchedulesByMovieID", { movieId: movieId }, function (data) {
+            $("#result").empty();
+            if (data.size == 0) {
+                var htmlString = "<tr><td colspan='6'>Không tìm thấy suất chiếu nào.</td></tr>";
+                $("#result").append(htmlString);
+            }
+            $.each(data, function (index, value) {
+                var htmlString =
+                    "<tr>" +
+                        "<td>" + value.ScheduleID + "</td>" +
+                        "<td>" + value.MovieTitle + "</td>" +
+                        "<td>" + value.Date + "</td>" +
+                        "<td>" + value.Time + "</td>" +
+                        "<td>" + value.Room + "</td>" +
+                        "<td><a href='#' class='btnEditMember' data-id='" + value.MemberID + "'>E</a> | <a href='#' class='btnDeleteMember' data-id='" + value.MemberID + "'>D</a></td>";
+                "</tr>";
+                $("#result").append(htmlString);
+            });
+        });
+
+    }
+
     $(document).on("change", "#selMovie", function () {
         var movieId = $(this).val();
         $("#selDate").empty();
-        $.get("/Admin/GetDatesByMovieID", { movieId: movieId }, function (data) {
+        $.get("/Admin/AjaxGetDatesByMovieID", { movieId: movieId }, function (data) {
             $("#selDate").append('<option value="-1" disabled selected>Chọn ngày</option>');
             $.each(data, function (index, value) {
                 var htmlString = "<option>" + value + "</option>";
                 $("#selDate").append(htmlString);
             });
         });
+        updateTable(movieId);
     });
 
     $(document).on("click", "#btnCancel", function () {
@@ -108,5 +164,68 @@
         $("#selFirstShowtime").prop("disabled", false);
         $("#txtNumberOfSchedule").prop("disabled", false);
         $("#manuallyCreate").slideUp();
+    });
+
+    $(document).on("click", "#btnCreate", function () {
+        var movieId = $("#selMovie").val();
+        var roomId = $("#selRoom").val();
+        var date = $("#selDate").val();
+        var showtimeId = $("#selShowtime").val();
+        var firstShowtimeId = $("#selFirstShowtime").val();
+        var numberOfSchedule = $("#txtNumberOfSchedule").val();
+        var ticketClassId = $("#selTicketClass").val();
+        var promoteId = $("#selPromote").val();
+
+        if (movieId == null || roomId == null || date == null || ticketClassId == null) {
+            alert("Không đủ thông tin, vui lòng kiểm tra lại.");
+            return false;
+        }
+
+        var createOptions = $('input[name="createOptions"]:checked').val();
+        if (parseInt(createOptions) == 0) {
+            if (showtimeId == null) {
+                alert("Phải chọn thời gian chiếu"); 
+                return false;
+            }
+            $.post("/Admin/AjaxAddScheduleManually",
+                {
+                    movieId: parseInt(movieId),
+                    roomId: roomId,
+                    date: date,
+                    showtimeId: parseInt(showtimeId),
+                    ticketClassId: ticketClassId,
+                    promoteId: parseInt(promoteId)
+                },
+                function (response) {
+                    if (response.Success) alert("Thêm suất chiếu thành công.");
+                    else alert("Xảy ra lỗi khi thêm suất chiếu. Một số suất chiếu có thể đã được tạo.")
+                }
+            );
+        } else {
+            if (showtimeId == null) {
+                alert("Phải chọn thời gian chiếu suất đầu");
+                return false;
+            }
+            if (!$.isNumeric(numberOfSchedule)) {
+                alert("Phải nhập số suất chiếu cần tạo");
+                return false;
+            }
+            $.post("/Admin/AjaxAddScheduleAuto",
+                {
+                movieId: parseInt(movieId),
+                roomId: roomId,
+                date: date,
+                firstShowtimeId: parseInt(firstShowtimeId),
+                numberOfSchedule: parseInt(numberOfSchedule),
+                ticketClassId: ticketClassId,
+                promoteId: parseInt(promoteId)
+            },
+                function (response) {
+                    if (response.Success) alert("Thêm suất chiếu thành công.");
+            else alert("Xảy ra lỗi khi thêm suất chiếu. Một số suất chiếu có thể đã được tạo.")
+            }
+            );
+        }
+        updateTable(movieId);
     });
 </script>
