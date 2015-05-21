@@ -24,7 +24,7 @@ namespace MovieTicketReservation.Services.BookingHeaderService {
         }
 
         public IEnumerable<BookingHeader> GetBookingHeadersByDate(DateTime date) {
-            return context.BookingHeaders.Where(b => ((DateTime)b.ReservedTime).Date == date.Date).ToList();
+            return context.BookingHeaders.ToList().Where(b => ((DateTime)b.ReservedTime).Date == date.Date);
         }
 
         public BookingHeader GetBookingHeaderByID(int bookingHeaderId) {

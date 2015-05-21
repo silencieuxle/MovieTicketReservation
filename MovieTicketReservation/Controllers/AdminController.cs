@@ -16,6 +16,7 @@ using MovieTicketReservation.Services.RoomService;
 using MovieTicketReservation.Services.TagRepository;
 using MovieTicketReservation.Services.SeatShowDetailsService;
 using MovieTicketReservation.Services.TicketClassService;
+using MovieTicketReservation.Services.BookingHeaderService;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.ViewModels;
 
@@ -35,8 +36,10 @@ namespace MovieTicketReservation.Controllers {
         private ISeatShowRepository seatShowRepository;
         private IAdminAccountRepository adminAccountRepository;
         private ITicketClassRepository ticketClassRepository;
+        private IBookingRepository bookingRepository;
 
         public AdminController() {
+            this.bookingRepository = new BookingHeaderRepository(context);
             this.tagRepository = new TagRepository(context);
             this.movieRepository = new MovieRepository(context);
             this.scheduleRepository = new ScheduleRepository(context);
@@ -54,15 +57,19 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult Index() {
             if (Session["Role"] == null)
                 return Redirect("Login");
+            ViewBag.TotalMembers = memberRepository.GetAllMembers().Count();
+            ViewBag.TotalBookings = bookingRepository.GetBookingHeadersByDate(DateTime.Now).Count();
+            ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
             return View();
         }
 
         public ActionResult GetPage(string page, string param) {
-            //if (Session["AdminSession"] == null) return PartialView("_Login");
+            int role = (int)Session["Role"];
+            if (role != 1 && role != 2) return Redirect("Login");
             switch (page) {
                 case "login":
                     Session.Abandon();
-                    return PartialView("_Login");
+                    return Redirect("Login");
                 case "moviestats_overall":
                     return PartialView("_MovieStats_Overall");
                 case "moviestats_view":
@@ -113,13 +120,13 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
-        public ActionResult Login() {
-            return View();
-        }
-
         private bool IsAdmin() {
             if ((int)Session["Role"] == 1 || (int)Session["Role"] == 2) return true;
             return false;
+        }
+
+        public ActionResult Login() {
+            return View();
         }
 
         [HttpPost]
@@ -135,9 +142,15 @@ namespace MovieTicketReservation.Controllers {
                 ModelState.AddModelError("", "Tài khoản không có quyền hạn truy cập vào khu vực này!");
                 return View(loginModel);
             }
+            Session["UID"] = user.MemberID;
             Session["Role"] = admin.RoleID;
             Session["AdminSection"] = admin.Section;
-            return null;
+            return Redirect("Index");
+        }
+
+        public ActionResult Logout() {
+            Session.Abandon();
+            return Redirect("/Home/");
         }
 
         #region Member Management
