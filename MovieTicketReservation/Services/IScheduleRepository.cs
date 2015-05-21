@@ -9,6 +9,7 @@ namespace MovieTicketReservation.Services {
     public interface IScheduleRepository : IDisposable {
         IEnumerable<Schedule> GetSchedules();
         IEnumerable<Schedule> GetSchedulesByDate(DateTime date);
+        IEnumerable<Schedule> GetCanBeReserveScheduleByMovieID(int movieId);
         IEnumerable<Schedule> GetSchedulesByRoomID(string roomId);
         IEnumerable<Schedule> GetSchedulesByCinemaIDAndMovieID(string cinemaId, int movieId);
         IEnumerable<Schedule> GetAvailableSchedules();

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using MovieTicketReservation.Models;
 using MovieTicketReservation.Services;
+using MovieTicketReservation.Services.AdminAccountService;
 using MovieTicketReservation.Services.MovieService;
 using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.ScheduleService;
@@ -23,6 +24,7 @@ namespace MovieTicketReservation.Controllers {
         private const string imagePath = "/Content/Images/";
 
         private DbEntities context = new DbEntities();
+        private ITagRepository tagRepository;
         private IMovieRepository movieRepository;
         private IScheduleRepository scheduleRepository;
         private IRoomRepository roomRepository;
@@ -31,9 +33,11 @@ namespace MovieTicketReservation.Controllers {
         private INewsRepository newsRepository;
         private ICinemaMovieRepository cinemaMovieRepository;
         private ISeatShowRepository seatShowRepository;
+        private IAdminAccountRepository adminAccountRepository;
         private ITicketClassRepository ticketClassRepository;
 
         public AdminController() {
+            this.tagRepository = new TagRepository(context);
             this.movieRepository = new MovieRepository(context);
             this.scheduleRepository = new ScheduleRepository(context);
             this.memberRepository = new MemberRepository(context);
@@ -42,11 +46,14 @@ namespace MovieTicketReservation.Controllers {
             this.newsRepository = new NewsRepository(context);
             this.seatShowRepository = new SeatShowRepository(context);
             this.ticketClassRepository = new TicketClassRepository(context);
+            this.adminAccountRepository = new AdminAccountRepository(context);
             this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
         }
 
         // GET: Admin
         public ActionResult Index() {
+            if (Session["Role"] == null)
+                return Redirect("Login");
             return View();
         }
 
@@ -79,7 +86,7 @@ namespace MovieTicketReservation.Controllers {
                 case "manageschedule_edit":
                     return PartialView("_ManageSchedule_Edit");
                 case "manageschedule_add":
-                    ViewBag.Movies = movieRepository.GetCanBeScheduledMovies();
+                    ViewBag.Movies = cinemaMovieRepository.GetCanBeScheduledMoviesByCinema("CINE1");
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID("CINE1");
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
                     ViewBag.TicketClasses = ticketClassRepository.GetTicketClasses();
@@ -106,17 +113,30 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
-        [HttpGet]
         public ActionResult Login() {
             return View();
+        }
+
+        private bool IsAdmin() {
+            if ((int)Session["Role"] == 1 || (int)Session["Role"] == 2) return true;
+            return false;
         }
 
         [HttpPost]
         public ActionResult Login(LoginModel loginModel) {
             if (!ModelState.IsValid) return View(loginModel);
-            if (memberRepository.Authenticate(loginModel.Email, Helper.GenerateSHA1String(loginModel.Password))) {
-
-            };
+            var user = memberRepository.GetMemberByEmailAndPassword(loginModel.Email, Helper.GenerateSHA1String(loginModel.Password));
+            if (user == null) {
+                ModelState.AddModelError("", "Sai thông tin đăng nhập");
+                return View(loginModel);
+            }
+            var admin = adminAccountRepository.GetAdminAccountByMemberID(user.MemberID);
+            if (admin == null) {
+                ModelState.AddModelError("", "Tài khoản không có quyền hạn truy cập vào khu vực này!");
+                return View(loginModel);
+            }
+            Session["Role"] = admin.RoleID;
+            Session["AdminSection"] = admin.Section;
             return null;
         }
 
@@ -191,94 +211,112 @@ namespace MovieTicketReservation.Controllers {
         #region Schedule Management
 
         public ActionResult AjaxGetAvailableSchedules() {
-            var result = scheduleRepository.GetAvailableSchedules().Select(s => new {
-                ScheduleID = s.ScheduleID,
-                MovieTitle = s.Cine_MovieDetails.Movie.Title,
-                Date = ((DateTime)s.Date).ToShortDateString(),
-                Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
-                Room = s.Room.Name
-            }).ToList();
-            return Json(result, JsonRequestBehavior.AllowGet);
+            if (IsAdmin()) {
+                var result = scheduleRepository.GetAvailableSchedules().Select(s => new {
+                    ScheduleID = s.ScheduleID,
+                    MovieTitle = s.Cine_MovieDetails.Movie.Title,
+                    Date = ((DateTime)s.Date).ToShortDateString(),
+                    Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
+                    Room = s.Room.Name
+                }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
+            }
         }
 
         public ActionResult AjaxGetAvailableSchedulesByMovieID(int movieId) {
-            var result = scheduleRepository.GetAvailableSchedules().Where(s => s.Cine_MovieDetails.Movie.MovieID == movieId).Select(s => new {
-                ScheduleID = s.ScheduleID,
-                MovieTitle = s.Cine_MovieDetails.Movie.Title,
-                Date = ((DateTime)s.Date).ToShortDateString(),
-                Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
-                Room = s.Room.Name
-            }).ToList();
-            return Json(result, JsonRequestBehavior.AllowGet);
+            if (IsAdmin()) {
+                var result = scheduleRepository.GetAvailableSchedules().Where(s => s.Cine_MovieDetails.Movie.MovieID == movieId).Select(s => new {
+                    ScheduleID = s.ScheduleID,
+                    MovieTitle = s.Cine_MovieDetails.Movie.Title,
+                    Date = ((DateTime)s.Date).ToShortDateString(),
+                    Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
+                    Room = s.Room.Name
+                }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
+            }
         }
 
         public ActionResult AjaxGetDatesByMovieID(int movieId) {
-            var details = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId);
-            var beginShowDate = (DateTime)details.BeginShowDate;
-            var endShowDate = beginShowDate.AddDays((int)details.Duration);
-            DateTime startDate;
-            if (beginShowDate > DateTime.Now) startDate = beginShowDate;
-            else startDate = DateTime.Now;
+            if (IsAdmin()) {
+                var details = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId);
+                var beginShowDate = (DateTime)details.BeginShowDate;
+                var endShowDate = beginShowDate.AddDays((int)details.Duration);
+                DateTime startDate;
+                if (beginShowDate > DateTime.Now) startDate = beginShowDate;
+                else startDate = DateTime.Now;
 
-            List<String> result = new List<string>();
-            for (var d = startDate; d <= endShowDate; d = d.AddDays(1)) {
-                result.Add(d.ToShortDateString());
+                List<String> result = new List<string>();
+                for (var d = startDate; d <= endShowDate; d = d.AddDays(1)) {
+                    result.Add(d.ToShortDateString());
+                }
+                return Json(result, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
             }
-            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxAddScheduleManually(int movieId, string roomId, string date, int showtimeId, string classId, int? promoteId) {
-            DateTime showdate = DateTime.Parse(date);
-            int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
-
-            var duplicate = scheduleRepository.GetSchedules().Where(x => x.ShowTimeID == showtimeId && x.RoomID == roomId &&
-                x.Cine_MovieDetails.MovieID == movieId && (DateTime)x.Date == showdate);
-            if (duplicate.Count() != 0)
-                return Json(new { Success = false, ErrorMessage = "Suất chiếu cần thêm đã có sẵn" }, JsonRequestBehavior.AllowGet);
-
-            var result = scheduleRepository.InsertSchedule(new Schedule {
-                Cine_MovieDetailsID = cineMovieID,
-                Date = showdate,
-                RoomID = roomId,
-                ShowTimeID = showtimeId,
-                PromoteID = promoteId
-            });
-
-            var movie = movieRepository.GetMovieByID(movieId).MovieEditions;
-
-            if (result != 0) {
-                CreateSeatShowDetails(result, roomId, classId);
-            }
-            return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AjaxAddScheduleAuto(int movieId, string roomId, string date, int firstShowtimeId, int numberOfSchedule, string classId, int? promoteId) {
-            var showtime = (TimeSpan)showtimeRepository.GetShowtimeByID(firstShowtimeId).StartTime;
-            int startTime = showtime.Hours * 60 + showtime.Minutes;
-            int movielength = (int)movieRepository.GetMovieByID(movieId).MovieLength;
-
-            int numberOfScheduleToCreate = (22 * 60 + 30 - startTime) / movielength;
-            numberOfScheduleToCreate = numberOfScheduleToCreate > numberOfSchedule ? numberOfSchedule : numberOfScheduleToCreate;
-            int result = 0;
-            int stId = firstShowtimeId;
-            for (int i = 1; i <= numberOfScheduleToCreate; i++) {
+        public ActionResult AjaxAddScheduleManually(int movieId, string roomId, string date, int showtimeId, string ticketClassId, int? promoteId) {
+            if (IsAdmin()) {
                 DateTime showdate = DateTime.Parse(date);
                 int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
 
-                result = scheduleRepository.InsertSchedule(new Schedule {
+                var duplicate = scheduleRepository.GetSchedules().Where(x => x.ShowTimeID == showtimeId && x.RoomID == roomId && (DateTime)x.Date == showdate);
+                if (duplicate.Count() != 0)
+                    return Json(new { Success = false, ErrorMessage = "Suất cần thêm đã có." }, JsonRequestBehavior.AllowGet);
+
+                var result = scheduleRepository.InsertSchedule(new Schedule {
                     Cine_MovieDetailsID = cineMovieID,
                     Date = showdate,
                     RoomID = roomId,
-                    ShowTimeID = stId,
+                    ShowTimeID = showtimeId,
                     PromoteID = promoteId
                 });
 
-                if (result == 0) return Json(new { Success = false, ErrorMessage = "Some schedules can't be created." });
-                CreateSeatShowDetails(result, roomId, classId);
-                stId += movielength / 15 + 1;
-            }
+                var movie = movieRepository.GetMovieByID(movieId).MovieEditions;
 
-            return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+                if (result != 0) {
+                    CreateSeatShowDetails(result, roomId, ticketClassId);
+                }
+                return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
+            }
+        }
+
+        public ActionResult AjaxAddScheduleAuto(int movieId, string roomId, string date, int firstShowtimeId, int numberOfSchedule, string ticketClassId, int? promoteId) {
+            if (IsAdmin()) {
+                var showtime = (TimeSpan)showtimeRepository.GetShowtimeByID(firstShowtimeId).StartTime;
+                int startTime = showtime.Hours * 60 + showtime.Minutes;
+                int movielength = (int)movieRepository.GetMovieByID(movieId).MovieLength;
+
+                int numberOfScheduleToCreate = (22 * 60 + 30 - startTime) / movielength;
+                numberOfScheduleToCreate = numberOfScheduleToCreate > numberOfSchedule ? numberOfSchedule : numberOfScheduleToCreate;
+                int result = 0;
+                int stId = firstShowtimeId;
+                for (int i = 1; i <= numberOfScheduleToCreate; i++) {
+                    DateTime showdate = DateTime.Parse(date);
+                    int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
+
+                    result = scheduleRepository.InsertSchedule(new Schedule {
+                        Cine_MovieDetailsID = cineMovieID,
+                        Date = showdate,
+                        RoomID = roomId,
+                        ShowTimeID = stId,
+                        PromoteID = promoteId
+                    });
+
+                    if (result == 0) return Json(new { Success = false, ErrorMessage = "Some schedules can't be created." });
+                    CreateSeatShowDetails(result, roomId, ticketClassId);
+                    stId += movielength / 15 + 1;
+                }
+                return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
+            }
         }
 
         private bool CreateSeatShowDetails(int scheduleId, string roomId, string classId) {
@@ -290,25 +328,36 @@ namespace MovieTicketReservation.Controllers {
         #region News Management
 
         public ActionResult AddNews(PostUploadModel postUploadModel) {
-            if (!ModelState.IsValid) return View(postUploadModel);
-            var title = postUploadModel.Title;
-            var description = postUploadModel.Description;
-            var content = postUploadModel.Content;
-            var file = postUploadModel.ThumbnailURL;
-            string thumbnailUrl = imagePath + file.FileName + file.ContentType.Split('/')[1];
-            if (file.ContentLength > 0) {
-                file.SaveAs(thumbnailUrl);
-            }
-            newsRepository.InsertNews(new News {
-                Title = title,
-                Description = description,
-                Content = content,
-                ThumbnailURL = thumbnailUrl,
-                Tags = new List<Tag> {
-
+            if (IsAdmin()) {
+                if (!ModelState.IsValid) return View(postUploadModel);
+                var title = postUploadModel.Title;
+                var description = postUploadModel.Description;
+                var content = postUploadModel.Content;
+                var file = postUploadModel.ThumbnailURL;
+                string thumbnailUrl = imagePath + file.FileName + file.ContentType.Split('/')[1];
+                if (file.ContentLength > 0) {
+                    file.SaveAs(thumbnailUrl);
                 }
-            });
-            return null;
+                var tags = postUploadModel.Tags.Split(' ');
+                List<Tag> tagList = new List<Tag>();
+                foreach (var item in tags) {
+                    Tag tag = new Tag {
+                        Name = item
+                    };
+                    int res = tagRepository.InsertIfNotExist(tag);
+                    if (res != 0) tagList.Add(tagRepository.GetTagByID(res));
+                }
+                newsRepository.InsertNews(new News {
+                    Title = title,
+                    Description = description,
+                    Content = content,
+                    ThumbnailURL = thumbnailUrl,
+                    Tags = tagList
+                });
+                return null;
+            } else {
+                return null;
+            }
         }
 
         #endregion

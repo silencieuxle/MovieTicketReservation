@@ -40,7 +40,7 @@ namespace MovieTicketReservation.Controllers {
             var result = new List<dynamic>();
             var date = scheduleRepository.GetScheduleByID(scheduleId).Date;
             var cinema = scheduleRepository.GetScheduleByID(scheduleId).Cine_MovieDetails.CinemaID;
-            var schedule = scheduleRepository.GetSchedules().Where(s => s.Date == (DateTime)date && s.Date >= DateTime.Now && s.Cine_MovieDetails.MovieID == movieId && s.Cine_MovieDetails.CinemaID == cinema);
+            var schedule = scheduleRepository.GetSchedules().Where(s => s.Date == (DateTime)date && s.Date >= DateTime.Now && s.Cine_MovieDetails.MovieID == movieId && s.Cine_MovieDetails.CinemaID == cinema && (TimeSpan)s.ShowTime.StartTime >= DateTime.Now.TimeOfDay);
             foreach (var item in schedule) {
                 result.Add(new { Time = item.ShowTime.StartTime, item.ScheduleID });
             }

@@ -23,6 +23,14 @@ namespace MovieTicketReservation.Services.CinemaMovieDetailsService {
             return context.Cine_MovieDetails.Where(d => d.MovieID == movieId).ToList();
         }
 
+        public IEnumerable<Cine_MovieDetails> GetDetailsByCinemaID(string cinemaId) {
+            return context.Cine_MovieDetails.Where(d => d.CinemaID == cinemaId).ToList();
+        }
+
+        public IEnumerable<Movie> GetCanBeScheduledMoviesByCinema(string cinemaId) {
+            return context.Cine_MovieDetails.ToList().Where(m => ((DateTime)m.BeginShowDate).AddDays(7) >= DateTime.Now && m.CinemaID == cinemaId).Select(x => x.Movie).ToList();
+        }
+
         public Cine_MovieDetails GetDetailsByID(int detailsId) {
             return context.Cine_MovieDetails.Find(detailsId);
         }

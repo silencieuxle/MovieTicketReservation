@@ -19,6 +19,10 @@ namespace MovieTicketReservation.Services.ShowtimeService {
             return context.ShowTimes.ToList();
         }
 
+        public IEnumerable<ShowTime> GetAvailableShowtimes() {
+            return context.ShowTimes.Where(s => ((TimeSpan)s.StartTime).Hours >= DateTime.Now.Hour).ToList();
+        }
+
         public ShowTime GetShowtimeByID(int showtimeId) {
             return context.ShowTimes.Find(showtimeId);
         }

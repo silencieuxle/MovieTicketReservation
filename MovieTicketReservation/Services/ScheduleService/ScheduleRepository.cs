@@ -35,6 +35,10 @@ namespace MovieTicketReservation.Services.ScheduleService {
             return context.Schedules.ToList().Where(s => ((DateTime)s.Cine_MovieDetails.Movie.BeginShowDate).AddDays((int)s.Cine_MovieDetails.Duration) >= DateTime.Now).ToList();
         }
 
+        public IEnumerable<Schedule> GetCanBeReserveScheduleByMovieID(int movieId) {
+            return context.Schedules.Where(s => s.Cine_MovieDetails.MovieID == movieId && s.Seat_ShowDetails.Any(x => x.Reserved == false));
+        }
+
         public Schedule GetScheduleByID(int scheduleId) {
             return context.Schedules.Find(scheduleId);
         }

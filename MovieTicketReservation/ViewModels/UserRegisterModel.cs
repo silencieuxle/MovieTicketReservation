@@ -28,7 +28,7 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Nhập lại mật khẩu")]
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [Compare("Password", ErrorMessage="Mật khẩu 2 không trùng với mật khẩu 1")]
         [Required(ErrorMessage = "Bạn phải nhập mật khẩu lần 2")]
         public string PasswordRetyped { get; set; }
 

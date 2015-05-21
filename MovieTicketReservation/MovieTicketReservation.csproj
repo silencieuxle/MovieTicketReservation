@@ -267,6 +267,7 @@
     <Compile Include="Models\TicketClass.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\AdminAccountService\AdminAccountRepository.cs" />
     <Compile Include="Services\AgeLimitationService\AgeLimitationRepository.cs" />
     <Compile Include="Services\BookingHeaderService\BookingHeaderRepository.cs" />
     <Compile Include="Services\CinemaImageService\CinemaImageRepository.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Services\CinemaService\CinemaRepository.cs" />
     <Compile Include="Services\EditionService\EditionRepository.cs" />
     <Compile Include="Services\GenreService\GenreRepository.cs" />
+    <Compile Include="Services\IAdminAccountRepository.cs" />
     <Compile Include="Services\IAdminRepository.cs" />
     <Compile Include="Services\IAgeLimitationRepository.cs" />
     <Compile Include="Services\IBookingRepository.cs" />
@@ -658,7 +660,8 @@
     <Content Include="Views\Admin\_ManageNews_Add.cshtml" />
     <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
     <Content Include="Views\Admin\ManageSchedule_Add.cshtml" />
-    <Content Include="Views\Admin\_Login.cshtml" />
+    <Content Include="Views\Admin\Login.cshtml" />
+    <Content Include="Views\Ticket\OutOfService.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

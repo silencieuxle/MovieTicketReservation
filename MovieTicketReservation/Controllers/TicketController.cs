@@ -64,6 +64,10 @@ namespace MovieTicketReservation.Controllers {
             return View(ticketModels);
         }
 
+        public ActionResult OutOfService() {
+            return View();
+        }
+
         public ActionResult Reserve(int scheduleId) {
             if (Session["UID"] == null) {
                 Session["RedirectURL"] = Request.RawUrl;
@@ -73,8 +77,14 @@ namespace MovieTicketReservation.Controllers {
             if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movies");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
+            
             var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
-            return View(seats);
+            bool canReserve = seats.Any(s => s.Reserved == false);
+            if (canReserve) return View(seats);
+            else {
+                ViewBag.ReturnURL = Request.RawUrl;
+                return View("OutOfService");
+            }
         }
 
         [HttpGet]

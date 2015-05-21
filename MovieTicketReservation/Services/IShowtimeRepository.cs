@@ -8,6 +8,7 @@ using MovieTicketReservation.Models;
 namespace MovieTicketReservation.Services {
     public interface IShowtimeRepository : IDisposable {
         IEnumerable<ShowTime> GetShowtimes();
+        IEnumerable<ShowTime> GetAvailableShowtimes();
         ShowTime GetShowtimeByID(int showtimeId);
         bool InsertShowtime(ShowTime showtime);
         bool UpdateShowtime(ShowTime showtime);

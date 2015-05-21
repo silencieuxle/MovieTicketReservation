@@ -23,6 +23,25 @@ namespace MovieTicketReservation.Services.TagRepository {
             return context.Tags.Find(tagId);
         }
 
+        public int InsertIfNotExist(Tag tag) {
+            var duplicate = context.Tags.FirstOrDefault(t => t.Name.ToLower() == tag.Name.ToLower());
+            if (duplicate != null) return duplicate.TagID;
+            using (var transaction = context.Database.BeginTransaction()) {
+                try {
+                    context.Tags.Add(tag);
+
+                    context.SaveChanges();
+
+                    transaction.Commit();
+                } catch (Exception ex) {
+                    Console.Write(ex.StackTrace);
+                    transaction.Rollback();
+                    return 0;
+                }
+            }
+            return tag.TagID;
+        }
+
         public bool InsertTag(Tag tag) {
             using (var transaction = context.Database.BeginTransaction()) {
                 try {
