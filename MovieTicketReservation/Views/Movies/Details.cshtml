@@ -31,10 +31,7 @@
                     </div>
                     <div class="col-sm-5">
                         <h2></h2>
-                        <p class="detail-header">Phiên bản: </p>
-                        @foreach (var item in Model.MovieEditions) {
-                            <span class="badge">@item.Name</span>
-                        }
+                        <p class="detail-header">Phiên bản: </p><span class="badge">@Model.MovieEdition.Name</span><span class="badge">@Model.Subtitle.Description</span>
                         <hr>
                         @if (Model.ScheduleType == 1 || Model.ScheduleType == 2) {
                             <button class="btn btn-sm btn-success center btn-schedule" data-id="@Model.MovieID">Đặt vé</button>

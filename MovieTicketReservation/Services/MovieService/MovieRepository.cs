@@ -62,11 +62,11 @@ namespace MovieTicketReservation.Services.MovieService {
             if (data == null) {
                 if (editionIds.Count() == 0) return context.Movies.ToList();
                 var movies = context.Movies.ToList();
-                return movies.Where(m => editionIds.Any(e => m.MovieEditions.Any(me => me.EditionID == e))).ToList();
+                return movies.Where(m => editionIds.Any(e => m.EditionID == e)).ToList();
             } else {
                 if (editionIds.Count() == 0) return data.ToList();
                 var movies = data.ToList();
-                return movies.Where(m => editionIds.Any(e => m.MovieEditions.Any(me => me.EditionID == e))).ToList();
+                return movies.Where(m => editionIds.Any(e => m.EditionID == e)).ToList();
             }
         }
 

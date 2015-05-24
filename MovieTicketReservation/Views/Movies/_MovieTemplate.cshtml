@@ -15,10 +15,7 @@
             </div>
             <div class="col-xs-12 col-sm-5 movie-options">
                 <br />
-                <span class="detail-header">Phiên bản: </span>
-                @foreach (var edition in item.MovieEditions) {
-                    <span class="badge">@edition.Name</span>
-                }
+                <span class="detail-header">Phiên bản: </span><span class="badge">@item.MovieEdition.Name</span><span class="badge">@item.Subtitle.Description</span>
                 <p></p>
                 <span class="detail-header">Giới hạn độ tuổi: </span><span class="badge">@item.AgeLimitation.Description</span>
                 <hr>

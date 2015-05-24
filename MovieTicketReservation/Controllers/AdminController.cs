@@ -17,14 +17,19 @@ using MovieTicketReservation.Services.TagRepository;
 using MovieTicketReservation.Services.SeatShowDetailsService;
 using MovieTicketReservation.Services.TicketClassService;
 using MovieTicketReservation.Services.BookingHeaderService;
+using MovieTicketReservation.Services.AgeLimitationService;
+using MovieTicketReservation.Services.EditionService;
+using MovieTicketReservation.Services.GenreService;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.ViewModels;
 
 namespace MovieTicketReservation.Controllers {
     public class AdminController : Controller {
         private const string imagePath = "/Content/Images/";
-
         private DbEntities context = new DbEntities();
+
+        private IEditionRepository editionRepository;
+        private IGenreRepository genreRepository;
         private ITagRepository tagRepository;
         private IMovieRepository movieRepository;
         private IScheduleRepository scheduleRepository;
@@ -37,8 +42,11 @@ namespace MovieTicketReservation.Controllers {
         private IAdminAccountRepository adminAccountRepository;
         private ITicketClassRepository ticketClassRepository;
         private IBookingRepository bookingRepository;
+        private IAgeLimitationRepository ageLimitationRepository;
 
         public AdminController() {
+            this.genreRepository = new GenreRepository(context);
+            this.editionRepository = new EditionRepository(context);
             this.bookingRepository = new BookingHeaderRepository(context);
             this.tagRepository = new TagRepository(context);
             this.movieRepository = new MovieRepository(context);
@@ -51,6 +59,7 @@ namespace MovieTicketReservation.Controllers {
             this.ticketClassRepository = new TicketClassRepository(context);
             this.adminAccountRepository = new AdminAccountRepository(context);
             this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
+            this.ageLimitationRepository = new AgeLimitationRepository(context);
         }
 
         // GET: Admin
@@ -121,6 +130,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         private bool IsAdmin() {
+            if (Session["Role"] == null) return false;
             if ((int)Session["Role"] == 1 || (int)Session["Role"] == 2) return true;
             return false;
         }
@@ -145,7 +155,8 @@ namespace MovieTicketReservation.Controllers {
             Session["UID"] = user.MemberID;
             Session["Role"] = admin.RoleID;
             Session["AdminSection"] = admin.Section;
-            return Redirect("Index");
+            if (Session["RedirectURL"] != null) return Redirect((string)Session["RedirectURL"]);
+            return Redirect("/Admin/Index");
         }
 
         public ActionResult Logout() {
@@ -289,8 +300,6 @@ namespace MovieTicketReservation.Controllers {
                     PromoteID = promoteId
                 });
 
-                var movie = movieRepository.GetMovieByID(movieId).MovieEditions;
-
                 if (result != 0) {
                     CreateSeatShowDetails(result, roomId, ticketClassId);
                 }
@@ -340,37 +349,119 @@ namespace MovieTicketReservation.Controllers {
 
         #region News Management
 
-        public ActionResult AddNews(PostUploadModel postUploadModel) {
-            if (IsAdmin()) {
-                if (!ModelState.IsValid) return View(postUploadModel);
-                var title = postUploadModel.Title;
-                var description = postUploadModel.Description;
-                var content = postUploadModel.Content;
-                var file = postUploadModel.ThumbnailURL;
-                string thumbnailUrl = imagePath + file.FileName + file.ContentType.Split('/')[1];
-                if (file.ContentLength > 0) {
-                    file.SaveAs(thumbnailUrl);
-                }
-                var tags = postUploadModel.Tags.Split(' ');
-                List<Tag> tagList = new List<Tag>();
-                foreach (var item in tags) {
-                    Tag tag = new Tag {
-                        Name = item
-                    };
-                    int res = tagRepository.InsertIfNotExist(tag);
-                    if (res != 0) tagList.Add(tagRepository.GetTagByID(res));
-                }
-                newsRepository.InsertNews(new News {
-                    Title = title,
-                    Description = description,
-                    Content = content,
-                    ThumbnailURL = thumbnailUrl,
-                    Tags = tagList
-                });
-                return null;
-            } else {
-                return null;
+        public ActionResult ManageNews_Add(PostUploadModel postUploadModel) {
+            if (!IsAdmin()) {
+                Session["RedirectURL"] = "/Admin/ManageNews_Add";
+                return Redirect("/Admin/Login");
             }
+            if (!ModelState.IsValid) return View(postUploadModel);
+            var title = postUploadModel.Title;
+            var description = postUploadModel.Description;
+            var content = postUploadModel.Content;
+            var file = postUploadModel.ThumbnailURL;
+            string thumbnailUrl = imagePath + file.FileName + file.ContentType.Split('/')[1];
+            if (file.ContentLength > 0) {
+                file.SaveAs(thumbnailUrl);
+            }
+            var tags = postUploadModel.Tags.Split(' ');
+            List<Tag> tagList = new List<Tag>();
+            foreach (var item in tags) {
+                Tag tag = new Tag {
+                    Name = item
+                };
+                int res = tagRepository.InsertIfNotExist(tag);
+                if (res != 0) tagList.Add(tagRepository.GetTagByID(res));
+            }
+            newsRepository.InsertNews(new News {
+                Title = title,
+                Description = description,
+                Content = content,
+                ThumbnailURL = thumbnailUrl,
+                Tags = tagList
+            });
+            return null;
+        }
+
+        #endregion
+
+        #region Manage Movie
+
+        [HttpGet]
+        public ActionResult ManageMovie_Add() {
+            if (!IsAdmin()) {
+                Session["RedirectURL"] = "/Admin/ManageMovie_Add";
+                return Redirect("/Admin/Login");
+            }
+            ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
+            ViewBag.Editions = editionRepository.GetMovieEditions();
+            ViewBag.Genres = genreRepository.GetMovieGenres();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ManageMovie_Add(MovieAddModel movieAddModel) {
+            if (!IsAdmin()) {
+                Session["RedirectURL"] = "/Admin/ManageMovie_Add";
+                return Redirect("/Admin/Login");
+            }
+            ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
+            ViewBag.Editions = editionRepository.GetMovieEditions();
+            ViewBag.Genres = genreRepository.GetMovieGenres();
+
+            if (!ModelState.IsValid) {
+                return View(movieAddModel);
+            }
+
+            if (movieAddModel.BeginShowDate.Date < movieAddModel.ReleasedDate.Date) {
+                ModelState.AddModelError("BeginShowDate", "Ngày chiếu không thể lớn hơn ngày ra mắt");
+                return View(movieAddModel);
+            }
+
+            if (movieAddModel.BeginShowDate.Date > movieAddModel.ReleasedDate.Date.AddDays(movieAddModel.Duration)) {
+                ModelState.AddModelError("BeginShowDate", "Ngày chiếu không thể vượt qua thời gian chiếu cho phép.");
+                return View(movieAddModel);
+            }
+
+            // Get uploaded HttpPostedFileBase
+            var thumbnail = movieAddModel.Thumbnail;
+            var wideThumbnail = movieAddModel.WideThumbnail;
+
+            // Get uploaded file path
+            string thumbnailUrl = imagePath + thumbnail.FileName + thumbnail.ContentType.Split('/')[1];
+            string wideThumbnailUrl = imagePath + wideThumbnail.FileName + wideThumbnail.ContentType.Split('/')[1];
+
+            // Save uploaded poster and cover image
+            thumbnail.SaveAs(thumbnailUrl);
+            wideThumbnail.SaveAs(wideThumbnailUrl);
+
+            // Get genre ids
+            List<string> genreIds = movieAddModel.Genres;
+
+            var result = movieRepository.InsertMovie(new Movie {
+                Actors = movieAddModel.Actors,
+                AgeLimitationID = movieAddModel.AgeLimitation,
+                Available = movieAddModel.Available,
+                BeginShowDate = movieAddModel.BeginShowDate,
+                Description = movieAddModel.ShortDescription,
+                Director = movieAddModel.Director,
+                Duration = movieAddModel.Duration,
+                HotMovie = movieAddModel.HotMovie,
+                LongDescription = movieAddModel.LongDescription,
+                MovieLength = movieAddModel.MovieLength,
+                Rate = movieAddModel.Rate,
+                ReleasedDate = movieAddModel.ReleasedDate,
+                ThumbnailURL = thumbnailUrl,
+                WideThumbnail = wideThumbnailUrl,
+                TrailerURL = movieAddModel.TrailerURL,
+                Title = movieAddModel.Title,
+            });
+
+            //// If succeeded add movie, add movie genres
+            //if (result) {
+
+            //}
+
+            return Redirect("/Admin/ManageMovie_Add");
         }
 
         #endregion

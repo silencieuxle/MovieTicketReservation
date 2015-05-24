@@ -1,5 +1,5 @@
-﻿@using MovieTicketReservation.Models
-@model List<CinemaScheduleDetails>
+﻿@using MovieTicketReservation.ViewModels
+@model List<CinemaScheduleModel>
 <div class="modal fade" id="modalSchedule">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -8,15 +8,15 @@
                 <h4 class="modal-title">Lịch chiếu</h4>
             </div>
             <div class="modal-body">
-                @foreach (var cinema in Model) {
-                    <p class="schedule-cine">@cinema.CinemaName</p>
-                    foreach (var date in cinema.Dates) {
+                @foreach (var item in Model) {
+                    <p class="schedule-cine">@item.CinemaName</p>
+                    foreach (var date in item.Dates) {
                         <p class="schedule-date">
                             @date.ShowingDate.ToShortDateString():
-                            @foreach (Showtime item in date.Showtimes) {
+                            @foreach (Showtime showtime in date.Showtimes) {
                                 <span>
-                                    @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
-                                                "Reserve", "Ticket", new { item.ScheduleId }, new { @class = "schedule-showtime" })
+                                    @Html.ActionLink(showtime.Time.Hours + "h" + showtime.Time.Minutes,
+                                                 "Reserve", "Ticket", new { ScheduleID = showtime.ScheduleId }, new { @class = "schedule-showtime" })
                                 </span>
                             }
                         </p>

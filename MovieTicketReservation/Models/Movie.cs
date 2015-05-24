@@ -17,7 +17,6 @@ namespace MovieTicketReservation.Models
         public Movie()
         {
             this.Cine_MovieDetails = new HashSet<Cine_MovieDetails>();
-            this.MovieEditions = new HashSet<MovieEdition>();
             this.MovieGenres = new HashSet<MovieGenre>();
         }
     
@@ -38,10 +37,13 @@ namespace MovieTicketReservation.Models
         public string WideThumbnail { get; set; }
         public Nullable<bool> HotMovie { get; set; }
         public Nullable<double> Rate { get; set; }
+        public string EditionID { get; set; }
+        public Nullable<int> SubtitleID { get; set; }
     
         public virtual AgeLimitation AgeLimitation { get; set; }
         public virtual ICollection<Cine_MovieDetails> Cine_MovieDetails { get; set; }
-        public virtual ICollection<MovieEdition> MovieEditions { get; set; }
         public virtual ICollection<MovieGenre> MovieGenres { get; set; }
+        public virtual MovieEdition MovieEdition { get; set; }
+        public virtual Subtitle Subtitle { get; set; }
     }
 }

@@ -1,0 +1,184 @@
+﻿@model MovieTicketReservation.ViewModels.MovieAddModel
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/Content/fileupload.min.css" rel="stylesheet" />
+
+<h2 class="separator">Thêm film mới</h2>
+
+@using (Html.BeginForm("ManageMovie_Add", "Admin", FormMethod.Post, new { @class = "col-sm-8 col-sm-push-2", id = "movieFrm", enctype = "multipart/form-data" })) {
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "validate-label" })
+    <div class="form-group">
+        <label>Tên film</label>
+        @Html.TextBoxFor(model => model.Title, htmlAttributes: new { @class = "form-control", placeholder = "Tên film" })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "validate-label" })
+    </div>
+
+    <div class="form-group">
+        <label>Đạo diễn</label>
+        @Html.TextBoxFor(model => model.Director, htmlAttributes: new { @class = "form-control", placeholder = "Đạo diễn" })
+        @Html.ValidationMessageFor(model => model.Director, "", new { @class = "validate-label" })
+    </div>
+
+    <div class="form-group">
+        <label>Các diễn viên</label>
+        @Html.TextBoxFor(model => model.Actors, htmlAttributes: new { @class = "form-control", placeholder = "Các diễn viên" })
+        @Html.ValidationMessageFor(model => model.Actors, "", new { @class = "validate-label" })
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả ngắn</label>
+        @Html.TextBoxFor(model => model.ShortDescription, htmlAttributes: new { @class = "form-control", placeholder = "Mô tả ngắn" })
+        @Html.ValidationMessageFor(model => model.ShortDescription, "", new { @class = "validate-label" })
+    </div>
+    <div class="form-group">
+        <label>Tóm tắt nội dung</label>
+        @Html.TextBoxFor(model => model.LongDescription, htmlAttributes: new { @class = "form-control", placeholder = "Tóm tắt nội dung" })
+        @Html.ValidationMessageFor(model => model.LongDescription, "", new { @class = "validate-label" })
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                @Html.Label("Thể loại film")
+                @Html.ListBoxFor(model => model.Genres, new MultiSelectList(ViewBag.Genres, "GenreID", "Name"), htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Genres, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label>Phiên bản</label>
+                <select class="form-control" name="Edition" required>
+                    <option disabled selected value="-1">Phiên bản</option>
+                    <option value="2D">2D</option>
+                    <option value="3D">3D</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.Edition, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label>Phụ đề</label>
+                <select class="form-control" name="Subtitle" required>
+                    <option disabled selected value="-1">Phụ đề hoặc lồng tiếng</option>
+                    <option value="DUBENSUB">DUB & ENGLISH SUB </option>
+                    <option value="DUBVISUB">DUB & VIETNAMESE SUB</option>
+                    <option value="VISUB">VIETNAMESE SUB</option>
+                    <option value="ENSUB">ENGLISH SUB</option>
+                </select>
+                @Html.ValidationMessageFor(model => model.Subtitle, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Độ dài film</label>
+                @Html.TextBoxFor(model => model.MovieLength, htmlAttributes: new { @class = "form-control", type = "number", min = "0", placeholder = "Độ dài film" })
+                @Html.ValidationMessageFor(model => model.MovieLength, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Trailer film</label>
+                @Html.TextBoxFor(model => model.TrailerURL, htmlAttributes: new { @class = "form-control", placeholder = "Trailer film" })
+                @Html.ValidationMessageFor(model => model.TrailerURL, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label>Poster</label>
+                <div class="btn btn-success btn-file" style="width: 100%">
+                    <i class="glyphicon glyphicon-folder-open"></i>
+                    &nbsp;Chọn ảnh …<input accept="image/*" name="Thumbnail" type="file">
+                </div>
+                @Html.ValidationMessageFor(model => model.Thumbnail, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label>Cover</label>
+                <div class="btn btn-success btn-file" style="width: 100%">
+                    <i class="glyphicon glyphicon-folder-open"></i>
+                    &nbsp;Chọn ảnh …<input accept="image/*" name="WideThumbnail" type="file">
+                </div>
+                @Html.ValidationMessageFor(model => model.WideThumbnail, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Ngày ra mắt</label>
+                @Html.EditorFor(model => model.ReleasedDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ReleasedDate, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Ngày công chiếu</label>
+                @Html.EditorFor(model => model.BeginShowDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BeginShowDate, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Thời gian chiếu (ngày)</label>
+                @Html.TextBoxFor(model => model.Duration, htmlAttributes: new { @class = "form-control", placeholder = "Thời gian chiếu" })
+                @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Giới hạn tuổi</label>
+                <select class="form-control" name="AgeLimitation">
+                    <option disabled selected value="-1">Độ tuổi</option>
+                    @foreach (var item in ViewBag.Ages) {
+                        <option value="@item.LimitationID">@item.Description</option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.AgeLimitation, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Điểm số</label>
+                @Html.TextBoxFor(model => model.Rate, htmlAttributes: new { @class = "form-control", placeholder = "Điểm số" })
+                @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.EditorFor(model => model.Available)<text>&nbsp; Sẵn sàng chiếu</text>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.EditorFor(model => model.HotMovie)<text>&nbsp; Film bom tấn</text>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+<script>
+
+</script>

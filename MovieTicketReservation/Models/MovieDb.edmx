@@ -102,16 +102,10 @@
           <Property Name="AgeLimitationID" Type="varchar" MaxLength="3" />
           <Property Name="LongDescription" Type="nvarchar(max)" />
           <Property Name="WideThumbnail" Type="varchar(max)" />
+          <Property Name="EditionID" Type="varchar" MaxLength="5" />
+          <Property Name="SubtitleID" Type="int" />
           <Property Name="HotMovie" Type="bit" />
           <Property Name="Rate" Type="float" />
-        </EntityType>
-        <EntityType Name="Movie_EditionDetails">
-          <Key>
-            <PropertyRef Name="MovieID" />
-            <PropertyRef Name="EditionID" />
-          </Key>
-          <Property Name="MovieID" Type="int" Nullable="false" />
-          <Property Name="EditionID" Type="varchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <EntityType Name="Movie_GenreDetails">
           <Key>
@@ -209,6 +203,13 @@
           </Key>
           <Property Name="ShowTimeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StartTime" Type="time" Precision="7" />
+        </EntityType>
+        <EntityType Name="Subtitle">
+          <Key>
+            <PropertyRef Name="SubtitleID" />
+          </Key>
+          <Property Name="SubtitleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -341,30 +342,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Movie_EditionDetail_MovieEdition">
-          <End Role="MovieEdition" Type="Self.MovieEdition" Multiplicity="1" />
-          <End Role="Movie_EditionDetails" Type="Self.Movie_EditionDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MovieEdition">
-              <PropertyRef Name="EditionID" />
-            </Principal>
-            <Dependent Role="Movie_EditionDetails">
-              <PropertyRef Name="EditionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Movie_EditionDetails_Movie">
-          <End Role="Movie" Type="Self.Movie" Multiplicity="1" />
-          <End Role="Movie_EditionDetails" Type="Self.Movie_EditionDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Movie">
-              <PropertyRef Name="MovieID" />
-            </Principal>
-            <Dependent Role="Movie_EditionDetails">
-              <PropertyRef Name="MovieID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Movie_GenreDetail_MovieGenre">
           <End Role="MovieGenre" Type="Self.MovieGenre" Multiplicity="1" />
           <End Role="Movie_GenreDetails" Type="Self.Movie_GenreDetails" Multiplicity="*" />
@@ -386,6 +363,30 @@
             </Principal>
             <Dependent Role="Movie_GenreDetails">
               <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Movie_MovieEdition">
+          <End Role="MovieEdition" Type="Self.MovieEdition" Multiplicity="0..1" />
+          <End Role="Movie" Type="Self.Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovieEdition">
+              <PropertyRef Name="EditionID" />
+            </Principal>
+            <Dependent Role="Movie">
+              <PropertyRef Name="EditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Movie_Subtitle">
+          <End Role="Subtitle" Type="Self.Subtitle" Multiplicity="0..1" />
+          <End Role="Movie" Type="Self.Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subtitle">
+              <PropertyRef Name="SubtitleID" />
+            </Principal>
+            <Dependent Role="Movie">
+              <PropertyRef Name="SubtitleID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -555,7 +556,6 @@
           <EntitySet Name="CinemaImage" EntityType="Self.CinemaImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Movie" EntityType="Self.Movie" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Movie_EditionDetails" EntityType="Self.Movie_EditionDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Movie_GenreDetails" EntityType="Self.Movie_GenreDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MovieEdition" EntityType="Self.MovieEdition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MovieGenre" EntityType="Self.MovieGenre" Schema="dbo" store:Type="Tables" />
@@ -567,6 +567,7 @@
           <EntitySet Name="Seat" EntityType="Self.Seat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Seat_ShowDetails" EntityType="Self.Seat_ShowDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShowTime" EntityType="Self.ShowTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subtitle" EntityType="Self.Subtitle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagDetails" EntityType="Self.TagDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TicketClass" EntityType="Self.TicketClass" Schema="dbo" store:Type="Tables" />
@@ -606,14 +607,6 @@
             <End Role="AgeLimitation" EntitySet="AgeLimitation" />
             <End Role="Movie" EntitySet="Movie" />
           </AssociationSet>
-          <AssociationSet Name="FK_Movie_EditionDetail_MovieEdition" Association="Self.FK_Movie_EditionDetail_MovieEdition">
-            <End Role="MovieEdition" EntitySet="MovieEdition" />
-            <End Role="Movie_EditionDetails" EntitySet="Movie_EditionDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Movie_EditionDetails_Movie" Association="Self.FK_Movie_EditionDetails_Movie">
-            <End Role="Movie" EntitySet="Movie" />
-            <End Role="Movie_EditionDetails" EntitySet="Movie_EditionDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_Movie_GenreDetail_MovieGenre" Association="Self.FK_Movie_GenreDetail_MovieGenre">
             <End Role="MovieGenre" EntitySet="MovieGenre" />
             <End Role="Movie_GenreDetails" EntitySet="Movie_GenreDetails" />
@@ -621,6 +614,14 @@
           <AssociationSet Name="FK_Movie_GenreDetails_Movie" Association="Self.FK_Movie_GenreDetails_Movie">
             <End Role="Movie" EntitySet="Movie" />
             <End Role="Movie_GenreDetails" EntitySet="Movie_GenreDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Movie_MovieEdition" Association="Self.FK_Movie_MovieEdition">
+            <End Role="MovieEdition" EntitySet="MovieEdition" />
+            <End Role="Movie" EntitySet="Movie" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Movie_Subtitle" Association="Self.FK_Movie_Subtitle">
+            <End Role="Subtitle" EntitySet="Subtitle" />
+            <End Role="Movie" EntitySet="Movie" />
           </AssociationSet>
           <AssociationSet Name="FK_Promote_News" Association="Self.FK_Promote_News">
             <End Role="News" EntitySet="News" />
@@ -774,10 +775,13 @@
           <Property Name="WideThumbnail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AgeLimitation" Relationship="Self.FK_Movie_AgeLimitation" FromRole="Movie" ToRole="AgeLimitation" />
           <NavigationProperty Name="Cine_MovieDetails" Relationship="Self.FK_Cine_MovieDetails_Movie" FromRole="Movie" ToRole="Cine_MovieDetails" />
-          <NavigationProperty Name="MovieEditions" Relationship="Self.Movie_EditionDetails" FromRole="Movie" ToRole="MovieEdition" />
           <NavigationProperty Name="MovieGenres" Relationship="Self.Movie_GenreDetails" FromRole="Movie" ToRole="MovieGenre" />
           <Property Name="HotMovie" Type="Boolean" />
           <Property Name="Rate" Type="Double" />
+          <Property Name="EditionID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="SubtitleID" Type="Int32" />
+          <NavigationProperty Name="MovieEdition" Relationship="DbModel.FK_Movie_MovieEdition" FromRole="Movie" ToRole="MovieEdition" />
+          <NavigationProperty Name="Subtitle" Relationship="DbModel.FK_Movie_Subtitle" FromRole="Movie" ToRole="Subtitle" />
         </EntityType>
         <EntityType Name="MovieEdition">
           <Key>
@@ -786,7 +790,7 @@
           <Property Name="EditionID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Movies" Relationship="Self.Movie_EditionDetails" FromRole="MovieEdition" ToRole="Movie" />
+          <NavigationProperty Name="Movies" Relationship="DbModel.FK_Movie_MovieEdition" FromRole="MovieEdition" ToRole="Movie" />
         </EntityType>
         <EntityType Name="MovieGenre">
           <Key>
@@ -1053,10 +1057,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Movie_EditionDetails">
-          <End Role="MovieEdition" Type="Self.MovieEdition" Multiplicity="*" />
-          <End Role="Movie" Type="Self.Movie" Multiplicity="*" />
-        </Association>
         <Association Name="Movie_GenreDetails">
           <End Role="MovieGenre" Type="Self.MovieGenre" Multiplicity="*" />
           <End Role="Movie" Type="Self.Movie" Multiplicity="*" />
@@ -1136,10 +1136,6 @@
             <End Role="Seat" EntitySet="Seats" />
             <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
           </AssociationSet>
-          <AssociationSet Name="Movie_EditionDetails" Association="Self.Movie_EditionDetails">
-            <End Role="MovieEdition" EntitySet="MovieEditions" />
-            <End Role="Movie" EntitySet="Movies" />
-          </AssociationSet>
           <AssociationSet Name="Movie_GenreDetails" Association="Self.Movie_GenreDetails">
             <End Role="MovieGenre" EntitySet="MovieGenres" />
             <End Role="Movie" EntitySet="Movies" />
@@ -1173,6 +1169,15 @@
           <AssociationSet Name="FK_Seat_ShowDetails_TicketClass" Association="DbModel.FK_Seat_ShowDetails_TicketClass">
             <End Role="TicketClass" EntitySet="TicketClasses" />
             <End Role="Seat_ShowDetails" EntitySet="Seat_ShowDetails" />
+          </AssociationSet>
+          <EntitySet Name="Subtitles" EntityType="DbModel.Subtitle" />
+          <AssociationSet Name="FK_Movie_MovieEdition" Association="DbModel.FK_Movie_MovieEdition">
+            <End Role="MovieEdition" EntitySet="MovieEditions" />
+            <End Role="Movie" EntitySet="Movies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Movie_Subtitle" Association="DbModel.FK_Movie_Subtitle">
+            <End Role="Subtitle" EntitySet="Subtitles" />
+            <End Role="Movie" EntitySet="Movies" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Promote">
@@ -1261,6 +1266,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Subtitle">
+          <Key>
+            <PropertyRef Name="SubtitleID" />
+          </Key>
+          <Property Name="SubtitleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Movies" Relationship="DbModel.FK_Movie_Subtitle" FromRole="Subtitle" ToRole="Movie" />
+        </EntityType>
+        <Association Name="FK_Movie_MovieEdition">
+          <End Type="DbModel.MovieEdition" Role="MovieEdition" Multiplicity="0..1" />
+          <End Type="DbModel.Movie" Role="Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MovieEdition">
+              <PropertyRef Name="EditionID" />
+            </Principal>
+            <Dependent Role="Movie">
+              <PropertyRef Name="EditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Movie_Subtitle">
+          <End Type="DbModel.Subtitle" Role="Subtitle" Multiplicity="0..1" />
+          <End Type="DbModel.Movie" Role="Movie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subtitle">
+              <PropertyRef Name="SubtitleID" />
+            </Principal>
+            <Dependent Role="Movie">
+              <PropertyRef Name="SubtitleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1337,6 +1374,8 @@
           <EntitySetMapping Name="Movies">
             <EntityTypeMapping TypeName="DbModel.Movie">
               <MappingFragment StoreEntitySet="Movie">
+                <ScalarProperty Name="SubtitleID" ColumnName="SubtitleID" />
+                <ScalarProperty Name="EditionID" ColumnName="EditionID" />
                 <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="HotMovie" ColumnName="HotMovie" />
                 <ScalarProperty Name="MovieID" ColumnName="MovieID" />
@@ -1463,14 +1502,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="Movie_EditionDetails" TypeName="DbModel.Movie_EditionDetails" StoreEntitySet="Movie_EditionDetails">
-            <EndProperty Name="MovieEdition">
-              <ScalarProperty Name="EditionID" ColumnName="EditionID" />
-            </EndProperty>
-            <EndProperty Name="Movie">
-              <ScalarProperty Name="MovieID" ColumnName="MovieID" />
-            </EndProperty>
-          </AssociationSetMapping>
           <AssociationSetMapping Name="Movie_GenreDetails" TypeName="DbModel.Movie_GenreDetails" StoreEntitySet="Movie_GenreDetails">
             <EndProperty Name="MovieGenre">
               <ScalarProperty Name="GenreID" ColumnName="GenreID" />
@@ -1511,6 +1542,14 @@
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="Section" ColumnName="Section" />
                 <ScalarProperty Name="AdminAccountID" ColumnName="AdminAccountID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subtitles">
+            <EntityTypeMapping TypeName="DbModel.Subtitle">
+              <MappingFragment StoreEntitySet="Subtitle">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SubtitleID" ColumnName="SubtitleID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

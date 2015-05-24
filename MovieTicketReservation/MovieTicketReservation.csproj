@@ -261,6 +261,9 @@
     <Compile Include="Models\ShowTime.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Subtitle.cs">
+      <DependentUpon>MovieDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Tag.cs">
       <DependentUpon>MovieDb.tt</DependentUpon>
     </Compile>
@@ -306,6 +309,7 @@
     <Compile Include="ViewModels\BookingDetailsModel.cs" />
     <Compile Include="ViewModels\CinemaModel.cs" />
     <Compile Include="ViewModels\DateModel.cs" />
+    <Compile Include="ViewModels\MovieAddModel.cs" />
     <Compile Include="ViewModels\MovieExtended.cs" />
     <Compile Include="ViewModels\CinemaScheduleModel.cs" />
     <Compile Include="ViewModels\PostUploadModel.cs" />
@@ -659,11 +663,11 @@
     <Content Include="Views\Admin\_ManageNews_All.cshtml" />
     <Content Include="Views\Admin\_ManageNews_Add.cshtml" />
     <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
-    <Content Include="Views\Admin\ManageSchedule_Add.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
     <Content Include="Views\Ticket\OutOfService.cshtml" />
     <Content Include="Views\Admin\_ManageMovie_Add.cshtml" />
     <Content Include="Views\Admin\_ManageMovie_Cine.cshtml" />
+    <Content Include="Views\Admin\ManageMovie_Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
