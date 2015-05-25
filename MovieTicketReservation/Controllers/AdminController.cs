@@ -109,7 +109,8 @@ namespace MovieTicketReservation.Controllers {
                     return PartialView("_ManageSchedule_Edit");
                 case "manageschedule_add":
                     string cinemaId = (string)Session["AdminSection"];
-                    ViewBag.Movies = cinemaMovieRepository.GetCanBeScheduledMovies();
+                    var movies = movieRepository.GetCanBeScheduledMovies().Join(cinemaMovieRepository.GetDetailsByCinemaID((string)Session["AdminSection"]), m => m.MovieID, d => d.MovieID, (m, d) => new { Movie = m }).Select(x => x.Movie).ToList();
+                    ViewBag.Movies = movies;
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID(cinemaId);
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
                     ViewBag.TicketClasses = ticketClassRepository.GetTicketClasses();
@@ -174,13 +175,32 @@ namespace MovieTicketReservation.Controllers {
             return Redirect("/Admin/Index");
         }
 
+        [HttpGet]
         public ActionResult Logout() {
             Session.Abandon();
             return Redirect("/Home/");
         }
 
         #region Member Management
+        [HttpPost]
+        public ActionResult AjaxUpdateAvatar(HttpPostedFileBase avatar) {
+            string imagePath = "/Content/Images/MemberImages/";
+            // Get uploaded file path
+            string avatarUrl = imagePath + (string)Session["UID"] + "-" + avatar.FileName;
 
+            // Save uploaded poster and cover image
+            if (avatar.ContentLength != 0) avatar.SaveAs(Server.MapPath(Url.Content(avatarUrl)));
+            else {
+                return Json(new { Success = false, ErrorMessage = "Lỗi khi nhận file" }, JsonRequestBehavior.AllowGet);
+            }
+            var member = memberRepository.GetMemberByID((int)Session["UID"]);
+            member.AvatarURL = avatarUrl;
+            var result = memberRepository.UpdateMember(member);
+            if (!result) return Json(new { Success = false, ErrorMessage = "Xảy ra lỗi khi cập nhật thông tin." }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true, AvatarURL = avatarUrl }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public ActionResult AjaxGetMembers(int headIndex, int type) {
             var result = memberRepository.GetAllMembers();
             int index = 0;
@@ -249,6 +269,7 @@ namespace MovieTicketReservation.Controllers {
 
         #region Schedule Management
 
+        [HttpPost]
         public ActionResult AjaxGetAvailableSchedules() {
             if (IsCinema()) {
                 var result = scheduleRepository.GetAvailableSchedules().Select(s => new {
@@ -264,9 +285,10 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        [HttpPost]
         public ActionResult AjaxGetAvailableSchedulesByMovieID(int movieId) {
             if (IsCinema()) {
-                var result = scheduleRepository.GetAvailableSchedules().Where(s => s.Cine_MovieDetails.Movie.MovieID == movieId).Select(s => new {
+                var result = scheduleRepository.GetAvailableSchedules().Where(s => s.Cine_MovieDetails.Movie.MovieID == movieId && s.Cine_MovieDetails.CinemaID == (string)Session["AdminSection"]).Select(s => new {
                     ScheduleID = s.ScheduleID,
                     MovieTitle = s.Cine_MovieDetails.Movie.Title,
                     Date = ((DateTime)s.Date).ToShortDateString(),
@@ -279,6 +301,7 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        [HttpPost]
         public ActionResult AjaxGetDatesByMovieID(int movieId) {
             if (IsCinema()) {
                 var movie = movieRepository.GetMovieByID(movieId);
@@ -298,6 +321,7 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        [HttpPost]
         public ActionResult AjaxAddScheduleManually(int movieId, string roomId, string date, int showtimeId, string ticketClassId, int? promoteId) {
             if (IsCinema()) {
                 DateTime showdate = DateTime.Parse(date);
@@ -324,6 +348,7 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        [HttpPost]
         public ActionResult AjaxAddScheduleAuto(int movieId, string roomId, string date, int firstShowtimeId, int numberOfSchedule, string ticketClassId, int? promoteId) {
             if (IsCinema()) {
                 var showtime = (TimeSpan)showtimeRepository.GetShowtimeByID(firstShowtimeId).StartTime;
@@ -332,11 +357,16 @@ namespace MovieTicketReservation.Controllers {
 
                 int numberOfScheduleToCreate = (22 * 60 + 30 - startTime) / movielength;
                 numberOfScheduleToCreate = numberOfScheduleToCreate > numberOfSchedule ? numberOfSchedule : numberOfScheduleToCreate;
+
                 int result = 0;
                 int stId = firstShowtimeId;
                 for (int i = 1; i <= numberOfScheduleToCreate; i++) {
                     DateTime showdate = DateTime.Parse(date);
                     int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID((string)Session["AdminSection"], movieId).DetailsID;
+                    var duplicate = scheduleRepository.GetSchedules()
+                        .Where(x => x.ShowTimeID == stId && x.RoomID == roomId && (DateTime)x.Date == showdate);
+                    if (duplicate.Count() != 0)
+                        return Json(new { Success = false, ErrorMessage = "Suất cần thêm đã có." }, JsonRequestBehavior.AllowGet);
                     result = scheduleRepository.InsertSchedule(new Schedule {
                         Cine_MovieDetailsID = cineMovieID,
                         Date = showdate,
@@ -373,7 +403,7 @@ namespace MovieTicketReservation.Controllers {
             }
             if (!ModelState.IsValid) return View(newsModel);
 
-            // // Get uploaded HttpPostedFileBase
+            // Get uploaded HttpPostedFileBase
             var thumbnail = newsModel.Thumbnail;
 
             // Get uploaded file path
@@ -399,9 +429,9 @@ namespace MovieTicketReservation.Controllers {
             if (result && tags.Count() != 0) {
                 result = tagRepository.InsertTagForNews(tags, news.NewsID);
             }
-            if (result) 
+            if (result)
                 ViewBag.Message = "Thêm tin thành công";
-            else 
+            else
                 ViewBag.Message = "Xảy ra lỗi khi thêm tin mới";
             return View("ManageNews_Add");
         }

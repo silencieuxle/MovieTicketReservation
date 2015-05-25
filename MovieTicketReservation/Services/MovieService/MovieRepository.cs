@@ -23,7 +23,7 @@ namespace MovieTicketReservation.Services.MovieService {
 
         public IEnumerable<Movie> GetCanBeScheduledMovies() {
             var movies = context.Movies.ToList();
-            return movies.Where(m => ((DateTime)m.BeginShowDate).AddDays(7) >= DateTime.Now).ToList();
+            return movies.Where(m => GetScheduleType(m) != 0);
         }
 
         public IEnumerable<Movie> GetAvailableMovies() {

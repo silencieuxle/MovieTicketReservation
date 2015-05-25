@@ -5,16 +5,16 @@
     <h2 class="separator">Thêm suất chiếu</h2>
     <div class="col-sm-6">
         <label>Suất chiếu theo phim</label>
-        <div class="table-responsive">
-            <table class="table table-hover" style="height: auto; max-height: 300px; overflow-y: scroll !important;">
+        <div class="table-responsive" style="height: auto; max-height: 300px;">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th width="5%">ID</th>
-                        <th width="55%">Film</th>
+                        <th width="60%">Film</th>
                         <th width="15%">Ngày</th>
                         <th width="10%">Giờ</th>
                         <th width="5%">Phòng</th>
-                        <th width="10%">Action</th>
+                        <th width="5%"></th>
                     </tr>
                 </thead>
                 <tbody id="result">
@@ -121,19 +121,22 @@
             if (data.size == 0) {
                 var htmlString = "<tr><td colspan='6'>Không tìm thấy suất chiếu nào.</td></tr>";
                 $("#result").append(htmlString);
+                $(".table-responsive").css("overflow-y", "hidden");
+            } else {
+                $.each(data, function (index, value) {
+                    var htmlString =
+                        "<tr>" +
+                            "<td>" + value.ScheduleID + "</td>" +
+                            "<td>" + value.MovieTitle + "</td>" +
+                            "<td>" + value.Date + "</td>" +
+                            "<td>" + value.Time + "</td>" +
+                            "<td>" + value.Room + "</td>" +
+                            "<td><a href='#' class='btnDelete-table btn btn-danger' data-id='" + value.ScheduleID + "'>Xoá</a></td>";
+                    "</tr>";
+                    $("#result").append(htmlString);
+                });
+                $(".table-responsive").css("overflow-y", "scroll");
             }
-            $.each(data, function (index, value) {
-                var htmlString =
-                    "<tr>" +
-                        "<td>" + value.ScheduleID + "</td>" +
-                        "<td>" + value.MovieTitle + "</td>" +
-                        "<td>" + value.Date + "</td>" +
-                        "<td>" + value.Time + "</td>" +
-                        "<td>" + value.Room + "</td>" +
-                        "<td><a href='#' class='btnEditMember' data-id='" + value.MemberID + "'>E</a> | <a href='#' class='btnDeleteMember' data-id='" + value.MemberID + "'>D</a></td>";
-                "</tr>";
-                $("#result").append(htmlString);
-            });
         });
 
     }
@@ -141,7 +144,7 @@
     $(document).on("change", "#selMovie", function () {
         var movieId = $(this).val();
         $("#selDate").empty();
-        $.get("/Admin/AjaxGetDatesByMovieID", { movieId: movieId }, function (data) {
+        $.post("/Admin/AjaxGetDatesByMovieID", { movieId: movieId }, function (data) {
             $("#selDate").append('<option value="-1" disabled selected>Chọn ngày</option>');
             $.each(data, function (index, value) {
                 var htmlString = "<option>" + value + "</option>";

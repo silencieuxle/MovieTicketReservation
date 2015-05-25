@@ -23,7 +23,7 @@
 
                     <div class="col-sm-4">
                         <div class="avatar-container">
-                            <img src="@Model.AvatarURL" class="img img-responsive avatar" height="96" width="96" alt="Image" />
+                            <img src="@Model.AvatarURL" id="imgAvatar" class="img img-responsive avatar" height="96" width="96" alt="Image" />
                             <ul class="nav nav-pills nav-stacked member-nav">
                                 <li>
                                     <div class="btn btn-primary btn-file">
@@ -117,7 +117,7 @@
                         </div>
                         <br />
                         <div class="contactInfo">
-                            <h4>Thông tin xác thực</h4>
+                            <h4>Thông tin liên lạc</h4>
                             <hr />
                             <div class="form-group">
                                 @Html.Label("Số CMND")
@@ -272,7 +272,22 @@
         $("#frmChangePassword").slideUp('slow')
     });
 
-    $("#btnChangeAvatar").click(function (event) {
-
+    $("#btnUploadImage").change(function (event) {
+        var file = $("#btnUploadImage")[0].files[0];
+        var formData = new FormData();
+        formData.append("avatar", file);
+        $.ajax({
+            url: "/Admin/AjaxUpdateAvatar",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.Success) {
+                    $("#imgAvatar").attr("src", respond.AvatarURL);
+                }
+            }
+        });
     });
 </script>

@@ -16,17 +16,9 @@
                     <div>Tel: (08) 3817 2398</div>
                 </div>
                 <ul class="cinema-items">
-
-                    <li><a class="item" value="">Galaxy Kinh Dương Vương</a></li>
-
-                    <li><a class="item" value="">Galaxy Nguyễn Du</a></li>
-
-                    <li><a class="item" value="">Galaxy Nguyễn Trãi</a></li>
-
-                    <li><a class="item" value="">Galaxy Tân Bình</a></li>
-
-                    <li><a class="item" value="">Galaxy Quang Trung</a></li>
-
+                    @foreach (var item in Model) {
+                        <li><a class="ajaxLink item" data-id="@item.CinemaID">@item.Name</a></li>
+                    }
                 </ul>
             </div>
             <div class="col-sm-9">
@@ -39,9 +31,7 @@
            <div class="col-sm-3">
                <h2 class="cinema-title">2D/DIGITAL</h2>
                <ul class="cinema-items">
-
                    <li><a class="item" value="">2D/DIGITAL</a></li>
-
                    <li><a class="item" value="">3D</a></li>
                </ul>
            </div>
@@ -59,6 +49,10 @@
             updateImages(data.Images);
             updateInfo(data);
         }, 'json');
+    });
+
+    $("#ajaxLink").click(function () {
+        var cinemaId = $(this).attr("data-id");
     });
 
     function updateImages(data) {
