@@ -1,5 +1,5 @@
-﻿@using MovieTicketReservation.Models
-@model Member
+﻿@using MovieTicketReservation.ViewModels
+@model MemberModel
 
 @{
     ViewBag.Title = "Thông tin cá nhân";
@@ -16,40 +16,70 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="col-panel col-sm-8 col-sm-push-2">
-                <h2 class="separator">Thông tin thành viên</h2>
-                <div class="col-sm-4">
-                    <div class="avatar-container">
-                        <img src="@Model.AvatarURL" class="img img-responsive avatar" height="96" width="96" alt="Image" />
-                        <ul class="nav nav-pills nav-stacked member-nav">
-                            <li>
-                                <div class="btn btn-primary btn-file">
-                                    <i class="glyphicon glyphicon-folder-open"></i>
-                                    &nbsp;Browse … <input id="btnUploadImage" type="file" class="">
-                                </div>
-                            </li>
-                            <li><a href="/Ticket/">Lịch sử giao dịch</a></li>
-                            <li><a href="/Ticket/">Các bộ film đã xem</a></li>
-                        </ul>
+            @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember", enctype = "multipart/form-data" })) {
+                <div class="col-panel col-sm-8 col-sm-push-2">
+                    <h2 class="separator">Thông tin thành viên</h2>
+                    <h4 class="validate-label">@(ViewBag.Message == null ? "" : ViewBag.Message)</h4>
+
+                    <div class="col-sm-4">
+                        <div class="avatar-container">
+                            <img src="@Model.AvatarURL" class="img img-responsive avatar" height="96" width="96" alt="Image" />
+                            <ul class="nav nav-pills nav-stacked member-nav">
+                                <li>
+                                    <div class="btn btn-primary btn-file">
+                                        <i class="glyphicon glyphicon-folder-open"></i>
+                                        &nbsp;Browse … <input id="btnUploadImage" name="Avatar" type="file" class="">
+                                    </div>
+                                </li>
+                                <li><a href="/Ticket/">Lịch sử giao dịch</a></li>
+                                <li><a href="/Ticket/">Các bộ film đã xem</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-8">
-                    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember" })) {
+                    <div class="col-sm-8">
                         <h4>Thông tin cơ bản</h4>
                         <hr />
-                        @Html.Label("Họ tên")
-                        <div class="memberName">
-                            <div class="col-sm-6 no-padding">
-                                <div class="form-group">
-                                    @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                        <div class="basicInfo">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.Label("Họ")
+                                        @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.Label("Tên")
+                                        @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 no-padding">
-                                <div class="form-group">
-                                    @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.Label("Giới tính")
+                                        @Html.DropDownListFor(model => model.Gender,
+                                            new SelectList(
+                                                new List<object> {
+                                                    new {value = false, text = "Nữ" },
+                                                    new {value = true, text = "Nam"}
+                                                },
+                                                "value",
+                                                "text"
+                                            ),
+                                            htmlAttributes: new { @class = "form-control" }
+                                        )
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        @Html.Label("Ngày sinh")
+                                        @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
+                            <label class="validate-label" id="basicInfoValidation"></label>
+                            <div class="col-sm-12 no-padding"><input id="btnChangeBasicInfo" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
                         </div>
                         <br />
                         <div class="loginInfo">
@@ -66,15 +96,16 @@
                                     <span class="input-group-btn">
                                         <button class="btn btn-primary" id="btnChangePassword" type="button">Đổi mật khẩu</button>
                                     </span>
+                                    <label class="validate-label" id="pwordValidation"></label>
                                 </div>
                                 <div class="" id="frmChangePassword">
                                     <fieldset>
                                         <legend class="separator"></legend>
-                                        @Html.TextBox("txtOldPassword", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu cũ", type = "password" })
+                                        <input class="form-control" id="txtOldPassword" placeholder="Mật khẩu cũ" type="password" />
                                         <br />
-                                        @Html.TextBox("txtNewPassword1", null, htmlAttributes: new { @class = "form-control", placeholder = "Mật khẩu mới", type = "password" })
+                                        <input id="txtNewPassword1" class="form-control" placeholder="Mật khẩu mới" type="password" />
                                         <br />
-                                        @Html.TextBox("txtNewPassword2", null, htmlAttributes: new { @class = "form-control", placeholder = "Nhập lại mật khẩu mới", type = "password" })
+                                        <input id="txtNewPassword2" class="form-control" placeholder="Nhập lại mật khẩu" type="password" />
                                         <br />
                                         <span style="float: right">
                                             <button type="button" id="btnConfirmPasswordChange" class="btn btn-success">Đổi</button>
@@ -85,12 +116,12 @@
                             </div>
                         </div>
                         <br />
-                        <div class="identifyInfo">
+                        <div class="contactInfo">
                             <h4>Thông tin xác thực</h4>
                             <hr />
                             <div class="form-group">
                                 @Html.Label("Số CMND")
-                                @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group">
                                 @Html.Label("Địa chỉ")
@@ -100,24 +131,7 @@
                                 @Html.Label("Số điện thoại")
                                 @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
                             </div>
-                            <div class="form-group">
-                                @Html.Label("Giới tính")
-                                @Html.DropDownListFor(model => model.Gender,
-                                    new SelectList(
-                                        new List<object> {
-                                            new {value = false, text = "Nữ" },
-                                            new {value = true, text = "Nam"}
-                                        },
-                                        "value",
-                                        "text"
-                                    ),
-                                    htmlAttributes: new { @class = "form-control" }
-                                )
-                            </div>
-                            <div class="form-group">
-                                @Html.Label("Ngày sinh")
-                                @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
-                            </div>
+                            <label class="validate-label" id="contactInfoValidation"></label>
                             <div class="form-group">
                                 <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
                             </div>
@@ -125,74 +139,140 @@
                                 <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
                             </div>
                         </div>
-                    }
+                    </div>
                 </div>
-                <script>
-                    $("#date-picker").datepicker({
-                        format: 'mm/dd/yyyy',
-                        language: 'vi'
-                    });
-
-                    $("#btnChangeName").click(function () {
-                        var target = $(this);
-                        switch (target.val()) {
-                            case "Lưu":
-                                $(".memberName input[type=text]").prop("disabled", true);
-                                target.val("Chỉnh sửa");
-                                var firstName = $("#Firstname").val();
-                                var lastName = $("#Lastname").val();
-
-                                if (firstName != "" && lastName != "") return true;
-                                return false;
-                            case "Chỉnh sửa":
-                                $(".memberName input[type=text]").prop("disabled", false);
-                                target.val("Lưu");
-                                break;
-                            default: alert("Invalid action");
-                        }
-                    });
-
-                    $("#btnChangeIdentityInfo").click(function () {
-                        var target = $(this);
-                        switch (target.val()) {
-                            case "Lưu":
-                                $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", true);
-                                target.val("Chỉnh sửa");
-                                break;
-                            case "Chỉnh sửa":
-                                $(".identifyInfo input[type=text], .identifyInfo select").prop("disabled", false);
-                                target.val("Lưu");
-                                break;
-                            default: alert("Invalid action");
-                        }
-                    });
-
-                    $(document).ready(function () {
-                        $(".frmMember input[type=text]").prop('disabled', true);
-                        $("select").prop('disabled', true);
-                        $("#frmChangePassword").hide();
-                    });
-
-                    $("#btnChangeAvatar").click(function (event) {
-
-                    });
-
-                    $("#btnChangePassword").click(function () {
-                        $("#frmChangePassword").slideDown('slow');
-                    });
-
-                    $("#btnConfirmPasswordChange").click(function () {
-                        //var oldPassword = $("#txtOldPassword").val();
-                        //alert(data.Message);
-                        $("#frmChangePassword").slideUp('slow')
-                    });
-
-                    $("#btnCancelPasswordChange").click(function () {
-                        $("#frmChangePassword").slideUp('slow')
-                    });
-
-                </script>
-            </div>
+            }
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $(".frmMember input[type=text]").prop('disabled', true);
+        $("select").prop('disabled', true);
+        $("#frmChangePassword").hide();
+    });
+
+    $("#date-picker").datepicker({
+        format: 'mm/dd/yyyy',
+        language: 'vi'
+    });
+
+    $("#btnChangeBasicInfo").click(function () {
+        var target = $(this);
+        switch (target.val()) {
+            case "Lưu":
+                $(".basicInfo input[type=text], .basicInfo select").prop("disabled", true);
+                target.val("Chỉnh sửa");
+                var firstName = $("#Firstname").val();
+                var lastName = $("#Lastname").val();
+                var gender = $("#Gender").val();
+                var birthday = $("#date-picker").val()
+                if (firstName != "" && lastName != "" && birthday != "") {
+                    $.post(
+                        "/User/AjaxUpdateBasicInfo",
+                        {
+                            firstName: firstName,
+                            lastName: lastName,
+                            gender: gender,
+                            birthday: birthday
+                        },
+                        function (response) {
+                            $("#basicInfoValidation").css("display", "block");
+                            if (response.Success) $("#basicInfoValidation").html("Cập nhật thông tin thành công");
+                            else $("#basicInfoValidation").html(response.ErrorMessage);
+                        }
+                    )
+                } else {
+                    ("#basicInfoValidation").html("Thông tin không được trống");
+                    return false;
+                }
+                return false;
+            case "Chỉnh sửa":
+                $(".basicInfo input[type=text], .basicInfo select").prop("disabled", false);
+                target.val("Lưu");
+                break;
+            default: alert("Invalid action");
+        }
+    });
+
+    $("#btnChangePassword").click(function () {
+        if ($("#frmChangePassword").css('display') == 'none') $(this).text("Huỷ");
+        else $(this).text("Đổi mật khẩu");
+        $("#frmChangePassword").slideToggle('slow');
+    });
+
+    $("#btnChangeContactInfo").click(function () {
+        var target = $(this);
+        switch (target.val()) {
+            case "Lưu":
+                $(".contactInfo input[type=text]").prop("disabled", true);
+                target.val("Chỉnh sửa");
+                var idCardNumber = $("#IdCardNumber").val();
+                var address = $("#Address").val();
+                var phoneNumber = $("#Phone");
+                if (idCardNumber != "" && idCardNumber.length == 9 && address != "" &&
+                    phoneNumber != "" && phoneNumber.length >= 10 && phoneNumber.length <= 11) {
+                    $.post(
+                        "/User/AjaxUpdatePassword",
+                        {
+                            idCardNumber: idCardNumber,
+                            address: address,
+                            phoneNumber: phoneNumber
+                        },
+                        function (response) {
+                            $("#contactInfoValidation").css("display", "block");
+                            if (response.Success)
+                                $("#contactInfoValidation").html("Cập nhật thông tin thành công");
+                            else
+                                $("#contactInfoValidation").html(response.ErrorMessage);
+                        }
+                    );
+                } else {
+                    ("#contactInfoValidation").html("Thông tin không được trống");
+                    return false;
+                }
+                break;
+            case "Chỉnh sửa":
+                $(".contactInfo input[type=text]").prop("disabled", false);
+                target.val("Lưu");
+                break;
+            default: alert("Invalid action");
+        }
+    });
+
+    $("#btnConfirmPasswordChange").click(function () {
+        var oldPassword = $("#txtOldPassword").val();
+        var password1 = $("txtNewPassword1").val();
+        var password2 = $("txtNewPassword2").val();
+        if (password1 == password2) {
+            $.post(
+                "/User/AjaxUpdatePassword",
+                {
+                    oldPassword: oldPassword,
+                    newPassword: password1,
+                },
+                function (response) {
+                    $("#pwordValidation").css("display", "block");
+                    if (response.Success) {
+                        $("#pwordValidation").text("Đổi mật khẩu thành công");
+                        $("#frmChangePassword").slideUp('slow');
+                        $("#btnChangePassword").html("Đổi mật khẩu");
+                    }
+                    else $("#pwordValidation").html(response.ErrorMessage);
+                }
+            );
+        } else {
+            ("#pwordValidation").html("Thông tin không được trống");
+            return false;
+        }
+    });
+
+    $("#btnCancelPasswordChange").click(function () {
+        $("#btnChangePassword").text("Đổi mật khẩu");
+        $("#frmChangePassword").slideUp('slow')
+    });
+
+    $("#btnChangeAvatar").click(function (event) {
+
+    });
+</script>

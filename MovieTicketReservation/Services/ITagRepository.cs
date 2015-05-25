@@ -10,7 +10,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Tag> GetTags();
         Tag GetTagByID(int tagId);
 
-        int InsertIfNotExist(Tag tag);
+        bool InsertTagForNews(List<string> tags, int newsId);
         bool InsertTag(Tag tag);
         bool UpdateTag(Tag tag);
         bool DeleteTag(int tagId);

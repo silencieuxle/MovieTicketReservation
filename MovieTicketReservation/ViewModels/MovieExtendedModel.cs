@@ -2,7 +2,7 @@
 using MovieTicketReservation.Models;
 
 namespace MovieTicketReservation.ViewModels {
-	public class MovieExtended : Movie {
+	public class MovieExtendedModel : Movie {
         public int ScheduleType { get; set; }
 	}
 }

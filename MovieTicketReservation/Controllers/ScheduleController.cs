@@ -40,13 +40,17 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxGetScheduleByCinemaIDAndModieID(string cinemaId, int movieId) {
-            var schedules = scheduleRepository.GetSchedulesByCinemaIDAndMovieID(cinemaId, movieId).GroupBy(sch => sch.Date, (key, group) => new {
-                ShowingDate = ((DateTime)key).ToShortDateString(),
-                Times = group.Where(sche => sche.Cine_MovieDetails.CinemaID == cinemaId && sche.Date == key).OrderBy(x => x.ShowTime.StartTime)
-                                                          .Select(sh => new { ScheduleID = sh.ScheduleID, 
-                                                              ShowTime = ((TimeSpan)sh.ShowTime.StartTime).ToTimeString() 
-                                                          }).ToList()
-            }).ToList();
+            var schedules = scheduleRepository.GetSchedulesByCinemaIDAndMovieID(cinemaId, movieId)
+                .Where(s => (TimeSpan)s.ShowTime.StartTime >= DateTime.Now.TimeOfDay && ((DateTime)s.Date).Date == DateTime.Now.Date)
+                .GroupBy(sch => sch.Date, (key, group) => new {
+                    ShowingDate = ((DateTime)key).ToShortDateString(),
+                    Times = group.Where(sche => sche.Cine_MovieDetails.CinemaID == cinemaId && sche.Date == key)
+                        .OrderBy(x => x.ShowTime.StartTime)
+                        .Select(sh => new {
+                            ScheduleID = sh.ScheduleID,
+                            ShowTime = ((TimeSpan)sh.ShowTime.StartTime).ToTimeString()
+                        }).ToList()
+                }).ToList();
             return Json(schedules, JsonRequestBehavior.AllowGet);
         }
 

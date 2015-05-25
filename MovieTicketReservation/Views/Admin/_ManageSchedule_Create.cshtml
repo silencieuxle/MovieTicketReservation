@@ -97,7 +97,12 @@
         </div>
         <div class="form-group">
             <label>Khuyến mãi</label>
-            <select class="form-control" id="selPromote"></select>
+            <select class="form-control" id="selPromote">
+                <option value="-1" disabled selected>Khuyến mãi</option>
+                @foreach (var item in ViewBag.Promotions) {
+                    <option value="@item.PromotionID">@item.Name</option>
+                }
+            </select>
         </div>
         <span style="float: right">
             <button id="btnCancel" type="button" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>

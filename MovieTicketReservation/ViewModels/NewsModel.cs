@@ -6,19 +6,20 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace MovieTicketReservation.ViewModels {
-    public class PostUploadModel {
-        [Required]
+    public class NewsModel {
+        [Required(ErrorMessage = "Bạn phải nhập tựa bài viết")]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Bạn phải nhập mô tả")]
         public string Description { get; set; }
 
         [AllowHtml]
+        [Required(ErrorMessage = "Bạn phải nhập nội dung bài viết")]
         public string Content { get; set; }
 
         public string Tags { get; set; }
 
-        [Required]
-        public HttpPostedFileBase ThumbnailURL { get; set; }
+        [Required(ErrorMessage = "Bạn phải chọn ảnh cover")]
+        public HttpPostedFileBase Thumbnail { get; set; }
     }
 }

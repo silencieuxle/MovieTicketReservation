@@ -46,7 +46,7 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.GenreList = genreRepository.GetMovieGenres();
             ViewBag.AgeList = ageLimitationRepository.GetAgeLimitations();
 
-            var movies = movieRepository.GetAllMovies().Select(m => new MovieExtended {
+            var movies = movieRepository.GetAllMovies().Select(m => new MovieExtendedModel {
                 Actors = m.Actors,
                 AgeLimitation = m.AgeLimitation,
                 AgeLimitationID = m.AgeLimitationID,
@@ -79,7 +79,7 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.EditionList = editionRepository.GetMovieEditions();
             ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
             ViewBag.GenreList = genreRepository.GetMovieGenres();
-            var result = movieRepository.GetMoviesByTitle(query).Select(m => new MovieExtended {
+            var result = movieRepository.GetMoviesByTitle(query).Select(m => new MovieExtendedModel {
                 Actors = m.Actors,
                 AgeLimitation = m.AgeLimitation,
                 AgeLimitationID = m.AgeLimitationID,
@@ -146,7 +146,7 @@ namespace MovieTicketReservation.Controllers {
                 movies = movieRepository.GetMoviesByAgeLitmitation(ages, movies);
             }
 
-            movies = movies.OrderByDescending(m => m.BeginShowDate).Select(m => new MovieExtended {
+            movies = movies.OrderByDescending(m => m.BeginShowDate).Select(m => new MovieExtendedModel {
                 Actors = m.Actors,
                 AgeLimitation = m.AgeLimitation,
                 AgeLimitationID = m.AgeLimitationID,
@@ -178,7 +178,7 @@ namespace MovieTicketReservation.Controllers {
         // GET: Details?ID
         public ActionResult Details(int movieId) {
             var result = movieRepository.GetMovieByID(movieId);
-            var movie = new MovieExtended {
+            var movie = new MovieExtendedModel {
                 Actors = result.Actors,
                 AgeLimitation = result.AgeLimitation,
                 AgeLimitationID = result.AgeLimitationID,

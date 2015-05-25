@@ -289,6 +289,7 @@
     <Compile Include="Services\IGenreRepository.cs" />
     <Compile Include="Services\IMovieRepository.cs" />
     <Compile Include="Services\INewsRepository.cs" />
+    <Compile Include="Services\IPromotionService.cs" />
     <Compile Include="Services\IRoomRepository.cs" />
     <Compile Include="Services\IScheduleRepository.cs" />
     <Compile Include="Services\ISeatRepository.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="Services\MemberService\MemberRepository.cs" />
     <Compile Include="Services\MovieService\MovieRepository.cs" />
     <Compile Include="Services\NewsService\NewsRepository.cs" />
+    <Compile Include="Services\PromotionService\PromotionRepository.cs" />
     <Compile Include="Services\RoomService\RoomRepository.cs" />
     <Compile Include="Services\ScheduleService\ScheduleRepository.cs" />
     <Compile Include="Services\SeatService\SeatRepository.cs" />
@@ -312,10 +314,10 @@
     <Compile Include="ViewModels\CinemaModel.cs" />
     <Compile Include="ViewModels\DateModel.cs" />
     <Compile Include="ViewModels\MovieAddModel.cs" />
-    <Compile Include="ViewModels\MovieExtended.cs" />
+    <Compile Include="ViewModels\MovieExtendedModel.cs" />
     <Compile Include="ViewModels\CinemaScheduleModel.cs" />
-    <Compile Include="ViewModels\PostUploadModel.cs" />
-    <Compile Include="ViewModels\PromoteUploadModel.cs" />
+    <Compile Include="ViewModels\NewsModel.cs" />
+    <Compile Include="ViewModels\PromotionModel.cs" />
     <Compile Include="ViewModels\Showtime.cs" />
     <Compile Include="ViewModels\TicketList.cs" />
     <Compile Include="ViewModels\LoginModel.cs" />
@@ -446,9 +448,6 @@
     <Content Include="Content\Images\cineKDV_3.jpg" />
     <Content Include="Content\Images\cineKDV_4.jpg" />
     <Content Include="Content\Images\cineKDV_5.jpg" />
-    <Content Include="Content\Images\cineKDV_6.jpg" />
-    <Content Include="Content\Images\cineKDV_7.jpg" />
-    <Content Include="Content\Images\cineKDV_8.jpg" />
     <Content Include="Content\Images\MovieImages\FF7_mov.jpg" />
     <Content Include="Content\Images\MovieImages\gunman_mov.jpg" />
     <Content Include="Content\Images\MovieImages\home_mov.jpg" />
@@ -523,6 +522,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
     <Content Include="Views\Admin\_TicketStats_Room.cshtml" />
     <Content Include="Views\Admin\_ManageSchedule_Create.cshtml" />
     <Content Include="Views\Admin\_ManageSchedule_Edit.cshtml" />
@@ -530,7 +530,7 @@
     <Content Include="Views\Admin\_ManageMember_Add.cshtml" />
     <Content Include="Views\Admin\_ManageMember_Edit.cshtml" />
     <Content Include="Views\Admin\_Promotion_All.cshtml" />
-    <Content Include="Views\Admin\_Promotion_Add.cshtml" />
+    <Content Include="Views\Admin\ManagePromotion_Add.cshtml" />
     <Content Include="Views\Admin\_Promotion_Edit.cshtml" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
@@ -669,16 +669,15 @@
     <Content Include="Views\Ticket\Error.cshtml" />
     <Content Include="Views\Schedule\Index.cshtml" />
     <Content Include="Views\Admin\_ManageNews_All.cshtml" />
-    <Content Include="Views\Admin\_ManageNews_Add.cshtml" />
-    <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
+    <Content Include="Views\Admin\ManageNews_Add.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
     <Content Include="Views\Ticket\OutOfService.cshtml" />
-    <Content Include="Views\Admin\_ManageMovie_Add.cshtml" />
     <Content Include="Views\Admin\_ManageMovie_Cine.cshtml" />
     <Content Include="Views\Admin\ManageMovie_Add.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Images\NewsImages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

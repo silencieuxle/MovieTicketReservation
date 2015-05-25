@@ -22,14 +22,15 @@ using MovieTicketReservation.Services.EditionService;
 using MovieTicketReservation.Services.GenreService;
 using MovieTicketReservation.Services.SubtitleService;
 using MovieTicketReservation.Services.CinemaService;
+using MovieTicketReservation.Services.PromotionService;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.ViewModels;
 
 namespace MovieTicketReservation.Controllers {
     public class AdminController : Controller {
-        private const string imagePath = "/Content/Images/";
         private DbEntities context = new DbEntities();
 
+        private IPromotionService promotionRepository;
         private ICinemaRepository cinemaRepository;
         private ISubtitleRepository subtitleRepository;
         private IEditionRepository editionRepository;
@@ -49,6 +50,7 @@ namespace MovieTicketReservation.Controllers {
         private IAgeLimitationRepository ageLimitationRepository;
 
         public AdminController() {
+            this.promotionRepository = new PromotionRepository(context);
             this.cinemaRepository = new CinemaRepository(context);
             this.subtitleRepository = new SubtitleRepository(context);
             this.genreRepository = new GenreRepository(context);
@@ -106,10 +108,12 @@ namespace MovieTicketReservation.Controllers {
                 case "manageschedule_edit":
                     return PartialView("_ManageSchedule_Edit");
                 case "manageschedule_add":
+                    string cinemaId = (string)Session["AdminSection"];
                     ViewBag.Movies = cinemaMovieRepository.GetCanBeScheduledMovies();
-                    ViewBag.Rooms = roomRepository.GetRoomsByCinemaID("CINE1");
+                    ViewBag.Rooms = roomRepository.GetRoomsByCinemaID(cinemaId);
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
                     ViewBag.TicketClasses = ticketClassRepository.GetTicketClasses();
+                    ViewBag.Promotions = promotionRepository.GetPromotionsByCinema(cinemaId);
                     return PartialView("_ManageSchedule_Create");
                 case "mamangemember_all":
                     return PartialView("_ManageMember_All");
@@ -297,7 +301,7 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult AjaxAddScheduleManually(int movieId, string roomId, string date, int showtimeId, string ticketClassId, int? promoteId) {
             if (IsCinema()) {
                 DateTime showdate = DateTime.Parse(date);
-                int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
+                int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID((string)Session["AdminSection"], movieId).DetailsID;
 
                 var duplicate = scheduleRepository.GetSchedules().Where(x => x.ShowTimeID == showtimeId && x.RoomID == roomId && (DateTime)x.Date == showdate);
                 if (duplicate.Count() != 0)
@@ -332,7 +336,7 @@ namespace MovieTicketReservation.Controllers {
                 int stId = firstShowtimeId;
                 for (int i = 1; i <= numberOfScheduleToCreate; i++) {
                     DateTime showdate = DateTime.Parse(date);
-                    int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
+                    int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID((string)Session["AdminSection"], movieId).DetailsID;
                     result = scheduleRepository.InsertSchedule(new Schedule {
                         Cine_MovieDetailsID = cineMovieID,
                         Date = showdate,
@@ -359,37 +363,47 @@ namespace MovieTicketReservation.Controllers {
 
         #region News Management
 
-        public ActionResult ManageNews_Add(PostUploadModel postUploadModel) {
+        public ActionResult ManageNews_Add(NewsModel newsModel) {
+            string imagePath = "/Content/Images/NewsImages/";
+            bool result = false;
+
             if (!IsCinema() || !IsCompany()) {
                 Session["RedirectURL"] = "/Admin/ManageNews_Add";
                 return Redirect("/Admin/Login");
             }
-            if (!ModelState.IsValid) return View(postUploadModel);
-            var title = postUploadModel.Title;
-            var description = postUploadModel.Description;
-            var content = postUploadModel.Content;
-            var file = postUploadModel.ThumbnailURL;
-            string thumbnailUrl = imagePath + file.FileName + file.ContentType.Split('/')[1];
-            if (file.ContentLength > 0) {
-                file.SaveAs(thumbnailUrl);
-            }
-            var tags = postUploadModel.Tags.Split(' ');
-            List<Tag> tagList = new List<Tag>();
-            foreach (var item in tags) {
-                Tag tag = new Tag {
-                    Name = item
-                };
-                int res = tagRepository.InsertIfNotExist(tag);
-                if (res != 0) tagList.Add(tagRepository.GetTagByID(res));
-            }
-            newsRepository.InsertNews(new News {
+            if (!ModelState.IsValid) return View(newsModel);
+
+            // // Get uploaded HttpPostedFileBase
+            var thumbnail = newsModel.Thumbnail;
+
+            // Get uploaded file path
+            string thumbnailUrl = imagePath + thumbnail.FileName;
+
+            // Save uploaded poster and cover image
+            thumbnail.SaveAs(Server.MapPath(Url.Content(thumbnailUrl)));
+
+            var title = newsModel.Title;
+            var description = newsModel.Description;
+            var content = newsModel.Content;
+
+            var tags = newsModel.Tags.Split(' ').ToList();
+            var news = new News {
                 Title = title,
                 Description = description,
                 Content = content,
                 ThumbnailURL = thumbnailUrl,
-                Tags = tagList
-            });
-            return null;
+                PostedDate = DateTime.Now.Date,
+                ViewCount = 0
+            };
+            result = newsRepository.InsertNews(news);
+            if (result && tags.Count() != 0) {
+                result = tagRepository.InsertTagForNews(tags, news.NewsID);
+            }
+            if (result) 
+                ViewBag.Message = "Thêm tin thành công";
+            else 
+                ViewBag.Message = "Xảy ra lỗi khi thêm tin mới";
+            return View("ManageNews_Add");
         }
 
         #endregion
@@ -417,6 +431,7 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult ManageMovie_Add(MovieAddModel movieAddModel) {
             InitializePage();
+            string imagePath = "/Content/Images/MovieImages/";
 
             if (!IsCompany()) {
                 Session["RedirectURL"] = "/Admin/ManageMovie_Add";
@@ -499,6 +514,71 @@ namespace MovieTicketReservation.Controllers {
                 ViewBag.Message = "Xảy ra lỗi khi thêm film";
             }
             return View();
+        }
+
+        #endregion
+
+        #region Manage Promote
+
+        [HttpGet]
+        public ActionResult ManagePromotion_Add() {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ManagePromotion_Add(PromotionModel promotionModel) {
+            string imagePath = "/Content/Images/NewsImages/";
+            bool result = false;
+
+            if (!IsCinema() || !IsCompany()) {
+                Session["RedirectURL"] = "/Admin/ManageNews_Add";
+                return Redirect("/Admin/Login");
+            }
+            if (!ModelState.IsValid) return View(promotionModel);
+
+            // // Get uploaded HttpPostedFileBase
+            var thumbnail = promotionModel.Thumbnail;
+
+            // Get uploaded file path
+            string thumbnailUrl = imagePath + thumbnail.FileName;
+
+            // Save uploaded poster and cover image
+            thumbnail.SaveAs(Server.MapPath(Url.Content(thumbnailUrl)));
+
+            var title = promotionModel.Title;
+            var description = promotionModel.Description;
+            var content = promotionModel.Content;
+            var priceOff = promotionModel.PriceOff;
+
+            var news = new News {
+                Title = title,
+                Description = description,
+                Content = content,
+                ThumbnailURL = thumbnailUrl,
+                PostedDate = DateTime.Now.Date,
+                ViewCount = 0
+            };
+
+            result = newsRepository.InsertNews(news);
+
+            if (result) {
+                Promote promote = new Promote {
+                    NewsID = news.NewsID,
+                    PriceOff = promotionModel.PriceOff
+                };
+                result = promotionRepository.Insert(promote);
+            }
+
+            var tags = promotionModel.Tags.Split(' ').ToList();
+            if (result && tags.Count() != 0) {
+                result = tagRepository.InsertTagForNews(tags, news.NewsID);
+            }
+
+            if (result)
+                ViewBag.Message = "Thêm tin thành công";
+            else
+                ViewBag.Message = "Xảy ra lỗi khi thêm tin mới";
+            return View("ManagePromotion_Add");
         }
 
         #endregion

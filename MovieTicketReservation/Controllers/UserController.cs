@@ -5,6 +5,7 @@ using MovieTicketReservation.Models;
 using MovieTicketReservation.ViewModels;
 using MovieTicketReservation.Services;
 using MovieTicketReservation.Services.MemberService;
+using System.Globalization;
 
 namespace MovieTicketReservation.Controllers {
     public class UserController : Controller {
@@ -25,7 +26,20 @@ namespace MovieTicketReservation.Controllers {
 
             var userId = (int)Session["UID"];
             var member = memberRepository.GetMemberByID(userId);
-            return View(member);
+            MemberModel memberModel = new MemberModel {
+                Address = member.Address,
+                AvatarURL = member.AvatarURL,
+                Birthday = member.Birthday,
+                Email = member.Email,
+                Firstname = member.Firstname,
+                Gender = member.Gender,
+                IdCardNumber = member.IDCardNumber,
+                Lastname = member.Lastname,
+                Password = member.Password,
+                Phone = member.Phone
+            };
+
+            return View(memberModel);
         }
 
         [HttpGet]
@@ -116,6 +130,50 @@ namespace MovieTicketReservation.Controllers {
         }
 
         [HttpPost]
+        public ActionResult AjaxUpdateBasicInfo(string firstName, string lastName, bool gender, string birthday) {
+            string errorMessage = "";
+            var member = memberRepository.GetMemberByID((int)Session["UID"]);
+            member.Firstname = firstName;
+            member.Lastname = lastName;
+            member.Gender = gender;
+            var temp = DateTime.ParseExact(birthday, "dd/MM/yyyy", new CultureInfo("en-US"));
+            try {
+                member.Birthday = DateTime.ParseExact(birthday, "dd/MM/yyyy", new CultureInfo("en-US"));
+            } catch (Exception ex) {
+                Console.Write(ex.StackTrace);
+                errorMessage = "Ngày sinh không hợp lệ.";
+                return Json(new { Success = false, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+            }
+            var result = memberRepository.UpdateMember(member);
+            if (!result) errorMessage = "Có lỗi khi cập nhật dữ liệu";
+            return Json(new { Success = result, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxUpdatePassword(string oldPassword, string newPassword) {
+            string errorMessage = "";
+            var member = memberRepository.GetMemberByID((int)Session["UID"]);
+            if (member.Password != Helper.GenerateSHA1String(oldPassword)) {
+                errorMessage = "Mật khẩu cũ không đúng";
+                return Json(new { Success = false, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+            }
+            member.Password = Helper.GenerateSHA1String(newPassword);
+            var result = memberRepository.UpdateMember(member);
+            if (!result) errorMessage = "Có lỗi khi cập nhật dữ liệu";
+            return Json(new { Success = result, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxUpdateContactInfo(string idCardNumber, string address, string phoneNumber) {
+            string errorMessage = "";
+            var member = memberRepository.GetMemberByID((int)Session["UID"]);
+            member.IDCardNumber = idCardNumber;
+            member.Address = address;
+            member.Phone = phoneNumber;
+            var result = memberRepository.UpdateMember(member);
+            if (!result) errorMessage = "Có lỗi khi cập nhật dữ liệu";
+            return Json(new { Success = result, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
 

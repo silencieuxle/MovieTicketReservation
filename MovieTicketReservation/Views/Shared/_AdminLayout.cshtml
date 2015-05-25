@@ -35,10 +35,9 @@
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
-
                 @if (Session["Role"] != null) {
                     <li>
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="/Admin/Logout">
+                        <a href="/Admin/Logout">
                             <i class="fa fa-sign-out fa-fw"></i> Đăng xuất
                         </a>
                     </li>
@@ -98,6 +97,13 @@
                                         <li><a href="#" class="ajaxLink" id="managemovie_add"><i class="fa fa-arrow-right fa-fw"></i> Film ở rạp</a></li>
                                     </ul>
                                 </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-gift fa-fw"></i> Chương trình khuyến mãi<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li><a href="#" class="ajaxLink" id="promotion_all"><i class="fa fa-arrow-right fa-fw"></i> Tất cả chương trình</a></li>
+                                        <li><a href="/Admin/ManagePromotion_Add"><i class="fa fa-arrow-right fa-fw"></i> Thêm khuyến mãi</a></li>
+                                    </ul>
+                                </li>
                             } else if ((int)Session["Role"] == 2) {
                                 <li>
                                     <a href="#"><i class="fa fa-film fa-fw"></i> Quản lý lịch chiếu<span class="fa arrow"></span></a>
@@ -121,13 +127,7 @@
                                     </ul>
                                 </li>
                             }
-                            <li>
-                                <a href="#"><i class="fa fa-gift fa-fw"></i> Chương trình khuyến mãi<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li><a href="#" class="ajaxLink" id="promotion_all"><i class="fa fa-arrow-right fa-fw"></i> Tất cả chương trình</a></li>
-                                    <li><a href="/Admin/ManagePromote_Add"><i class="fa fa-arrow-right fa-fw"></i> Thêm khuyến mãi</a></li>
-                                </ul>
-                            </li>
+
                         </ul>
                     }
                 </div>

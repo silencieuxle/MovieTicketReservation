@@ -29,9 +29,14 @@ namespace MovieTicketReservation.Controllers {
             this.seatShowRepository = new SeatShowRepository(context);
         }
 
+        private bool IsLoggedIn() {
+            if (Session["UID"] == null) return false;
+            return true;
+        }
+
         // GET: Ticket
         public ActionResult Index() {
-            if (Session["UID"] == null) {
+            if (!IsLoggedIn()) {
                 Session["RedirectURL"] = Request.RawUrl;
                 return Redirect("/User/Login");
             }
@@ -69,7 +74,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult Reserve(int scheduleId) {
-            if (Session["UID"] == null) {
+            if (!IsLoggedIn()) {
                 Session["RedirectURL"] = Request.RawUrl;
                 return Redirect("/User/Login");
             }
@@ -89,6 +94,7 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult Confirm() {
+            if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
             var scheduleId = (int)Session["Schedule"];
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
@@ -109,10 +115,13 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult CheckOut() {
+            if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
             int bookingHeaderId;
             bool error = false;
-            if ((bookingHeaderId = CreateBookingHeader()) != 0) {
+            if ((bookingHeaderId = CreateBookingHeader()) == 0) {
+                error = true;
+            } else {
                 int totalSeat = CheckSeats(bookingHeaderId);
                 if (totalSeat != -1) {
                     if (totalSeat == UpdateTotalSeat(bookingHeaderId, totalSeat))
@@ -132,6 +141,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult CancelConfirmation() {
+            if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
             Session["Schedule"] = null;
             Session["ReservedSeats"] = null;
@@ -181,7 +191,7 @@ namespace MovieTicketReservation.Controllers {
             int bookingHeaderId;
 
             BookingHeader bookingHeader = new BookingHeader {
-                MemberID = 1, //Testing purpose
+                MemberID = (int)Session["UID"],
                 ReservedTime = DateTime.Now,
                 SessionID = sessionString,
                 Took = false,
