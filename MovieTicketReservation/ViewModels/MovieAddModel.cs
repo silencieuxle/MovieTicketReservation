@@ -49,7 +49,6 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Ngày khởi chiếu")]
         [DataType(DataType.Date, ErrorMessage = "Bạn chỉ được chọn ngày")]
-        [Required(ErrorMessage = "Bạn phai chọn ngày khởi chiếu")]
         public DateTime BeginShowDate { get; set; }
 
         [Display(Name = "Thời gian chiếu (ngày)")]
@@ -64,7 +63,7 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Điểm số")]
         [Range(0, 10, ErrorMessage = "Điểm phải nằm trong khoảng từ 0 đến 10")]
-        public float? Rate { get; set; }
+        public double? Rate { get; set; }
 
         [Display(Name = "Film bom tấn")]
         public bool HotMovie { get; set; }
@@ -82,9 +81,11 @@ namespace MovieTicketReservation.ViewModels {
         public string Edition { get; set; }
 
         [Required(ErrorMessage = "Bạn phải chọn dạng phụ đề")]
-        public string Subtitle { get; set; }
+        public int Subtitle { get; set; }
 
         [Required(ErrorMessage = "Bạn phải chọn thể loại")]
         public List<string> Genres { get; set; }
+
+        public List<string> Cinemas { get; set; }
     }
 }

@@ -121,6 +121,33 @@ namespace MovieTicketReservation.Services.MovieService {
             return context.Movies.Find(movieId);
         }
 
+        public bool InsertCineMovieDetailsByCinemaID(string cinemaID, Movie movie) {
+            using (var transaction = context.Database.BeginTransaction()) {
+                try {
+                    context.Movies.Add(movie);
+                    var cinema = context.Cinemas.Find(cinemaID);
+
+                    if (cinema != null) {
+                        cinema.Cine_MovieDetails.Add(new Cine_MovieDetails {
+                            CinemaID = cinemaID,
+                            MovieID = movie.MovieID
+                        });
+                    } else {
+                        return false;
+                    }
+
+                    context.SaveChanges();
+
+                    transaction.Commit();
+                } catch (Exception ex) {
+                    Console.Write(ex.StackTrace);
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public bool InsertMovie(Movie movie) {
             using (var transaction = context.Database.BeginTransaction()) {
                 try {

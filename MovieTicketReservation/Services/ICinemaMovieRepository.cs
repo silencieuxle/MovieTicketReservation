@@ -10,7 +10,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Cine_MovieDetails> GetAllDetails();
         IEnumerable<Cine_MovieDetails> GetDetailsByMovieID(int movieId);
         IEnumerable<Cine_MovieDetails> GetDetailsByCinemaID(string cinemaId);
-        IEnumerable<Movie> GetCanBeScheduledMoviesByCinema(string cinemaId);
+        IEnumerable<Movie> GetCanBeScheduledMovies();
         Cine_MovieDetails GetDetailsByID(int detailsId);
         Cine_MovieDetails GetDetailsByCinemaIDAndMovieID(string cinemaID, int movieId);
         bool InsertDetails(Cine_MovieDetails cinemaMovieDetails);

@@ -168,6 +168,7 @@ form[role="search"] {
     padding-top: 10px;
     color: red;
     font-style: italic;
+    list-style-type: none;
     display: none;
 }
 

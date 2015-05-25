@@ -39,8 +39,6 @@
           <Property Name="DetailsID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MovieID" Type="int" Nullable="false" />
           <Property Name="CinemaID" Type="varchar" MaxLength="5" Nullable="false" />
-          <Property Name="Duration" Type="int" />
-          <Property Name="BeginShowDate" Type="date" />
         </EntityType>
         <EntityType Name="Cine_PromoteDetails">
           <Key>
@@ -708,8 +706,6 @@
           <Property Name="DetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MovieID" Type="Int32" Nullable="false" />
           <Property Name="CinemaID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Duration" Type="Int32" />
-          <Property Name="BeginShowDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Cinema" Relationship="Self.FK_Cine_MovieDetails_Cinema" FromRole="Cine_MovieDetails" ToRole="Cinema" />
           <NavigationProperty Name="Movie" Relationship="Self.FK_Cine_MovieDetails_Movie" FromRole="Cine_MovieDetails" ToRole="Movie" />
           <NavigationProperty Name="Schedules" Relationship="Self.FK_Schedule_Cine_MovieDetails" FromRole="Cine_MovieDetails" ToRole="Schedule" />
@@ -1330,9 +1326,7 @@
                 <ScalarProperty Name="DetailsID" ColumnName="DetailsID" />
                 <ScalarProperty Name="MovieID" ColumnName="MovieID" />
                 <ScalarProperty Name="CinemaID" ColumnName="CinemaID" />
-                <ScalarProperty Name="Duration" ColumnName="Duration" />
-                <ScalarProperty Name="BeginShowDate" ColumnName="BeginShowDate" />
-              </MappingFragment>
+                </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Cinemas">

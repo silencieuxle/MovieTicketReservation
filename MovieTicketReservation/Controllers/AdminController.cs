@@ -20,6 +20,8 @@ using MovieTicketReservation.Services.BookingHeaderService;
 using MovieTicketReservation.Services.AgeLimitationService;
 using MovieTicketReservation.Services.EditionService;
 using MovieTicketReservation.Services.GenreService;
+using MovieTicketReservation.Services.SubtitleService;
+using MovieTicketReservation.Services.CinemaService;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.ViewModels;
 
@@ -28,6 +30,8 @@ namespace MovieTicketReservation.Controllers {
         private const string imagePath = "/Content/Images/";
         private DbEntities context = new DbEntities();
 
+        private ICinemaRepository cinemaRepository;
+        private ISubtitleRepository subtitleRepository;
         private IEditionRepository editionRepository;
         private IGenreRepository genreRepository;
         private ITagRepository tagRepository;
@@ -45,6 +49,8 @@ namespace MovieTicketReservation.Controllers {
         private IAgeLimitationRepository ageLimitationRepository;
 
         public AdminController() {
+            this.cinemaRepository = new CinemaRepository(context);
+            this.subtitleRepository = new SubtitleRepository(context);
             this.genreRepository = new GenreRepository(context);
             this.editionRepository = new EditionRepository(context);
             this.bookingRepository = new BookingHeaderRepository(context);
@@ -64,8 +70,7 @@ namespace MovieTicketReservation.Controllers {
 
         // GET: Admin
         public ActionResult Index() {
-            if (Session["Role"] == null)
-                return Redirect("Login");
+            if (!IsCompany() && !IsCinema()) return View("Login");
             ViewBag.TotalMembers = memberRepository.GetAllMembers().Count();
             ViewBag.TotalBookings = bookingRepository.GetBookingHeadersByDate(DateTime.Now).Count();
             ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
@@ -73,8 +78,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult GetPage(string page, string param) {
-            int role = (int)Session["Role"];
-            if (role != 1 && role != 2) return Redirect("Login");
+            if (!IsCinema() && !IsCompany()) return View("Login");
             switch (page) {
                 case "login":
                     Session.Abandon();
@@ -102,7 +106,7 @@ namespace MovieTicketReservation.Controllers {
                 case "manageschedule_edit":
                     return PartialView("_ManageSchedule_Edit");
                 case "manageschedule_add":
-                    ViewBag.Movies = cinemaMovieRepository.GetCanBeScheduledMoviesByCinema("CINE1");
+                    ViewBag.Movies = cinemaMovieRepository.GetCanBeScheduledMovies();
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID("CINE1");
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
                     ViewBag.TicketClasses = ticketClassRepository.GetTicketClasses();
@@ -129,12 +133,19 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
-        private bool IsAdmin() {
+        private bool IsCinema() {
             if (Session["Role"] == null) return false;
-            if ((int)Session["Role"] == 1 || (int)Session["Role"] == 2) return true;
+            if ((int)Session["Role"] == 2) return true;
             return false;
         }
 
+        private bool IsCompany() {
+            if (Session["Role"] == null) return false;
+            if ((int)Session["Role"] == 1) return true;
+            return false;
+        }
+
+        [HttpGet]
         public ActionResult Login() {
             return View();
         }
@@ -235,7 +246,7 @@ namespace MovieTicketReservation.Controllers {
         #region Schedule Management
 
         public ActionResult AjaxGetAvailableSchedules() {
-            if (IsAdmin()) {
+            if (IsCinema()) {
                 var result = scheduleRepository.GetAvailableSchedules().Select(s => new {
                     ScheduleID = s.ScheduleID,
                     MovieTitle = s.Cine_MovieDetails.Movie.Title,
@@ -250,7 +261,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxGetAvailableSchedulesByMovieID(int movieId) {
-            if (IsAdmin()) {
+            if (IsCinema()) {
                 var result = scheduleRepository.GetAvailableSchedules().Where(s => s.Cine_MovieDetails.Movie.MovieID == movieId).Select(s => new {
                     ScheduleID = s.ScheduleID,
                     MovieTitle = s.Cine_MovieDetails.Movie.Title,
@@ -265,10 +276,10 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxGetDatesByMovieID(int movieId) {
-            if (IsAdmin()) {
-                var details = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId);
-                var beginShowDate = (DateTime)details.BeginShowDate;
-                var endShowDate = beginShowDate.AddDays((int)details.Duration);
+            if (IsCinema()) {
+                var movie = movieRepository.GetMovieByID(movieId);
+                var beginShowDate = (DateTime)movie.BeginShowDate;
+                var endShowDate = beginShowDate.AddDays((int)movie.Duration);
                 DateTime startDate;
                 if (beginShowDate > DateTime.Now) startDate = beginShowDate;
                 else startDate = DateTime.Now;
@@ -284,7 +295,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxAddScheduleManually(int movieId, string roomId, string date, int showtimeId, string ticketClassId, int? promoteId) {
-            if (IsAdmin()) {
+            if (IsCinema()) {
                 DateTime showdate = DateTime.Parse(date);
                 int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
 
@@ -310,7 +321,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult AjaxAddScheduleAuto(int movieId, string roomId, string date, int firstShowtimeId, int numberOfSchedule, string ticketClassId, int? promoteId) {
-            if (IsAdmin()) {
+            if (IsCinema()) {
                 var showtime = (TimeSpan)showtimeRepository.GetShowtimeByID(firstShowtimeId).StartTime;
                 int startTime = showtime.Hours * 60 + showtime.Minutes;
                 int movielength = (int)movieRepository.GetMovieByID(movieId).MovieLength;
@@ -322,7 +333,6 @@ namespace MovieTicketReservation.Controllers {
                 for (int i = 1; i <= numberOfScheduleToCreate; i++) {
                     DateTime showdate = DateTime.Parse(date);
                     int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID("CINE1", movieId).DetailsID;
-
                     result = scheduleRepository.InsertSchedule(new Schedule {
                         Cine_MovieDetailsID = cineMovieID,
                         Date = showdate,
@@ -350,7 +360,7 @@ namespace MovieTicketReservation.Controllers {
         #region News Management
 
         public ActionResult ManageNews_Add(PostUploadModel postUploadModel) {
-            if (!IsAdmin()) {
+            if (!IsCinema() || !IsCompany()) {
                 Session["RedirectURL"] = "/Admin/ManageNews_Add";
                 return Redirect("/Admin/Login");
             }
@@ -388,25 +398,30 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult ManageMovie_Add() {
-            if (!IsAdmin()) {
+            if (!IsCompany()) {
                 Session["RedirectURL"] = "/Admin/ManageMovie_Add";
                 return Redirect("/Admin/Login");
             }
+            InitializePage();
+            return View();
+        }
+
+        private void InitializePage() {
             ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
             ViewBag.Editions = editionRepository.GetMovieEditions();
+            ViewBag.Subtitles = subtitleRepository.GetSubtitles();
             ViewBag.Genres = genreRepository.GetMovieGenres();
-            return View();
+            ViewBag.Cinemas = cinemaRepository.GetCinemas();
         }
 
         [HttpPost]
         public ActionResult ManageMovie_Add(MovieAddModel movieAddModel) {
-            if (!IsAdmin()) {
+            InitializePage();
+
+            if (!IsCompany()) {
                 Session["RedirectURL"] = "/Admin/ManageMovie_Add";
                 return Redirect("/Admin/Login");
             }
-            ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
-            ViewBag.Editions = editionRepository.GetMovieEditions();
-            ViewBag.Genres = genreRepository.GetMovieGenres();
 
             if (!ModelState.IsValid) {
                 return View(movieAddModel);
@@ -427,17 +442,15 @@ namespace MovieTicketReservation.Controllers {
             var wideThumbnail = movieAddModel.WideThumbnail;
 
             // Get uploaded file path
-            string thumbnailUrl = imagePath + thumbnail.FileName + thumbnail.ContentType.Split('/')[1];
-            string wideThumbnailUrl = imagePath + wideThumbnail.FileName + wideThumbnail.ContentType.Split('/')[1];
+            string thumbnailUrl = imagePath + thumbnail.FileName;
+            string wideThumbnailUrl = imagePath + wideThumbnail.FileName;
 
             // Save uploaded poster and cover image
-            thumbnail.SaveAs(thumbnailUrl);
-            wideThumbnail.SaveAs(wideThumbnailUrl);
+            thumbnail.SaveAs(Server.MapPath(Url.Content(thumbnailUrl)));
+            wideThumbnail.SaveAs(Server.MapPath(Url.Content(wideThumbnailUrl)));
+            bool result = false;
 
-            // Get genre ids
-            List<string> genreIds = movieAddModel.Genres;
-
-            var result = movieRepository.InsertMovie(new Movie {
+            var movie = new Movie {
                 Actors = movieAddModel.Actors,
                 AgeLimitationID = movieAddModel.AgeLimitation,
                 Available = movieAddModel.Available,
@@ -445,6 +458,8 @@ namespace MovieTicketReservation.Controllers {
                 Description = movieAddModel.ShortDescription,
                 Director = movieAddModel.Director,
                 Duration = movieAddModel.Duration,
+                EditionID = movieAddModel.Edition,
+                SubtitleID = movieAddModel.Subtitle,
                 HotMovie = movieAddModel.HotMovie,
                 LongDescription = movieAddModel.LongDescription,
                 MovieLength = movieAddModel.MovieLength,
@@ -454,14 +469,36 @@ namespace MovieTicketReservation.Controllers {
                 WideThumbnail = wideThumbnailUrl,
                 TrailerURL = movieAddModel.TrailerURL,
                 Title = movieAddModel.Title,
-            });
+            };
 
-            //// If succeeded add movie, add movie genres
-            //if (result) {
+            result = movieRepository.InsertMovie(movie);
+            // If succeeded add movie, add movie genres
+            if (result) {
+                List<MovieGenre> genres = new List<MovieGenre>();
+                foreach (var item in movieAddModel.Genres) {
+                    var genre = genreRepository.GetMovieGenreByID(item);
+                    genres.Add(genre);
+                }
+                result = genreRepository.InsertMovieGenreForMovie(movie.MovieID, genres);
+            }
 
-            //}
+            if (result) {
+                List<Cine_MovieDetails> details = new List<Cine_MovieDetails>();
+                foreach (var item in movieAddModel.Cinemas) {
+                    result = cinemaMovieRepository.InsertDetails(new Cine_MovieDetails {
+                        CinemaID = item,
+                        MovieID = movie.MovieID
+                    });
+                    if (result) continue; else break;
+                }
+            }
 
-            return Redirect("/Admin/ManageMovie_Add");
+            if (result) {
+                ViewBag.Message = "Thêm film mới thành công";
+            } else {
+                ViewBag.Message = "Xảy ra lỗi khi thêm film";
+            }
+            return View();
         }
 
         #endregion

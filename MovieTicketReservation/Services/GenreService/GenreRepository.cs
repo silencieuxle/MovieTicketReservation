@@ -19,8 +19,31 @@ namespace MovieTicketReservation.Services.GenreService {
             return context.MovieGenres.ToList();
         }
 
+        public IEnumerable<MovieGenre> GetMovieGenresByMovieID(int movieId) {
+            return context.Movies.Find(movieId).MovieGenres.ToList();
+        }
+
         public MovieGenre GetMovieGenreByID(string genreId) {
             return context.MovieGenres.Find(genreId);
+        }
+
+        public bool InsertMovieGenreForMovie(int movieId, List<MovieGenre> genreList) {
+            using (var transaction = context.Database.BeginTransaction()) {
+                try {
+                    var movie = context.Movies.Find(movieId);
+                    foreach (var item in genreList) {
+                        movie.MovieGenres.Add(item);
+                    }
+                    context.SaveChanges();
+
+                    transaction.Commit();
+                } catch (Exception ex) {
+                    Console.Write(ex.StackTrace);
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+            return true;
         }
 
         public bool InsertMovieGenre(MovieGenre movieGenre) {

@@ -32,7 +32,7 @@ namespace MovieTicketReservation.Services.ScheduleService {
         }
 
         public IEnumerable<Schedule> GetAvailableSchedules() {
-            return context.Schedules.ToList().Where(s => ((DateTime)s.Cine_MovieDetails.Movie.BeginShowDate).AddDays((int)s.Cine_MovieDetails.Duration) >= DateTime.Now).ToList();
+            return context.Schedules.ToList().Where(s => ((DateTime)s.Cine_MovieDetails.Movie.BeginShowDate).AddDays((int)s.Cine_MovieDetails.Movie.Duration) >= DateTime.Now).ToList();
         }
 
         public IEnumerable<Schedule> GetCanBeReserveScheduleByMovieID(int movieId) {

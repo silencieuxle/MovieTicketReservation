@@ -6,9 +6,10 @@
 }
 <link href="~/Content/fileupload.min.css" rel="stylesheet" />
 
-<h2 class="separator">Thêm film mới</h2>
 
 @using (Html.BeginForm("ManageMovie_Add", "Admin", FormMethod.Post, new { @class = "col-sm-8 col-sm-push-2", id = "movieFrm", enctype = "multipart/form-data" })) {
+    <h2 class="separator">Thêm film mới</h2>
+    <h4 class="validate-label">@(ViewBag.Message == null ? "" : ViewBag.Message)</h4>
     @Html.AntiForgeryToken()
 
     @Html.ValidationSummary(true, "", new { @class = "validate-label" })
@@ -41,23 +42,14 @@
         @Html.ValidationMessageFor(model => model.LongDescription, "", new { @class = "validate-label" })
     </div>
     <div class="row">
-        <div class="col-sm-12">
-            <div class="form-group">
-                @Html.Label("Thể loại film")
-                @Html.ListBoxFor(model => model.Genres, new MultiSelectList(ViewBag.Genres, "GenreID", "Name"), htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Genres, "", new { @class = "validate-label" })
-            </div>
-        </div>
-    </div>
-    <br />
-    <div class="row">
         <div class="col-sm-3">
             <div class="form-group">
                 <label>Phiên bản</label>
                 <select class="form-control" name="Edition" required>
                     <option disabled selected value="-1">Phiên bản</option>
-                    <option value="2D">2D</option>
-                    <option value="3D">3D</option>
+                    @foreach (var item in ViewBag.Editions) {
+                        <option value="@item.EditionID">@item.Name</option>
+                    }
                 </select>
                 @Html.ValidationMessageFor(model => model.Edition, "", new { @class = "validate-label" })
             </div>
@@ -67,10 +59,9 @@
                 <label>Phụ đề</label>
                 <select class="form-control" name="Subtitle" required>
                     <option disabled selected value="-1">Phụ đề hoặc lồng tiếng</option>
-                    <option value="DUBENSUB">DUB & ENGLISH SUB </option>
-                    <option value="DUBVISUB">DUB & VIETNAMESE SUB</option>
-                    <option value="VISUB">VIETNAMESE SUB</option>
-                    <option value="ENSUB">ENGLISH SUB</option>
+                    @foreach (var item in ViewBag.Subtitles) {
+                        <option value="@item.SubtitleID">@item.Description</option>
+                    }
                 </select>
                 @Html.ValidationMessageFor(model => model.Subtitle, "", new { @class = "validate-label" })
             </div>
@@ -83,7 +74,23 @@
             </div>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.Label("Thể loại film (giữ Ctrl để chọn nhiều loại)")
+                @Html.ListBoxFor(model => model.Genres, new MultiSelectList(ViewBag.Genres, "GenreID", "Name"), htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Genres, "", new { @class = "validate-label" })
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.Label("Rạp được chiếu (giữ Ctrl để chọn nhiều rạp)")
+                @Html.ListBoxFor(model => model.Cinemas, new MultiSelectList(ViewBag.Cinemas, "CinemaID", "Name"), htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Cinemas, "", new { @class = "validate-label" })
+            </div>
+        </div>
+    </div>
+    <br />
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
@@ -172,10 +179,9 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
-        </div>
+    <div class="form-group" style="float: right">
+        <button type="reset" class="btn btn-danger">Huỷ</button>
+        <input type="submit" value="Thêm" class="btn btn-success" />
     </div>
 }
 

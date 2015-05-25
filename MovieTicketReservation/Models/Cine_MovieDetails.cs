@@ -22,8 +22,6 @@ namespace MovieTicketReservation.Models
         public int DetailsID { get; set; }
         public int MovieID { get; set; }
         public string CinemaID { get; set; }
-        public Nullable<int> Duration { get; set; }
-        public Nullable<System.DateTime> BeginShowDate { get; set; }
     
         public virtual Cinema Cinema { get; set; }
         public virtual Movie Movie { get; set; }

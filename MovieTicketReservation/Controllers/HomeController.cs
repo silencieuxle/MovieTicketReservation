@@ -38,9 +38,9 @@ namespace MovieTicketReservation.Controllers {
 
         public ActionResult GetShowtimeByScheduleId(int scheduleId, int movieId) {
             var result = new List<dynamic>();
-            var date = scheduleRepository.GetScheduleByID(scheduleId).Date;
+            var date = ((DateTime)scheduleRepository.GetScheduleByID(scheduleId).Date).Date;
             var cinema = scheduleRepository.GetScheduleByID(scheduleId).Cine_MovieDetails.CinemaID;
-            var schedule = scheduleRepository.GetSchedules().Where(s => s.Date == (DateTime)date && s.Date >= DateTime.Now && s.Cine_MovieDetails.MovieID == movieId && s.Cine_MovieDetails.CinemaID == cinema && (TimeSpan)s.ShowTime.StartTime >= DateTime.Now.TimeOfDay);
+            var schedule = scheduleRepository.GetSchedules().Where(s => ((DateTime)s.Date).Date == date && s.Cine_MovieDetails.MovieID == movieId && s.Cine_MovieDetails.CinemaID == cinema && (TimeSpan)s.ShowTime.StartTime >= DateTime.Now.TimeOfDay);
             foreach (var item in schedule) {
                 result.Add(new { Time = item.ShowTime.StartTime, item.ScheduleID });
             }
@@ -50,7 +50,7 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult GetDateByCinemaIdAndMovieId(int movieId, string cinemaId) {
             var dates = scheduleRepository.GetSchedules().Where(s => s.Cine_MovieDetails.MovieID == movieId &&
                 s.Cine_MovieDetails.CinemaID == cinemaId &&
-                s.Date >= DateTime.Now);
+                ((DateTime)s.Date).Date >= DateTime.Now.Date);
             var result = new List<dynamic>();
             foreach (var item in dates) {
                 if (result.All(x => x.Date != item.Date)) result.Add(new { item.Date, item.ScheduleID });
