@@ -1,15 +1,13 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "OutOfService";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="col-sm-8 col-sm-push-2">
-    <h2 class="separator">Hết vé</h2>
-    <p>Suất chiếu quý khách vừa chọn đã hết vé, vui lòng chọn lại suất khác.</p>
-    <div class="col-sm-6">
-        <a href="/Home/">Nhấn vào đây để trở lại trang chủ</a>
-        <a href="@ViewBag.ReturnURL"></a>
-    </div>
+    <h2 class="separator">Thông báo</h2>
+    <p class="col-sm-12">@ViewBag.Message</p>
+
+    <a class="col-sm-6" href="@ViewBag.ReturnURL">@ViewBag.ReturnMessage</a>
+    <a class="col-sm-6" href="/Home/">Nhấn vào đây để trờ lại trang chủ</a>
 </div>
 

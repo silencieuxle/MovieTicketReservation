@@ -33,6 +33,16 @@ select, input[type="text"] {
     margin: 0 auto !important;
 }
 
+@media (min-width: 768px) {
+    #modalLogin div.modal-sm {
+        width: 35%;
+    }
+}
+
+.modal-content {
+    border-radius: 0;
+}
+
 .content-center {
     text-align: center;
 }

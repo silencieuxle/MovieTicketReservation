@@ -17,8 +17,7 @@
 
 
 #cinemaCarousel img {
-    height: 368px !important;
-    width: auto;
+    width: 100%;
 }
 
 .nav-tabs {

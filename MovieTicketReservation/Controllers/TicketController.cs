@@ -82,12 +82,15 @@ namespace MovieTicketReservation.Controllers {
             if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movies");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
-            
+
             var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
             bool canReserve = seats.Any(s => s.Reserved == false);
             if (canReserve) return View(seats);
             else {
                 ViewBag.ReturnURL = Request.RawUrl;
+                ViewBag.ReturnMessage = "Nhấn vào để chọn suất chiếu khác.";
+                ViewBag.Message = "Suất chiếu này đã hết ghế.";
+                
                 return View("OutOfService");
             }
         }
@@ -96,10 +99,19 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult Confirm() {
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
+
+            // Check if any seat is reserve while current user is checking seats
+            var seats = (List<int>)Session["ReservedSeats"];
             var scheduleId = (int)Session["Schedule"];
+
+            bool result = CheckSeatsForAvailability();
+            ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + scheduleId;
+            ViewBag.ReturnMessage = "Nhấn vào để chọn ghế khác";
+            ViewBag.Message = "Ghế bạn muốn đặt đã được đặt trong thời gian bạn chọn ghế.";
+            if (!result) return View("OutOfService");
+
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
             var movie = schedule.Cine_MovieDetails.Movie;
-            var seats = (List<int>)Session["ReservedSeats"];
             var showtime = (TimeSpan)schedule.ShowTime.StartTime;
             var details = new BookingDetailsModel {
                 Cinema = schedule.Cine_MovieDetails.Cinema.Name,
@@ -236,6 +248,15 @@ namespace MovieTicketReservation.Controllers {
                 if (bookingRepository.UpdateBookingHeader(bookingHeader) != 0) return totalSeat;
             }
             return -1;
+        }
+
+        private bool CheckSeatsForAvailability() {
+            var seats = (List<int>)Session["ReservedSeats"];
+            foreach (var seat in seats) {
+                var currentSeat = seatShowRepository.GetDetailsBySeatID(seat);
+                if (currentSeat.Reserved == true) return false;
+            }
+            return true;
         }
     }
 }
