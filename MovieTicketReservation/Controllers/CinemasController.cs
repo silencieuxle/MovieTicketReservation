@@ -24,7 +24,9 @@ namespace MovieTicketReservation.Controllers {
             return View(cinemaRepository.GetCinemas());
         }
 
-        public ActionResult GetCinemaDetails(string cinemaId) {
+        #region Ajax methods
+
+        public ActionResult AjaxGetCinemaDetails(string cinemaId) {
             var cinemaInfo = cinemaRepository.GetCinemaByID(cinemaId);
             var cinemaImage = cinemaImageRepository.GetCinemaImagesByCinemaID(cinemaId).Select(x => x.ImageURL).ToList();
 
@@ -35,5 +37,7 @@ namespace MovieTicketReservation.Controllers {
                 Images = cinemaImage            };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        #endregion
     }
 }
