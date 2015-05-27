@@ -270,6 +270,16 @@ namespace MovieTicketReservation.Controllers {
         #region Schedule Management
 
         [HttpPost]
+        public ActionResult AjaxGetTicketType(int movieId) {
+            var edition = movieRepository.GetMovieByID(movieId).EditionID;
+            if (edition == "MOV2D") {
+                return Json(new List<object> { new { ID = "CLASS1", Name = "2D" }, new { ID = "CLASS3", Name = "Happy Day 2D" } }, JsonRequestBehavior.AllowGet);
+            } else {
+                return Json(new List<object> { new { ID = "CLASS2", Name = "3D" }, new { ID = "CLASS4", Name = "Happy Day 3D" } }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
         public ActionResult AjaxGetAvailableSchedules() {
             if (IsCinema()) {
                 var result = scheduleRepository.GetAvailableSchedules().Select(s => new {

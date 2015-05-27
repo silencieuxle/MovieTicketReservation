@@ -151,6 +151,13 @@
                 $("#selDate").append(htmlString);
             });
         });
+
+        $.post("/Admin/AjaxGetTicketType", { movieId: movieId }, function (response) {
+            $("#selTicketClass").empty();
+            $.each(response, function (index, value) {
+                $("#selTicketClass").append("<option value='" + value.ID + "'>" + value.Name +"</option>")
+            });
+        });
         updateTable(movieId);
     });
 
