@@ -15,5 +15,6 @@ namespace MovieTicketReservation.ViewModels {
 		public List<String> Seats { get; set; }
         public string ThumbnailUrl { get; set; }
         public bool IsTaken { get; set; }
+        public decimal Total { get; set; }
 	}
 }

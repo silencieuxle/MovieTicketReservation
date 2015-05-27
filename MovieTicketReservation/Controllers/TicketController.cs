@@ -48,6 +48,10 @@ namespace MovieTicketReservation.Controllers {
 
             foreach (var item in bookingHeaders) {
                 var seats = seatShowRepository.GetDetailsByBookingHeaderID(item.HeaderID).ToList();
+                decimal total = 0;
+                foreach (var seat in seats) {
+                    total += (decimal)seat.TicketClass.Price;
+                }
                 var schedule = seats[0].Schedule;
                 var ticketModel = new TicketModel {
                     BookingHeaderId = item.HeaderID,
@@ -62,7 +66,8 @@ namespace MovieTicketReservation.Controllers {
                     ShowDate = (DateTime)schedule.Date,
                     ShowTime = (TimeSpan)schedule.ShowTime.StartTime,
                     ThumbnailUrl = schedule.Cine_MovieDetails.Movie.ThumbnailURL,
-                    IsTaken = (bool)item.Took
+                    IsTaken = (bool)item.Took,
+                    Total = total
                 };
                 ticketModels.Add(ticketModel);
             }
@@ -90,7 +95,7 @@ namespace MovieTicketReservation.Controllers {
                 ViewBag.ReturnURL = Request.RawUrl;
                 ViewBag.ReturnMessage = "Nhấn vào để chọn suất chiếu khác.";
                 ViewBag.Message = "Suất chiếu này đã hết ghế.";
-                
+
                 return View("OutOfService");
             }
         }
@@ -100,27 +105,36 @@ namespace MovieTicketReservation.Controllers {
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
 
-            // Check if any seat is reserve while current user is checking seats
             var seats = (List<int>)Session["ReservedSeats"];
             var scheduleId = (int)Session["Schedule"];
 
+            // Check if any seat is reserve while current user is checking seats or there is no seat is created for this schedule
             bool result = CheckSeatsForAvailability();
+
+            decimal total = 0;
+            foreach (var seat in seats) {
+                total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
+            }
+
             ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + scheduleId;
             ViewBag.ReturnMessage = "Nhấn vào để chọn ghế khác";
             ViewBag.Message = "Ghế bạn muốn đặt đã được đặt trong thời gian bạn chọn ghế.";
+
             if (!result) return View("OutOfService");
 
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
             var movie = schedule.Cine_MovieDetails.Movie;
             var showtime = (TimeSpan)schedule.ShowTime.StartTime;
+            var reservedSeats = seatRepository.GetSeats().Where(dbs => seats.Contains(dbs.SeatID)).Select(x => new String(x.Name.ToCharArray())).ToList();
             var details = new BookingDetailsModel {
                 Cinema = schedule.Cine_MovieDetails.Cinema.Name,
                 Room = schedule.Room.Name,
                 MovieTitle = movie.Title,
                 ReservedDate = DateTime.Now,
                 ScheduleId = scheduleId,
-                Seats = seatRepository.GetSeats().Where(dbs => seats.Contains(dbs.SeatID)).Select(x => new String(x.Name.ToCharArray())).ToList(),
-                Showtime = showtime
+                Seats = reservedSeats,
+                Showtime = showtime,
+                Total = 0
             };
             return View(details);
         }
@@ -254,7 +268,7 @@ namespace MovieTicketReservation.Controllers {
             var seats = (List<int>)Session["ReservedSeats"];
             foreach (var seat in seats) {
                 var currentSeat = seatShowRepository.GetDetailsBySeatID(seat);
-                if (currentSeat.Reserved == true) return false;
+                if (currentSeat.Reserved == true || currentSeat == null) return false;
             }
             return true;
         }

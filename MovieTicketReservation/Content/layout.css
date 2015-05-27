@@ -25,7 +25,7 @@ a {
     border-radius: 0 !important;
 }
 
-select, input[type="text"] {
+select, input[type="text"], input[type="date"], textarea {
     border-radius: 0 !important;
 }
 
@@ -221,8 +221,8 @@ form[role="search"] {
 }
 
 .footer-list1 {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     list-style: outside none none;
     text-align: left;
 }
@@ -267,6 +267,7 @@ form[role="search"] {
 
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #F5F5F5;
 }
 

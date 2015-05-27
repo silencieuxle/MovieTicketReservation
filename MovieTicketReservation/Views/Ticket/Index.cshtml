@@ -37,6 +37,9 @@
                                     <p class="detail-header">Số ghế: </p>@item.Seats.Count()
                                 </div>
                                 <div class="inline-child">
+                                    <p class="detail-header">Tổng tiền </p>@item.Total
+                                </div>
+                                <div class="inline-child">
                                     <p class="detail-header">Tình trạng: </p>
                                     @if (item.IsTaken == true) {
                                         <text>Đã nhận</text>

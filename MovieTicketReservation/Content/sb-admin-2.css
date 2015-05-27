@@ -386,3 +386,7 @@ table.dataTable thead .sorting_desc_disabled {
 ::-webkit-scrollbar-thumb {
     background-color: #000000;
 }
+
+select, input[type="text"], input[type="date"], textarea {
+    border-radius: 0 !important;
+}

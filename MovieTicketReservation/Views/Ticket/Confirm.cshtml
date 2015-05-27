@@ -32,6 +32,9 @@
                     <div class="inline-child">
                         <p class="detail-header">Số ghế: </p>@Model.Seats.Count()
                     </div>
+                    <div class="inline-child">
+                        <p class="detail-header">Tổng tiền </p>@Model.Total
+                    </div>
                 </div>
                 <div class="table-responsive col-sm-12">
                     <table class="table table-hover">
@@ -54,8 +57,14 @@
                     </table>
                 </div>
                 @Html.ActionLink("Xác nhận", "CheckOut", "Ticket", null, new { @class = "btn btn-success", style = "float: right;" })
-                @Html.ActionLink("Huỷ bỏ", "CancelConfirmation", "Ticket", null, new { @class = "btn btn-danger", style = "float: right; margin-right: 10px" })
+                <a id="btnCancelReservation" href="/Ticket/Reserve?ScheduleId=@Model.ScheduleId" class = "btn btn-danger" style = "float: right; margin-right: 10px">Huỷ</a>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $("#btnCancelReservation").click(function () {
+        if (!confirm("Bạn thực sự muốn huỷ việc đặt vé này?")) return false;
+        return true;
+    });
+</script>

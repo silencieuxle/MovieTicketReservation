@@ -42,9 +42,9 @@ namespace MovieTicketReservation.ViewModels {
         [Required(ErrorMessage = "Bạn phải nhập đường dẫn trailer")]
         public string TrailerURL { get; set; }
 
-        [Display(Name = "Ngày xuất bản")]
+        [Display(Name = "Ngày ra mắt")]
         [DataType(DataType.Date, ErrorMessage = "Bạn chỉ được chọn ngày")]
-        [Required(ErrorMessage = "Bạn phải chọn ngày xuất bản")]
+        [Required(ErrorMessage = "Bạn phải chọn ngày ra mắt")]
         public DateTime ReleasedDate { get; set; }
 
         [Display(Name = "Ngày khởi chiếu")]

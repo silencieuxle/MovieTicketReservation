@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title - CINE4U</title>
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin,vietnamese' rel='stylesheet' type='text/css' />
-    @Styles.Render("~/bundles/website")
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/bundles/website")
+    @Scripts.Render("~/bundles/bootstrap")
     <script src="~/Scripts/scripts.js" type="text/javascript"></script>
     <meta name="description" content="The description of my page" />
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 <body>
     <!-- FACEBOOK JavaScript SDK -->

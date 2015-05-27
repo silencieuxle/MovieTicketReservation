@@ -4,31 +4,32 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="834f288e5afb4e94b317d49b8f59d69e" Name="Diagram1">
-        <EntityTypeShape EntityType="DbModel.AgeLimitation" Width="1.5" PointX="1.5" PointY="16.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.BookingHeader" Width="1.5" PointX="8.5" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Cine_MovieDetails" Width="1.5" PointX="3" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Cinema" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.CinemaImage" Width="1.5" PointX="3" PointY="7.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Member" Width="1.5" PointX="6.25" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Movie" Width="1.5" PointX="0.75" PointY="10.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.MovieEdition" Width="1.5" PointX="1.5" PointY="18.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.MovieGenre" Width="1.5" PointX="1.5" PointY="21.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.News" Width="1.5" PointX="5.75" PointY="2.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Role" Width="1.5" PointX="4.125" PointY="15.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Room" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Schedule" Width="1.5" PointX="5.25" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Seat" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Seat_ShowDetails" Width="1.5" PointX="7.5" PointY="7.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.ShowTime" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Tag" Width="1.5" PointX="8" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.TicketClass" Width="1.5" PointX="3" PointY="13" IsExpanded="true" />
+      <Diagram DiagramId="834f288e5afb4e94b317d49b8f59d69e" Name="Diagram1" ZoomLevel="92">
+        <EntityTypeShape EntityType="DbModel.AgeLimitation" Width="1.5" PointX="11.125" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.BookingHeader" Width="1.5" PointX="4.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Cine_MovieDetails" Width="1.5" PointX="6.875" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Cinema" Width="1.5" PointX="4.75" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.CinemaImage" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Member" Width="1.5" PointX="2.625" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Movie" Width="1.5" PointX="9" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.MovieEdition" Width="1.5" PointX="11.125" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.MovieGenre" Width="1.5" PointX="9" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.News" Width="1.5" PointX="0.5" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Role" Width="1.5" PointX="0.5" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Room" Width="1.5" PointX="2.625" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Schedule" Width="1.5" PointX="6.875" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Seat" Width="1.5" PointX="4.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Seat_ShowDetails" Width="1.5" PointX="6.875" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.ShowTime" Width="1.5" PointX="4.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Tag" Width="1.5" PointX="0.5" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.TicketClass" Width="1.5" PointX="9" PointY="8.25" IsExpanded="true" />
         <AssociationConnector Association="DbModel.FK_Movie_AgeLimitation" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_BookingHeader_Member" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Seat_ShowDetails_BookingHeader" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Cine_MovieDetails_Cinema" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Cine_MovieDetails_Movie" ManuallyRouted="false" />
-        <AssociationConnector Association="DbModel.FK_Schedule_Cine_MovieDetails" ManuallyRouted="false" />
+        <AssociationConnector Association="DbModel.FK_Schedule_Cine_MovieDetails" ManuallyRouted="false" >
+        </AssociationConnector>
         <AssociationConnector Association="DbModel.FK_CinemaImage_Cinema" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Room_Cinema" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.FK_Schedule_Room1" ManuallyRouted="false" />
@@ -38,15 +39,15 @@
         <AssociationConnector Association="DbModel.FK_Seat_ShowTimeDetails_Seat" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.Movie_GenreDetails" ManuallyRouted="false" />
         <AssociationConnector Association="DbModel.TagDetails" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="DbModel.Promote" Width="1.5" PointX="8" PointY="0.5" />
+        <EntityTypeShape EntityType="DbModel.Promote" Width="1.5" PointX="2.625" PointY="1.5" />
         <AssociationConnector Association="DbModel.FK_Promote_News" />
         <AssociationConnector Association="DbModel.FK_Schedule_Promote" />
         <AssociationConnector Association="DbModel.Cine_PromoteDetails" />
-        <EntityTypeShape EntityType="DbModel.AdminAccount" Width="1.5" PointX="8.5" PointY="18.5" />
+        <EntityTypeShape EntityType="DbModel.AdminAccount" Width="1.5" PointX="2.625" PointY="6" />
         <AssociationConnector Association="DbModel.FK_AdminAccount_Member" />
         <AssociationConnector Association="DbModel.FK_AdminAccount_Role" />
         <AssociationConnector Association="DbModel.FK_Seat_ShowDetails_TicketClass" />
-        <EntityTypeShape EntityType="DbModel.Subtitle" Width="1.5" PointX="10.375" PointY="0.875" />
+        <EntityTypeShape EntityType="DbModel.Subtitle" Width="1.5" PointX="11.125" PointY="1.5" />
         <AssociationConnector Association="DbModel.FK_Movie_MovieEdition" />
         <AssociationConnector Association="DbModel.FK_Movie_Subtitle" />
       </Diagram>

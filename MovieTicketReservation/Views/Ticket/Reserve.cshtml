@@ -22,6 +22,10 @@
                         - Sau khi chọn ghế và xác nhận, nếu ghế bạn vừa chọn đã được đặt trước khi bạn xác nhận,
                         bạn sẽ được thông báo về việc này và được chọn lại ghế khác.<br />
                     </p>
+                    <div class="booking-info">
+                        <p id="totalSeat">Số ghế đã chọn: </p>
+                        <p id="totalPrice">Tổng tiền: </p>
+                    </div>
                 </div>
                 <div class="col-sm-5 col-xs-12">
                     <div class="screen">
@@ -107,6 +111,10 @@
                 });
             }
         });
+
+        function changeTotalProp() {
+
+        }
 
         $("#btnConfirm").click(function () {
             if ($(".selected").length == 0) {

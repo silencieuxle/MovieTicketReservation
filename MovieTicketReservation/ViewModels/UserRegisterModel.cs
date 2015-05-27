@@ -22,24 +22,23 @@ namespace MovieTicketReservation.ViewModels {
 
         [Display(Name = "Mật khẩu")]
         [DataType(DataType.Password)]
-        [MinLength(9, ErrorMessage="Mật khẩu phải dài hơn hoặc bằng 9 kí tự")]
+        [MinLength(9, ErrorMessage = "Mật khẩu phải dài hơn hoặc bằng 9 kí tự")]
         [Required(ErrorMessage = "Bạn phải nhập mật khẩu")]
         public string Password { get; set; }
 
         [Display(Name = "Nhập lại mật khẩu")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage="Mật khẩu 2 không trùng với mật khẩu 1")]
+        [Compare("Password", ErrorMessage = "Mật khẩu 2 không trùng với mật khẩu 1")]
         [Required(ErrorMessage = "Bạn phải nhập mật khẩu lần 2")]
         public string PasswordRetyped { get; set; }
 
         [Display(Name = "Ngày sinh")]
-        [Required]
-        [DataType(DataType.DateTime)]
-        [Range(typeof(DateTime), "1/1/1920", "1/1/2005")]
+        [DataType(DataType.Date, ErrorMessage = "Bạn chỉ được chọn ngày")]
+        [Required(ErrorMessage = "Bạn phải chọn ngày sinh")]
         public DateTime BirthDay { get; set; }
 
         [Display(Name = "Giới tính")]
-        [Required]
+        [Required(ErrorMessage = "Bạn phải chọn giới tính")]
         public bool Gender { get; set; }
 
         [Display(Name = "Số điện thoại")]
