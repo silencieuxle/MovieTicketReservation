@@ -217,17 +217,17 @@ namespace MovieTicketReservation.Controllers {
             var schedules = cinemaMovieRepository.GetDetailsByMovieID(movieId).Select(c => new CinemaScheduleModel {
                 CinemaId = c.CinemaID,
                 CinemaName = c.Cinema.Name,
-                Dates = scheduleRepository.GetSchedules().Where(sc => sc.Cine_MovieDetails.CinemaID == c.CinemaID && sc.Cine_MovieDetails.MovieID == movieId && 
-                    ((TimeSpan)sc.ShowTime.StartTime).TotalMinutes >= DateTime.Now.TimeOfDay.TotalMinutes && ((DateTime)sc.Date).Date >= DateTime.Now.Date)
-                                     .GroupBy(sch => sch.Date, (key, group) => new DateModel {
-                                         ShowingDate = (DateTime)key,
-                                         Showtimes = group.Where(sche => sche.Cine_MovieDetails.CinemaID == c.CinemaID && sche.Date == key)
-                                                          .Select(sh => sh.ShowTime.StartTime != null ? new Showtime {
-                                                              ScheduleId = sh.ScheduleID,
-                                                              Time = (TimeSpan)sh.ShowTime.StartTime
-                                                          } : null).OrderBy(x => x.Time).ToList()
-                                     }).ToList()
+                Dates = scheduleRepository.GetSchedulesByCinemaIDAndMovieID(c.CinemaID, movieId)
+                    .Where(sc => ((DateTime)sc.Date).Date >= DateTime.Now.Date)
+                    .GroupBy(sch => sch.Date, (key, value) => new DateModel {
+                        ShowingDate = (DateTime)key,
+                        Showtimes = value.Select(sh => sh.ShowTime.StartTime != null ? new Showtime {
+                                              ScheduleId = sh.ScheduleID,
+                                              Time = (TimeSpan)sh.ShowTime.StartTime
+                                         } : null).OrderBy(x => x.Time).ToList()
+                    }).ToList()
             });
+
             return schedules.ToList();
         }
 

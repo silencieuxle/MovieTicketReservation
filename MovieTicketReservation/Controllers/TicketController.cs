@@ -109,7 +109,8 @@ namespace MovieTicketReservation.Controllers {
             var scheduleId = (int)Session["Schedule"];
 
             // Check if any seat is reserve while current user is checking seats or there is no seat is created for this schedule
-            bool result = CheckSeatsForAvailability();
+            bool result = CheckSeatsForAvailability(scheduleId);
+            if (!result) return View("OutOfService");
 
             decimal total = 0;
             foreach (var seat in seats) {
@@ -119,8 +120,6 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + scheduleId;
             ViewBag.ReturnMessage = "Nhấn vào để chọn ghế khác";
             ViewBag.Message = "Ghế bạn muốn đặt đã được đặt trong thời gian bạn chọn ghế.";
-
-            if (!result) return View("OutOfService");
 
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
             var movie = schedule.Cine_MovieDetails.Movie;
@@ -264,10 +263,10 @@ namespace MovieTicketReservation.Controllers {
             return -1;
         }
 
-        private bool CheckSeatsForAvailability() {
+        private bool CheckSeatsForAvailability(int scheduleId) {
             var seats = (List<int>)Session["ReservedSeats"];
             foreach (var seat in seats) {
-                var currentSeat = seatShowRepository.GetDetailsBySeatID(seat);
+                var currentSeat = seatShowRepository.GetDetailsByScheduleIDAndSeatID(scheduleId, seat);
                 if (currentSeat.Reserved == true || currentSeat == null) return false;
             }
             return true;

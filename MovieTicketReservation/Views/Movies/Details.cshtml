@@ -41,7 +41,7 @@
                             <button class="btn btn-primary center" disabled>Đã hết thời gian chiếu</button>
                         }
                         <script type="text/javascript">
-                            $('#btnScheduler').click(function (e) {
+                            $('.btn-schedule').click(function (e) {
                                 e.preventDefault();
                                 var target = $('.film-description>ul>li>a[href="#scheduler"]');
                                 target.tab('show');
@@ -86,10 +86,19 @@
                                         <p class="schedule-date">
                                             @date.ShowingDate.ToShortDateString():
                                             @foreach (Showtime item in date.Showtimes) {
-                                                <span>
-                                                    @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+                                                if (date.ShowingDate.Date == DateTime.Now.Date) {
+                                                    if (item.Time >= DateTime.Now.TimeOfDay) {
+                                                        <span>
+                                                            @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
                                                 "Reserve", "Ticket", new { ScheduleID = item.ScheduleId }, new { @class = "schedule-showtime" })
-                                                </span>
+                                                        </span>
+                                                    }
+                                                } else {
+                                                    <span>
+                                                        @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+                                                "Reserve", "Ticket", new { ScheduleID = item.ScheduleId }, new { @class = "schedule-showtime" })
+                                                    </span>
+                                                }
                                             }
                                         </p>
                                     }

@@ -402,6 +402,10 @@
     <Content Include="Content\Images\MovieImages\pitchperfect_mov.jpg" />
     <Content Include="Content\Images\MovieImages\tomorrowland_detailsimg.jpg" />
     <Content Include="Content\Images\MovieImages\tomorrowland_mov.jpg" />
+    <Content Include="Content\Images\NewsImages\biggame_detailsimg.jpg" />
+    <Content Include="Content\Images\NewsImages\heineken_detailsimg.jpg" />
+    <Content Include="Content\Images\NewsImages\henry_detailsimg.jpg" />
+    <Content Include="Content\Images\NewsImages\killme3times_detailsimg.jpg" />
     <Content Include="Content\Images\r2.png" />
     <Content Include="Content\Images\Rap1.jpg" />
     <Content Include="Content\Images\Rap2.jpg" />
@@ -676,7 +680,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Images\NewsImages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

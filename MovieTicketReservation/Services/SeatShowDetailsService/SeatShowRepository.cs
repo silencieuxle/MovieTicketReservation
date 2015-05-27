@@ -31,6 +31,10 @@ namespace MovieTicketReservation.Services.SeatShowDetailsService {
             return context.Seat_ShowDetails.FirstOrDefault(d => d.SeatID == seatId);
         }
 
+        public Seat_ShowDetails GetDetailsByScheduleIDAndSeatID(int scheduleId, int seatId) {
+            return context.Seat_ShowDetails.FirstOrDefault(d => d.ScheduleID == scheduleId && d.SeatID == seatId);
+        }
+
         public bool InsertSeatsWithDetails(int scheduleId, string roomId, string classId) {
             using (var transaction = context.Database.BeginTransaction()) {
                 try {
