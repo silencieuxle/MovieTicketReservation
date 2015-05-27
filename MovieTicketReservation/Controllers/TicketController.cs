@@ -134,7 +134,7 @@ namespace MovieTicketReservation.Controllers {
                 ScheduleId = scheduleId,
                 Seats = reservedSeats,
                 Showtime = showtime,
-                Total = 0
+                Total = total
             };
             return View(details);
         }
