@@ -44,3 +44,7 @@
     text-align: center;
     overflow: hidden
 }
+
+.booking-info p {
+    font-weight: 600;
+}
