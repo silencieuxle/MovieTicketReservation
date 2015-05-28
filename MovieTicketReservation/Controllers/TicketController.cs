@@ -74,10 +74,7 @@ namespace MovieTicketReservation.Controllers {
             return View(ticketModels);
         }
 
-        public ActionResult OutOfService() {
-            return View();
-        }
-
+        #region Reservation workflow
         public ActionResult Reserve(int scheduleId) {
             if (!IsLoggedIn()) {
                 Session["RedirectURL"] = Request.RawUrl;
@@ -102,29 +99,50 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult Confirm() {
+            // Check if member is authenticated or the request is perform without logged in member
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
 
+            // Get needed info
             var seats = (List<int>)Session["ReservedSeats"];
             var scheduleId = (int)Session["Schedule"];
 
             // Check if any seat is reserve while current user is checking seats or there is no seat is created for this schedule
-            bool result = CheckSeatsForAvailability(scheduleId);
-            if (!result) return View("OutOfService");
+            int result = CheckSeatsForAvailability(scheduleId);
 
+            if (result == -1) {
+                // return = -1: object seat for current schedule can't be found. System's error
+                ViewBag.Message = "Something happened with system. No seat for the requested schedule was found";
+                ViewBag.ReturnMessage = "";
+                ViewBag.ReturnURL = "";
+                return View("OutOfService");
+            } else if (result == 0) {
+                // return = 0: one seat is reserved.
+                ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + scheduleId;
+                ViewBag.Message = "Ghế bạn muốn đặt đã được đặt trong thời gian bạn chọn ghế.";
+                ViewBag.ReturnMessage = "Nhấn vào để chọn ghế khác";
+                return View("OutOfService");
+            }
+
+            // Calculate total price for current booking header
             decimal total = 0;
             foreach (var seat in seats) {
                 total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
             }
 
-            ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + scheduleId;
-            ViewBag.ReturnMessage = "Nhấn vào để chọn ghế khác";
-            ViewBag.Message = "Ghế bạn muốn đặt đã được đặt trong thời gian bạn chọn ghế.";
-
+            // Get current schedule object that associated with scheduleId
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
+
+            // Get the movie that associated with the schedule object
             var movie = schedule.Cine_MovieDetails.Movie;
+
+            // Get the showtime that associated with the schedule object
             var showtime = (TimeSpan)schedule.ShowTime.StartTime;
+
+            // Get list of seat object that the member reserrved
             var reservedSeats = seatRepository.GetSeats().Where(dbs => seats.Contains(dbs.SeatID)).Select(x => new String(x.Name.ToCharArray())).ToList();
+
+            // Create booking details
             var details = new BookingDetailsModel {
                 Cinema = schedule.Cine_MovieDetails.Cinema.Name,
                 Room = schedule.Room.Name,
@@ -135,20 +153,27 @@ namespace MovieTicketReservation.Controllers {
                 Showtime = showtime,
                 Total = total
             };
+
             return View(details);
         }
 
         [HttpGet]
         public ActionResult CheckOut() {
+            // Check if member is authenticated or the request is perform without logged in member
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
+
             int bookingHeaderId;
             bool error = false;
             if ((bookingHeaderId = CreateBookingHeader()) == 0) {
+                // Cannot create booking header for some reason
                 error = true;
             } else {
+                // Modify reserved seats' status
                 int totalSeat = CheckSeats(bookingHeaderId);
+
                 if (totalSeat != -1) {
+                    // Error when moify seat's status
                     if (totalSeat == UpdateTotalSeat(bookingHeaderId, totalSeat))
                         error = false;
                 } else {
@@ -165,6 +190,10 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        public ActionResult OutOfService() {
+            return View();
+        }
+
         public ActionResult CancelConfirmation() {
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
@@ -172,6 +201,14 @@ namespace MovieTicketReservation.Controllers {
             Session["ReservedSeats"] = null;
             return Redirect("/Movies/");
         }
+
+        public ActionResult ChangeSeat(int bookingHeaderId) {
+            if (!IsLoggedIn()) return Redirect("/Home/");
+            
+            return View();
+        }
+
+        #endregion
 
         #region Ajax methods
         [HttpPost]
@@ -263,13 +300,14 @@ namespace MovieTicketReservation.Controllers {
             return -1;
         }
 
-        private bool CheckSeatsForAvailability(int scheduleId) {
+        private int CheckSeatsForAvailability(int scheduleId) {
             var seats = (List<int>)Session["ReservedSeats"];
             foreach (var seat in seats) {
                 var currentSeat = seatShowRepository.GetDetailsByScheduleIDAndSeatID(scheduleId, seat);
-                if (currentSeat.Reserved == true || currentSeat == null) return false;
+                if (currentSeat == null) return -1;
+                else if ((bool)currentSeat.Reserved) return 0;
             }
-            return true;
+            return 1;
         }
     }
 }
