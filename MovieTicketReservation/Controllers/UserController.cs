@@ -73,7 +73,8 @@ namespace MovieTicketReservation.Controllers {
                 if (!String.IsNullOrEmpty(redirectUrl)) return Redirect(redirectUrl);
                 else return Redirect("/Home/");
             } else {
-                return View("Login");
+                ModelState.AddModelError("Email", "Email không tồn tại hoặc sai mật khẩu");
+                return View("Login", loginModel);
             }
         }
 

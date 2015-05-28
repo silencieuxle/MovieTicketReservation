@@ -85,6 +85,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         #region Reservation workflow
+
         [HttpGet]
         public ActionResult Reserve(int scheduleId) {
             if (!IsLoggedIn()) {
@@ -170,12 +171,15 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult CheckOut() {
+            bool error = false;
+            string errorMessage = "";
             // Check if member is authenticated or the request is perform without logged in member
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
 
+            // Because the reason that SeatShowDetails can only be check for reserved when a booking header is created.
+            // we need to create the booking header first
             int bookingHeaderId;
-            bool error = false;
             if ((bookingHeaderId = CreateBookingHeader()) == 0) {
                 // Cannot create booking header for some reason
                 error = true;
@@ -183,11 +187,11 @@ namespace MovieTicketReservation.Controllers {
                 // Modify reserved seats' status
                 int totalSeat = CheckSeats(bookingHeaderId);
 
-                if (totalSeat != -1) {
-                    // Error when moify seat's status
-                    if (totalSeat == UpdateTotalSeat(bookingHeaderId, totalSeat))
+                if (totalSeat != -1 && totalSeat != -2) {
+                    if (UpdateTotalSeat(bookingHeaderId, totalSeat) != 0)
                         error = false;
                 } else {
+                    // Error when moify seat's status
                     error = true;
                 }
             }
@@ -314,10 +318,11 @@ namespace MovieTicketReservation.Controllers {
         /// <returns>Return -1 if no seat or failed to check, total seat if success</returns>
         private int CheckSeats(int bookingHeaderId) {
             var seats = (List<int>)Session["ReservedSeats"];
+            var scheduleId = (int)Session["Schedule"];
             var totalSeat = seats.Count();
 
             foreach (var seat in seats) {
-                var seatShowDetails = seatShowRepository.GetDetailsBySeatID(seat);
+                var seatShowDetails = seatShowRepository.GetDetailsByScheduleIDAndSeatID(scheduleId, seat);
                 if (seatShowDetails == null) return -1;
                 if ((bool)seatShowDetails.Reserved) return -2;
                 seatShowDetails.Reserved = true;

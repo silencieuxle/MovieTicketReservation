@@ -8,16 +8,25 @@
                 <h4 class="modal-title">Lịch chiếu</h4>
             </div>
             <div class="modal-body">
-                @foreach (var item in Model) {
-                    <p class="schedule-cine">@item.CinemaName</p>
-                    foreach (var date in item.Dates) {
+                @foreach (var cinema in Model) {
+                    <p class="schedule-cine">@cinema.CinemaName</p>
+                    foreach (var date in cinema.Dates) {
                         <p class="schedule-date">
                             @date.ShowingDate.ToShortDateString():
-                            @foreach (Showtime showtime in date.Showtimes) {
-                                <span>
-                                    @Html.ActionLink(showtime.Time.Hours + "h" + showtime.Time.Minutes,
-                                                 "Reserve", "Ticket", new { ScheduleID = showtime.ScheduleId }, new { @class = "schedule-showtime" })
-                                </span>
+                            @foreach (Showtime item in date.Showtimes) {
+                                if (date.ShowingDate.Date == DateTime.Now.Date) {
+                                    if (item.Time >= DateTime.Now.TimeOfDay) {
+                                        <span>
+                                            @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+                                                "Reserve", "Ticket", new { ScheduleID = item.ScheduleId }, new { @class = "schedule-showtime" })
+                                        </span>
+                                    }
+                                } else {
+                                    <span>
+                                        @Html.ActionLink(item.Time.Hours + "h" + item.Time.Minutes,
+                                                "Reserve", "Ticket", new { ScheduleID = item.ScheduleId }, new { @class = "schedule-showtime" })
+                                    </span>
+                                }
                             }
                         </p>
                     }
