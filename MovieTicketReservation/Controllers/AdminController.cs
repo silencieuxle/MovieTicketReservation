@@ -186,7 +186,7 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult AjaxUpdateAvatar(HttpPostedFileBase avatar) {
             string imagePath = "/Content/Images/MemberImages/";
             // Get uploaded file path
-            string avatarUrl = imagePath + (string)Session["UID"] + "-" + avatar.FileName;
+            string avatarUrl = imagePath + Session["UID"].ToString() + "-" + avatar.FileName;
 
             // Save uploaded poster and cover image
             if (avatar.ContentLength != 0) avatar.SaveAs(Server.MapPath(Url.Content(avatarUrl)));

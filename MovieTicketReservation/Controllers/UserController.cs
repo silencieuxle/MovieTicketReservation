@@ -1,25 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.Models;
 using MovieTicketReservation.ViewModels;
 using MovieTicketReservation.Services;
 using MovieTicketReservation.Services.MemberService;
+using MovieTicketReservation.Services.BookingHeaderService;
+using MovieTicketReservation.Services.ScheduleService;
 using System.Globalization;
+using System.Web;
 
 namespace MovieTicketReservation.Controllers {
     public class UserController : Controller {
         private DbEntities context = new DbEntities();
         private IMemberRepository memberRepository;
+        private IBookingRepository bookingRepository;
 
         public UserController() {
             this.memberRepository = new MemberRepository(context);
+            this.bookingRepository = new BookingHeaderRepository(context);
         }
 
-        // GET: User
+        /// <summary>
+        /// Check if user is logged in
+        /// </summary>
+        /// <returns>True if logged in, False if not</returns>
+        private bool IsLoggedIn() {
+            if (Session["UID"] == null) return false;
+            return true;
+        }
+
         [HttpGet]
         public ActionResult Index() {
-            if (Session["UID"] == null) {
+            if (!IsLoggedIn()) {
                 Session["RedirectURL"] = Request.RawUrl;
                 return Redirect("/User/Login");
             }
@@ -62,6 +77,7 @@ namespace MovieTicketReservation.Controllers {
             }
         }
 
+        [HttpGet]
         public ActionResult LogOff() {
             Session.Abandon();
             return Redirect("/Home/");
@@ -101,12 +117,26 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult UpdateProfile(Member member) {
+            if (!IsLoggedIn()) {
+                return Redirect("/User/Login");
+            }
             if (!ModelState.IsValid) return View(member);
             memberRepository.UpdateMember(member);
             return View("/User/");
         }
 
+        [HttpGet]
+        [Obsolete]
+        public ActionResult WatchedMovies() {
+            if (!IsLoggedIn()) {
+                return Redirect("/User/Login");
+            }
+
+            return View();
+        }
+
         #region Ajax methods
+
         public ActionResult AjaxCheckEmail(string email) {
             if (memberRepository.IsEmailExisted(email))
                 return Json(new { Success = false, ErrorMessage = "Email đã được sử dụng." }, JsonRequestBehavior.AllowGet);
@@ -165,14 +195,33 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult AjaxUpdateContactInfo(string idCardNumber, string address, string phoneNumber) {
-            string errorMessage = "";
             var member = memberRepository.GetMemberByID((int)Session["UID"]);
             member.IDCardNumber = idCardNumber;
             member.Address = address;
             member.Phone = phoneNumber;
             var result = memberRepository.UpdateMember(member);
-            if (!result) errorMessage = "Có lỗi khi cập nhật dữ liệu";
-            return Json(new { Success = result, ErrorMessage = errorMessage }, JsonRequestBehavior.AllowGet);
+            if (!result) {
+                return Json(new { Success = false, ErrorMessage = "Có lỗi xảy ra khi cập nhật dữ liệu, vui lòng thử lại sau." }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Success = true, Data = new { IDCardNumber = idCardNumber, Address = address, Phone = phoneNumber } }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxUpdateAvatar(HttpPostedFileBase avatar) {
+            string imagePath = "/Content/Images/MemberImages/";
+            // Get uploaded file path
+            string avatarUrl = imagePath + (string)Session["UID"] + "-" + avatar.FileName;
+
+            // Save uploaded poster and cover image
+            if (avatar.ContentLength != 0) avatar.SaveAs(Server.MapPath(Url.Content(avatarUrl)));
+            else {
+                return Json(new { Success = false, ErrorMessage = "Lỗi khi nhận file" }, JsonRequestBehavior.AllowGet);
+            }
+            var member = memberRepository.GetMemberByID((int)Session["UID"]);
+            member.AvatarURL = avatarUrl;
+            var result = memberRepository.UpdateMember(member);
+            if (!result) return Json(new { Success = false, ErrorMessage = "Xảy ra lỗi khi cập nhật thông tin." }, JsonRequestBehavior.AllowGet);
+            return Json(new { Success = true, AvatarURL = avatarUrl }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

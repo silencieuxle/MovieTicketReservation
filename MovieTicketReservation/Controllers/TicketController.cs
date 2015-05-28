@@ -52,6 +52,12 @@ namespace MovieTicketReservation.Controllers {
 
             foreach (var item in bookingHeaders) {
                 var seats = seatShowRepository.GetDetailsByBookingHeaderID(item.HeaderID).ToList();
+
+                /* Workaround to fix UNKNOWN ERROR that the reserved seats that associated with the booking header IS NOT CHECKED TO BE RESERVED
+                 * Until we know the reason why, this is the only way
+                */
+                if (seats.Count() == 0) continue;
+
                 decimal total = 0;
                 foreach (var seat in seats) {
                     total += (decimal)seat.TicketClass.Price;

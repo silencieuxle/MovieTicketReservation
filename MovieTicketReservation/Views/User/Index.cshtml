@@ -96,8 +96,8 @@
                                     <span class="input-group-btn">
                                         <button class="btn btn-primary" id="btnChangePassword" type="button">Đổi mật khẩu</button>
                                     </span>
-                                    <label class="validate-label" id="pwordValidation"></label>
                                 </div>
+                                <label class="validate-label" id="pwordValidation"></label>
                                 <div class="" id="frmChangePassword">
                                     <fieldset>
                                         <legend class="separator"></legend>
@@ -136,7 +136,7 @@
                                 <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
                             </div>
                             <div class="col-sm-12 no-padding">
-                                <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
+                                <input type="button" class="btn btn-primary" style="float: right" id="btnChangeContactInfo" value="Chỉnh sửa" />
                             </div>
                         </div>
                     </div>
@@ -178,12 +178,13 @@
                         },
                         function (response) {
                             $("#basicInfoValidation").css("display", "block");
-                            if (response.Success) $("#basicInfoValidation").html("Cập nhật thông tin thành công");
-                            else $("#basicInfoValidation").html(response.ErrorMessage);
+                            if (response.Success) $("#basicInfoValidation").text("Cập nhật thông tin thành công");
+                            else $("#basicInfoValidation").text(response.ErrorMessage);
                         }
                     )
                 } else {
-                    ("#basicInfoValidation").html("Thông tin không được trống");
+                    $("#basicInfoValidation").css("display", "block");
+                    $("#basicInfoValidation").text("Thông tin không được trống");
                     return false;
                 }
                 return false;
@@ -209,28 +210,44 @@
                 target.val("Chỉnh sửa");
                 var idCardNumber = $("#IdCardNumber").val();
                 var address = $("#Address").val();
-                var phoneNumber = $("#Phone");
-                if (idCardNumber != "" && idCardNumber.length == 9 && address != "" &&
-                    phoneNumber != "" && phoneNumber.length >= 10 && phoneNumber.length <= 11) {
-                    $.post(
-                        "/User/AjaxUpdatePassword",
-                        {
-                            idCardNumber: idCardNumber,
-                            address: address,
-                            phoneNumber: phoneNumber
-                        },
-                        function (response) {
-                            $("#contactInfoValidation").css("display", "block");
-                            if (response.Success)
-                                $("#contactInfoValidation").html("Cập nhật thông tin thành công");
-                            else
-                                $("#contactInfoValidation").html(response.ErrorMessage);
-                        }
-                    );
-                } else {
-                    ("#contactInfoValidation").html("Thông tin không được trống");
+                var phoneNumber = $("#Phone").val();
+
+                // Check data
+                if (idCardNumber == "" || idCardNumber.length != 9) {
+                    $("#contactInfoValidation").css("display", "block");
+                    $("#contactInfoValidation").text("Số chứng minh nhân dân không đúng định dạng");
                     return false;
                 }
+
+                if (address == "") {
+                    $("#contactInfoValidation").css("display", "block");
+                    $("#contactInfoValidation").text("Địa chỉ không được để trống");
+                    return false;
+                }
+
+                if (phoneNumber == "" || phoneNumber.length <= 10 || phoneNumber.length >= 11) {
+                    $("#contactInfoValidation").css("display", "block");
+                    $("#contactInfoValidation").text("Số điện thoại không đúng định dạng");
+                    return false;
+                }
+
+
+                $.post(
+                    "/User/AjaxUpdateContactInfo",
+                    {
+                        idCardNumber: idCardNumber,
+                        address: address,
+                        phoneNumber: phoneNumber
+                    },
+                    function (response) {
+                        $("#contactInfoValidation").css("display", "block");
+                        if (response.Success)
+                            $("#contactInfoValidation").text("Cập nhật thông tin thành công");
+                        else
+                            $("#contactInfoValidation").text(response.ErrorMessage);
+                    }
+                );
+
                 break;
             case "Chỉnh sửa":
                 $(".contactInfo input[type=text]").prop("disabled", false);
@@ -242,34 +259,48 @@
 
     $("#btnConfirmPasswordChange").click(function () {
         var oldPassword = $("#txtOldPassword").val();
-        var password1 = $("txtNewPassword1").val();
-        var password2 = $("txtNewPassword2").val();
-        if (password1 == password2) {
-            $.post(
-                "/User/AjaxUpdatePassword",
-                {
-                    oldPassword: oldPassword,
-                    newPassword: password1,
-                },
-                function (response) {
-                    $("#pwordValidation").css("display", "block");
-                    if (response.Success) {
-                        $("#pwordValidation").text("Đổi mật khẩu thành công");
-                        $("#frmChangePassword").slideUp('slow');
-                        $("#btnChangePassword").html("Đổi mật khẩu");
-                    }
-                    else $("#pwordValidation").html(response.ErrorMessage);
-                }
-            );
-        } else {
-            ("#pwordValidation").html("Thông tin không được trống");
+        var password1 = $("#txtNewPassword1").val();
+        var password2 = $("#txtNewPassword2").val();
+
+        if (oldPassword == "" || oldPassword.length < 9) {
+            $("#pwordValidation").css("display", "block");
+            $("#pwordValidation").text("Độ dài mật khẩu không dưới 9 kí tự");
             return false;
         }
+
+        if (password1 == "" || password1.length < 9) {
+            $("#pwordValidation").css("display", "block");
+            $("#pwordValidation").text("Độ dài mật khẩu không dưới 9 kí tự");
+            return false;
+        }
+
+        if (password2 != password1) {
+            $("#pwordValidation").css("display", "block");
+            $("#pwordValidation").text("Mật khẩu nhập lại không giống mật khẩu trên");
+            return false;
+        }
+
+        $.post(
+            "/User/AjaxUpdatePassword",
+            {
+                oldPassword: oldPassword,
+                newPassword: password1,
+            },
+            function (response) {
+                $("#pwordValidation").css("display", "block");
+                if (response.Success) {
+                    $("#pwordValidation").text("Đổi mật khẩu thành công");
+                    $("#frmChangePassword").slideUp('slow');
+                    $("#btnChangePassword").html("Đổi mật khẩu");
+                }
+                else $("#pwordValidation").text(response.ErrorMessage);
+            }
+        );
     });
 
     $("#btnCancelPasswordChange").click(function () {
         $("#btnChangePassword").text("Đổi mật khẩu");
-        $("#frmChangePassword").slideUp('slow')
+        $("#frmChangePassword").slideUp('slow');
     });
 
     $("#btnUploadImage").change(function (event) {
@@ -285,7 +316,7 @@
             dataType: 'json',
             success: function (response) {
                 if (response.Success) {
-                    $("#imgAvatar").attr("src", respond.AvatarURL);
+                    $("#imgAvatar").attr("src", response.AvatarURL);
                 }
             }
         });
