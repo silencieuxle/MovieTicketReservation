@@ -25,7 +25,7 @@ a {
     border-radius: 0 !important;
 }
 
-select, input[type="text"], input[type="date"], textarea {
+select, input[type="text"], input[type="date"], input[type="password"], textarea {
     border-radius: 0 !important;
 }
 

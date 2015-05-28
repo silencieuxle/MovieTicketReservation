@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MovieTicketReservation.ViewModels;
-using MovieTicketReservation.App_Code;
+﻿using MovieTicketReservation.App_Code;
 using MovieTicketReservation.Models;
 using MovieTicketReservation.Services;
 using MovieTicketReservation.Services.BookingHeaderService;
@@ -11,6 +6,11 @@ using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.ScheduleService;
 using MovieTicketReservation.Services.SeatService;
 using MovieTicketReservation.Services.SeatShowDetailsService;
+using MovieTicketReservation.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace MovieTicketReservation.Controllers {
     public class TicketController : Controller {
@@ -172,7 +172,6 @@ namespace MovieTicketReservation.Controllers {
         [HttpGet]
         public ActionResult CheckOut() {
             bool error = false;
-            string errorMessage = "";
             // Check if member is authenticated or the request is perform without logged in member
             if (!IsLoggedIn()) return Redirect("/Home/");
             if (Session["Schedule"] == null) return Redirect("/Home/");
@@ -181,7 +180,7 @@ namespace MovieTicketReservation.Controllers {
             // we need to create the booking header first
             int bookingHeaderId;
             if ((bookingHeaderId = CreateBookingHeader()) == 0) {
-                // Cannot create booking header for some reason
+                // Cannot create booking header for some reason?
                 error = true;
             } else {
                 // Modify reserved seats' status
@@ -197,7 +196,10 @@ namespace MovieTicketReservation.Controllers {
             }
 
             if (error) {
-                return View("Error", "Yêu cầu của bạn không thể xử lý, vui lòng thử lại sau.");
+                ViewBag.Message = "Yêu cầu của bạn không thể xử lý, vui lòng thử lại sau.";
+                ViewBag.ReturnURL = "/Ticket/Reserve?ScheduleID=" + Session["Schedule"].ToString();
+                ViewBag.ReturnMessage = "Nhấn vào để trở lại đặt vé";
+                return View("OutOfService");
             } else {
                 Session["Schedule"] = null;
                 Session["ReservedSeats"] = null;
