@@ -148,6 +148,10 @@
           <Property Name="PromoteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PriceOff" Type="float" />
           <Property Name="NewsID" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="FixedDayOfWeek" Type="int" />
+          <Property Name="BeginDay" Type="date" />
+          <Property Name="Duration" Type="int" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -1186,6 +1190,10 @@
           <NavigationProperty Name="News" Relationship="DbModel.FK_Promote_News" FromRole="Promote" ToRole="News" />
           <NavigationProperty Name="Schedules" Relationship="DbModel.FK_Schedule_Promote" FromRole="Promote" ToRole="Schedule" />
           <NavigationProperty Name="Cinemas" Relationship="DbModel.Cine_PromoteDetails" FromRole="Promote" ToRole="Cinema" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FixedDayOfWeek" Type="Int32" />
+          <Property Name="BeginDay" Type="DateTime" Precision="0" />
+          <Property Name="Duration" Type="Int32" />
         </EntityType>
         <Association Name="FK_Promote_News">
           <End Type="DbModel.News" Role="News" Multiplicity="0..1" />
@@ -1515,6 +1523,10 @@
           <EntitySetMapping Name="Promotes">
             <EntityTypeMapping TypeName="DbModel.Promote">
               <MappingFragment StoreEntitySet="Promote">
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="BeginDay" ColumnName="BeginDay" />
+                <ScalarProperty Name="FixedDayOfWeek" ColumnName="FixedDayOfWeek" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="NewsID" ColumnName="NewsID" />
                 <ScalarProperty Name="PriceOff" ColumnName="PriceOff" />
                 <ScalarProperty Name="PromoteID" ColumnName="PromoteID" />

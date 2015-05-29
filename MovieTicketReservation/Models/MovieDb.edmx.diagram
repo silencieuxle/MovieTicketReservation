@@ -16,7 +16,7 @@
         <EntityTypeShape EntityType="DbModel.MovieGenre" Width="1.5" PointX="9" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DbModel.News" Width="1.5" PointX="0.5" PointY="1.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DbModel.Role" Width="1.5" PointX="0.5" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="DbModel.Room" Width="1.5" PointX="2.625" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DbModel.Room" Width="1.5" PointX="2.625" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="DbModel.Schedule" Width="1.5" PointX="6.875" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DbModel.Seat" Width="1.5" PointX="4.75" PointY="7.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DbModel.Seat_ShowDetails" Width="1.5" PointX="6.875" PointY="6.375" IsExpanded="true" />

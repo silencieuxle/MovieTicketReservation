@@ -288,6 +288,7 @@
     <Compile Include="Services\IGenreRepository.cs" />
     <Compile Include="Services\IMovieRepository.cs" />
     <Compile Include="Services\INewsRepository.cs" />
+    <Compile Include="Services\IPromotionCinemaRepository.cs" />
     <Compile Include="Services\IPromotionService.cs" />
     <Compile Include="Services\IRoomRepository.cs" />
     <Compile Include="Services\IScheduleRepository.cs" />
@@ -318,7 +319,7 @@
     <Compile Include="ViewModels\NewsModel.cs" />
     <Compile Include="ViewModels\PromotionModel.cs" />
     <Compile Include="ViewModels\Showtime.cs" />
-    <Compile Include="ViewModels\TicketList.cs" />
+    <Compile Include="ViewModels\TicketModel.cs" />
     <Compile Include="ViewModels\LoginModel.cs" />
     <Compile Include="ViewModels\MemberModel.cs" />
     <Compile Include="ViewModels\UserRegisterModel.cs" />
@@ -511,6 +512,8 @@
     <Content Include="Scripts\jquery.flot.pie.js" />
     <Content Include="Scripts\jquery.flot.resize.js" />
     <Content Include="Scripts\jquery.flot.tooltip.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />

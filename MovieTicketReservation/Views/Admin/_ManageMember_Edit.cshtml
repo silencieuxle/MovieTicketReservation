@@ -1,40 +1,39 @@
 ﻿@using MovieTicketReservation.Models
 @model Member
 
-<div class="col-sm-8 col-sm-push-2">
-    <h2 class="separator">Thông tin thành viên</h2>
-    @using (Html.BeginForm("UpdateProfile", "User", FormMethod.Post, htmlAttributes: new { @class = "frmMember" })) {
-        <div class="basicInfo">
-            <h4>Thông tin đăng nhập</h4>
-            <hr />
-            <div class="form-group">
-                @Html.LabelFor(model => model.Email)
-                @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+<h2 class="separator">Thông tin thành viên</h2>
+@using (Ajax.BeginForm("AjaxUpdateMember", "Admin", new { memberId = Model.MemberID }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "memberUpdated(data);" }, htmlAttributes: new { @class = "frmMember col-sm-8 col-sm-push-2" })) {
+    <div class="basicInfo">
+        <h4><i class="fa fa-caret-right"></i> Thông tin đăng nhập</h4>
+        <hr />
+        <div class="form-group">
+            @Html.HiddenFor(model => model.MemberID)
+            @Html.LabelFor(model => model.Email)
+            @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control", disabled = "true" })
+        </div>
+    </div>
+    <div class="basicInfo">
+        <h4><i class="fa fa-caret-right"></i> Thông tin cơ bản</h4>
+        <hr />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Họ</label>
+                    @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Tên</label>
+                    @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
+                </div>
             </div>
         </div>
-        <div class="basicInfo">
-            <h4>Thông tin cơ bản</h4>
-            <hr />
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Họ</label>
-                        @Html.TextBoxFor(model => model.Lastname, htmlAttributes: new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Tên</label>
-                        @Html.TextBoxFor(model => model.Firstname, htmlAttributes: new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-sm-12 no-padding"><input id="btnChangeName" style="float: right" type="button" class="btn btn-primary" value="Chỉnh sửa"></div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.Label("Giới tính")
-                        @Html.DropDownListFor(model => model.Gender,
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Giới tính")
+                    @Html.DropDownListFor(model => model.Gender,
                                     new SelectList(
                                         new List<object> {
                                             new {value = false, text = "Nữ" },
@@ -45,39 +44,84 @@
                                     ),
                                     htmlAttributes: new { @class = "form-control" }
                                 )
-                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        @Html.Label("Ngày sinh")
-                        @Html.TextBoxFor(model => model.Birthday, htmlAttributes: new { @class = "form-control", id = "date-picker", @Value = ((DateTime)Model.Birthday).ToString("dd/MM/yyyy") })
-                    </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Ngày sinh")
+                    @Html.EditorFor(model => model.Birthday, "", new { htmlAttributes = new { @class = "form-control" }, @value = (DateTime)Model.Birthday })
                 </div>
             </div>
         </div>
-        <br />
-        <div class="identifyInfo">
-            <h4>Thông tin liên lạc</h4>
-            <hr />
-            <div class="form-group">
-                @Html.Label("Số CMND")
-                @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                @Html.Label("Địa chỉ")
-                @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                @Html.Label("Số điện thoại")
-                @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
-            </div>
+    </div>
+    <br />
+    <div class="identifyInfo">
+        <h4><i class="fa fa-caret-right"></i> Thông tin liên lạc</h4>
+        <hr />
+        <div class="form-group">
+            @Html.Label("Số CMND")
+            @Html.TextBoxFor(model => model.IDCardNumber, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Địa chỉ")
+            @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Số điện thoại")
+            @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
+        </div>
 
-            <div class="form-group">
-                <input class="hidden btn btn-success" style="float: right" type="submit" id="btnSave" value="Lưu" />
-            </div>
-            <div class="col-sm-12 no-padding">
-                <input type="button" class="btn btn-primary" style="float: right" id="btnChangeIdentityInfo" value="Chỉnh sửa" />
-            </div>
+        <div class="form-group">
+            <input class="btn btn-success" style="float: right" type="submit" id="btnSave" value="Cập nhật" />
+            <input type="reset" class="btn btn-primary" style="float: right; margin-right: 50px;" id="btnCancel" value="Huỷ bỏ" />
         </div>
+    </div>
+}
+
+<script>
+    $("#emailValidate").fadeOut();
+    $("#idCardValidate").fadeOut();
+
+    $(document).on("click", "#btnCancel", function () {
+        $.post("/Admin/GetPage", { page: 'managemember_all' }, function (htmlPage) {
+            $("#main_content").html(htmlPage);
+        });
+    });
+
+    $("input[name=Email]").keydown(function () {
+        var str = $(this).val();
+        $.get("/User/AjaxCheckEmail", { email: str }, function (data) {
+            if (data.Success == false) {
+                $("#emailValidate").fadeIn();
+                $("#emailValidate").text(data.ErrorMessage);
+            } else {
+                $("#emailValidate").fadeOut();
+            }
+        });
+    });
+
+    $("input[name=IdCardNumber]").keydown(function () {
+        var str = $(this).val();
+        $.get("/User/AjaxCheckIdCard", { idCardNumber: str }, function (data) {
+            if (data.Success == false) {
+                $("#idCardValidate").fadeIn();
+                $("#idCardValidate").text(data.ErrorMessage);
+            } else {
+                $("#idCardValidate").fadeOut();
+            }
+        });
+    });
+
+    function memberUpdated(data) {
+        if (data.Success) {
+            alert("Thêm thành viên thành công!");
+        }
+        else {
+            var errors = "\nErrors: ";
+            $.each(data, function (index, value) {
+                errors += value;
+            });
+            alert("Không thể thêm thành viên" + errors);
+        }
     }
-</div>
+</script>

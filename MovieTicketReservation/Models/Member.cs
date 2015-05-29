@@ -11,6 +11,7 @@ namespace MovieTicketReservation.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class Member
     {
@@ -29,6 +30,9 @@ namespace MovieTicketReservation.Models
         public string Phone { get; set; }
         public string Address { get; set; }
         public Nullable<bool> Gender { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> Birthday { get; set; }
         public string AvatarURL { get; set; }
     

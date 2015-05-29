@@ -56,8 +56,8 @@
             </select>
         </div>
         <div class="row form-group">
-            <div class="col-xs-6"><input type="radio" name="createOptions" value="0" checked id="rdManually" /> Tự tạo</div>
-            <div class="col-xs-6"><input type="radio" name="createOptions" value="1" id="rdAuto" /> Tạo tự động</div>
+            <div class="col-xs-6"><input type="radio" name="createOptions" value="0" checked id="rdManually" /> Tự tạo lịch chiếu</div>
+            <div class="col-xs-6"><input type="radio" name="createOptions" value="1" id="rdAuto" /> Tạo lịch chiếu tự động</div>
         </div>
         <div class="form-group" id="manuallyCreate">
             <label>Chọn thời gian</label>
@@ -87,20 +87,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Loại vé</label>
-            <select class="form-control" id="selTicketClass">
-                <option value="-1" disabled selected>Chọn loại vé</option>
-                @foreach (var item in ViewBag.TicketClasses) {
-                    <option value="@item.ClassID">@item.Name</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
             <label>Khuyến mãi</label>
-            <select class="form-control" id="selPromote">
+            <select class="form-control" id="selPromotion">
                 <option value="-1" disabled selected>Khuyến mãi</option>
                 @foreach (var item in ViewBag.Promotions) {
-                    <option value="@item.PromotionID">@item.Name</option>
+                    <option value="@item.PromoteID">@item.Title</option>
                 }
             </select>
         </div>
@@ -141,6 +132,23 @@
 
     }
 
+    //$(document).on("change", "#selTicketClass", function () {
+    //    if (parseInt($("#selTicketClass").val()) != -1) {
+    //        $("#selPromotion").val(-1);
+    //    }
+    //});
+
+    //$(document).on("change", "#selPromotion", function () {
+    //    if (parseInt($("#selPromotion").val()) != -1) {
+    //        if ($("#selTicketClass option")[1].val() == "CLASS1") {
+    //            $("#selTicketClass").val("CLASS1");
+    //        } else {
+    //            $("#selTicketClass").val("CLASS2");
+    //        }
+
+    //    }
+    //});
+
     $(document).on("change", "#selMovie", function () {
         var movieId = $(this).val();
         $("#selDate").empty();
@@ -149,13 +157,6 @@
             $.each(data, function (index, value) {
                 var htmlString = "<option>" + value + "</option>";
                 $("#selDate").append(htmlString);
-            });
-        });
-
-        $.post("/Admin/AjaxGetTicketType", { movieId: movieId }, function (response) {
-            $("#selTicketClass").empty();
-            $.each(response, function (index, value) {
-                $("#selTicketClass").append("<option value='" + value.ID + "'>" + value.Name +"</option>")
             });
         });
         updateTable(movieId);
@@ -188,10 +189,9 @@
         var showtimeId = $("#selShowtime").val();
         var firstShowtimeId = $("#selFirstShowtime").val();
         var numberOfSchedule = $("#txtNumberOfSchedule").val();
-        var ticketClassId = $("#selTicketClass").val();
         var promoteId = $("#selPromote").val();
 
-        if (movieId == null || roomId == null || date == null || ticketClassId == null) {
+        if (movieId == null || roomId == null || date == null) {
             alert("Không đủ thông tin, vui lòng kiểm tra lại.");
             return false;
         }
@@ -199,7 +199,7 @@
         var createOptions = $('input[name="createOptions"]:checked').val();
         if (parseInt(createOptions) == 0) {
             if (showtimeId == null) {
-                alert("Phải chọn thời gian chiếu"); 
+                alert("Phải chọn thời gian chiếu");
                 return false;
             }
             $.post("/Admin/AjaxAddScheduleManually",
@@ -208,12 +208,12 @@
                     roomId: roomId,
                     date: date,
                     showtimeId: parseInt(showtimeId),
-                    ticketClassId: ticketClassId,
                     promoteId: parseInt(promoteId)
                 },
                 function (response) {
                     if (response.Success) alert("Thêm suất chiếu thành công.");
-                    else alert("Xảy ra lỗi khi thêm suất chiếu. Một số suất chiếu có thể đã được tạo.")
+                    else alert(response.ErrorMessage);
+                    updateTable(movieId);
                 }
             );
         } else {
@@ -227,18 +227,18 @@
             }
             $.post("/Admin/AjaxAddScheduleAuto",
                 {
-                movieId: parseInt(movieId),
-                roomId: roomId,
-                date: date,
-                firstShowtimeId: parseInt(firstShowtimeId),
-                numberOfSchedule: parseInt(numberOfSchedule),
-                ticketClassId: ticketClassId,
-                promoteId: parseInt(promoteId)
-            },
+                    movieId: parseInt(movieId),
+                    roomId: roomId,
+                    date: date,
+                    firstShowtimeId: parseInt(firstShowtimeId),
+                    numberOfSchedule: parseInt(numberOfSchedule),
+                    promoteId: parseInt(promoteId)
+                },
                 function (response) {
                     if (response.Success) alert("Thêm suất chiếu thành công.");
-            else alert("Xảy ra lỗi khi thêm suất chiếu. Một số suất chiếu có thể đã được tạo.")
-            }
+                    else alert(response.ErrorMessage);
+                    updateTable(movieId);
+                }
             );
         }
         updateTable(movieId);

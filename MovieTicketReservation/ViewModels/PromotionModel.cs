@@ -9,5 +9,8 @@ namespace MovieTicketReservation.ViewModels {
     public class PromotionModel : NewsModel {
         [Required(ErrorMessage = "Bạn phải nhập % giảm giá")]
         public int PriceOff { get; set; }
+
+        [Required(ErrorMessage="Bạn phải chọn rạp")]
+        public List<String> Cinemas { get; set; }
     }
 }

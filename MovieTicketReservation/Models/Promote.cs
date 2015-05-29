@@ -23,6 +23,10 @@ namespace MovieTicketReservation.Models
         public int PromoteID { get; set; }
         public Nullable<int> PriceOff { get; set; }
         public Nullable<int> NewsID { get; set; }
+        public string Title { get; set; }
+        public Nullable<int> FixedDayOfWeek { get; set; }
+        public Nullable<System.DateTime> BeginDay { get; set; }
+        public Nullable<int> Duration { get; set; }
     
         public virtual News News { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }

@@ -22,7 +22,8 @@
 
 <div class="col-sm-8 col-sm-push-2">
     <h2 class="separator">Thêm chương trình khuyến mãi</h2>
-    @using (Html.BeginForm("ManagePromotion", "Admin", FormMethod.Post, htmlAttributes: new { enctype = "multipart/form-data" })) {
+    <label class="validate-label">@(ViewBag.Message != null ? ViewBag.Message : "")</label>
+    @using (Html.BeginForm("ManagePromotion_Add", "Admin", FormMethod.Post, htmlAttributes: new { enctype = "multipart/form-data" })) {
         <div class="form-group">
             <label>Tên bài viết</label>
             <input type="text" required name="Title" value="" class="form-control" placeholder="Tên bài viết" />
@@ -42,7 +43,7 @@
         </div>
         <div class="form-group">
             <label>Nội dung</label>
-            <textarea required id="txtContent" name="Content" style="width:100%"></textarea>
+            @Html.TextAreaFor(model => model.Content, htmlAttributes: new { style = "width:100%" })
             @Html.ValidationMessageFor(model => model.Content, "", htmlAttributes: new { @class = "validate-label" })
         </div>
         <div class="form-group">
@@ -50,13 +51,18 @@
             <input name="PriceOff" class="form-control" required min="0" max="50" type="number" placeholder="% giảm giá" />
             @Html.ValidationMessageFor(model => model.PriceOff, "", htmlAttributes: new { @class = "validate-label" })
         </div>
+    <div class="form-group">
+        <label>Rạp áp dụng (có thể chọn nhiều rạp)</label>
+        @Html.ListBoxFor(model => model.Cinemas, new MultiSelectList(ViewBag.Cinemas, "CinemaID", "Name"), htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Cinemas, "", new { @class = "validate-label" })
+    </div>
         <div class="form-group">
             <label>Tags</label>
             <input name="Tags" class="form-control" placeholder="Nhập tags, cách nhau bằng space" />
         </div>
         <div class="form-group">
-            <button id="btnSubmit" type="submit" style="float: right" class="btn btn-success">Thêm</button>
-            <button id="btnCancel" type="button" style="float: right; margin-right: 50px;" class="btn btn-danger">Huỷ</button>
+            <button id="btnSubmitPromotion" type="submit" style="float: right" class="btn btn-success">Thêm</button>
+            <button id="btnCancel" type="reset" style="float: right; margin-right: 50px;" class="btn btn-danger">Huỷ</button>
         </div>
     }
 </div>

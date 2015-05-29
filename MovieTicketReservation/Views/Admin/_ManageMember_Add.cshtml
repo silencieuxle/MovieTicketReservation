@@ -5,112 +5,110 @@
 <script type="text/javascript" src="~/Scripts/bootstrap-datepicker.vi.min.js"></script>
 <link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
 
-<h2>Thêm thành viên</h2>
-<hr />
-@using (Ajax.BeginForm("AjaxAddMember", "Admin", new AjaxOptions { HttpMethod = "Post", OnSuccess = "memberAdded" }, new { @class = "form-horizontal" })) {
-    @Html.ValidationSummary()
+@using (Ajax.BeginForm("AjaxAddMember", "Admin", new AjaxOptions { HttpMethod = "Post", OnSuccess = "memberAdded(data);" }, new { @class = "col-sm-8 col-sm-push-2" })) {
+    <h2 class="separator">Thêm thành viên</h2>
+    <hr />
+    <label class="validate-label">@Html.ValidationSummary()</label>
     <h4><i class="fa fa-caret-right"></i> Thông tin đăng nhập</h4>
     <hr />
     <div class="form-group">
-        @Html.LabelFor(model => model.Email, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
-            <label id="emailvalidate" class="validate-label"></label>
-        </div>
+        @Html.LabelFor(model => model.Email)
+        @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+        <label id="emailValidate" class="validate-label"></label>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.Password, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.PasswordFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password)
+                @Html.PasswordFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.PasswordRetyped, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.PasswordFor(model => model.PasswordRetyped, htmlAttributes: new { @class = "form-control" })
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PasswordRetyped)
+                @Html.PasswordFor(model => model.PasswordRetyped, htmlAttributes: new { @class = "form-control" })
+            </div>
         </div>
     </div>
     <br />
     <h4><i class="fa fa-caret-right"></i> Thông tin cơ bản</h4>
     <hr />
-    <div class="form-group">
-        @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+    <div class="basicInfo">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Họ")
+                    @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Tên")
+                    @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.BirthDay, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.DropDownListFor(model => model.Gender,
-                                    new SelectList(
-                                        new List<object> {
-                                            new {value = false, text = "Nữ" },
-                                            new {value = true, text = "Nam"}
-                                        },
-                                        "value",
-                                        "text"
-                                    ),
-                                    htmlAttributes: new { @class = "form-control" }
-                                )
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.BirthDay, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.BirthDay, htmlAttributes: new { @class = "form-control", id = "date-picker" })
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Giới tính")
+                    @Html.DropDownListFor(model => model.Gender,
+                                            new SelectList(
+                                                new List<object> {
+                                                    new {value = false, text = "Nữ" },
+                                                    new {value = true, text = "Nam"}
+                                                },
+                                                "value",
+                                                "text"
+                                            ),
+                                            htmlAttributes: new { @class = "form-control" }
+                                        )
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    @Html.Label("Ngày sinh")
+                    @Html.EditorFor(model => model.BirthDay, "", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
         </div>
     </div>
     <br />
-    <h4><i class="fa fa-caret-right"></i> Thông tin xác thực</h4>
+    <h4><i class="fa fa-caret-right"></i> Thông tin liên lạc</h4>
     <hr />
     <div class="form-group">
-        @Html.LabelFor(model => model.IdCardNumber, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
-            <label id="idcardvalidate" class="validate-label"></label>
-        </div>
+        @Html.LabelFor(model => model.IdCardNumber)
+        @Html.TextBoxFor(model => model.IdCardNumber, htmlAttributes: new { @class = "form-control" })
+        <label id="idCardValidate" class="validate-label"></label>
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.Address, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
-        </div>
+        @Html.LabelFor(model => model.Address)
+        @Html.TextBoxFor(model => model.Address, htmlAttributes: new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.Phone, new { @class = "col-sm-4" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
-        </div>
+        @Html.LabelFor(model => model.Phone)
+        @Html.TextBoxFor(model => model.Phone, htmlAttributes: new { @class = "form-control" })
     </div>
     <div class="form-group">
         <div class="col-sm-8">
             <input id="btnRegister" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Thêm" />
-            <input id="btnCancel" class="btn btn-primary" style="float: right; margin-left: 10px" type="submit" value="Huỷ" />
+            <input id="btnCancel" class="btn btn-danger" style="float: right; margin-left: 10px" type="reset" value="Huỷ" />
         </div>
     </div>
 }
 
 <script>
-    $("#date-picker").datepicker({
-        format: 'mm/dd/yyyy',
-        language: 'vi'
-    });
+    $("#emailValidate").fadeOut();
+    $("#idCardValidate").fadeOut();
 
     $("input[name=Email]").blur(function () {
         var str = $(this).val();
         $.get("/User/AjaxCheckEmail", { email: str }, function (data) {
             if (data.Success == false) {
-                $("#emailvalidate").fadeIn();
-                $("#emailvalidate").text(data.ErrorMessage);
+                $("#emailValidate").fadeIn();
+                $("#emailValidate").text(data.ErrorMessage);
             } else {
-                $("#emailvalidate").fadeOut();
+                $("#emailValidate").fadeOut();
             }
         });
     });
@@ -119,10 +117,10 @@
         var str = $(this).val();
         $.get("/User/AjaxCheckIdCard", { idCardNumber: str }, function (data) {
             if (data.Success == false) {
-                $("#idcardvalidate").fadeIn();
-                $("#idcardvalidate").text(data.ErrorMessage);
+                $("#idCardValidate").fadeIn();
+                $("#idCardValidate").text(data.ErrorMessage);
             } else {
-                $("#idcardvalidate").fadeOut();
+                $("#idCardValidate").fadeOut();
             }
         });
     });
