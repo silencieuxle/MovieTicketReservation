@@ -6,6 +6,7 @@ using MovieTicketReservation.Services.MemberService;
 using MovieTicketReservation.Services.ScheduleService;
 using MovieTicketReservation.Services.SeatService;
 using MovieTicketReservation.Services.SeatShowDetailsService;
+using MovieTicketReservation.Services.PromotionService;
 using MovieTicketReservation.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace MovieTicketReservation.Controllers {
         private IMemberRepository memberRepository;
         private IScheduleRepository scheduleRepository;
         private ISeatRepository seatRepository;
+        private IPromotionService promotionRepository;
 
         public TicketController() {
             this.bookingRepository = new BookingHeaderRepository(context);
@@ -27,18 +29,9 @@ namespace MovieTicketReservation.Controllers {
             this.scheduleRepository = new ScheduleRepository(context);
             this.seatRepository = new SeatRepository(context);
             this.seatShowRepository = new SeatShowRepository(context);
+            this.promotionRepository = new PromotionRepository(context);
         }
 
-        /// <summary>
-        /// Check if user is logged in
-        /// </summary>
-        /// <returns>True if logged in, False if not</returns>
-        private bool IsLoggedIn() {
-            if (Session["UID"] == null) return false;
-            return true;
-        }
-
-        // GET: Ticket
         public ActionResult Index() {
             if (!IsLoggedIn()) {
                 Session["RedirectURL"] = Request.RawUrl;
@@ -82,6 +75,15 @@ namespace MovieTicketReservation.Controllers {
                 ticketModels.Add(ticketModel);
             }
             return View(ticketModels);
+        }
+
+        /// <summary>
+        /// Check if user is logged in
+        /// </summary>
+        /// <returns>True if logged in, False if not</returns>
+        private bool IsLoggedIn() {
+            if (Session["UID"] == null) return false;
+            return true;
         }
 
         #region Reservation workflow
@@ -136,12 +138,6 @@ namespace MovieTicketReservation.Controllers {
                 return View("OutOfService");
             }
 
-            // Calculate total price for current booking header
-            decimal total = 0;
-            foreach (var seat in seats) {
-                total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
-            }
-
             // Get current schedule object that associated with scheduleId
             var schedule = scheduleRepository.GetScheduleByID(scheduleId);
 
@@ -163,7 +159,7 @@ namespace MovieTicketReservation.Controllers {
                 ScheduleId = scheduleId,
                 Seats = reservedSeats,
                 Showtime = showtime,
-                Total = total
+                Total = GetTotalPrice()
             };
 
             return View(details);
@@ -284,11 +280,18 @@ namespace MovieTicketReservation.Controllers {
         /// </summary>
         /// <returns>Total price</returns>
         private decimal GetTotalPrice() {
-            decimal total = 0;
             var seats = (List<int>)Session["ReservedSeats"];
+            // Promotion?
+            var promotion = promotionRepository.GetPromotionByScheduleID((int)Session["Schedule"]);
+
+            // Calculate total price for current booking header
+            decimal total = 0;
             foreach (var seat in seats) {
                 total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
             }
+
+            // If we have promotion for this schedule
+            if (promotion != null) total -= (total * (decimal)promotion.PriceOff) / 100;
             return total;
         }
 
@@ -306,7 +309,7 @@ namespace MovieTicketReservation.Controllers {
                 ReservedTime = DateTime.Now,
                 SessionID = sessionString,
                 Took = false,
-                Total = 0 //Should be 0 before check the reserved seats.
+                Total = GetTotalPrice()
             };
             bookingHeaderId = bookingRepository.InsertBookingHeader(bookingHeader);
             if (bookingHeaderId != 0) return bookingHeaderId;

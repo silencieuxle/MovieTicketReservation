@@ -116,7 +116,12 @@ namespace MovieTicketReservation.Controllers {
                     ViewBag.Movies = movies;
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID(cinemaId);
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
-                    ViewBag.Promotions = promotionRepository.GetPromotionsByCinema(cinemaId);
+                    var promotion = promotionRepository.GetFixedDayOfWeekPromotionByDay((int)DateTime.Now.DayOfWeek);
+                    if (promotion != null) {
+                        ViewBag.Promotion = promotion;
+                    } else {
+                        ViewBag.Promotions = promotionRepository.GetActiveDuratedPromotions();
+                    }
                     return PartialView("_ManageSchedule_Create");
                 case "managemember_all":
                     return PartialView("_ManageMember_All");
@@ -244,7 +249,7 @@ namespace MovieTicketReservation.Controllers {
             member.IDCardNumber = updateMember.IDCardNumber;
             member.Birthday = updateMember.Birthday;
             member.Gender = updateMember.Gender;
-            
+
             var result = memberRepository.UpdateMember(member);
 
             if (result) return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
@@ -357,6 +362,9 @@ namespace MovieTicketReservation.Controllers {
                 // Check if any schedule is created at the current date, showtime and room
                 var duplicate = scheduleRepository.GetSchedules()
                     .Where(x => x.ShowTimeID == showtimeId && x.RoomID == roomId && (DateTime)x.Date == showdate);
+
+                // ASSUME THAT THE MANAGERS ARE SMART ENOUGH SO THAT THEY WILL NOT ADD SCHEDULE THE DUMP WAY
+
                 if (duplicate.Count() != 0)
                     return Json(new { Success = false, ErrorMessage = "Suất cần thêm đã có." }, JsonRequestBehavior.AllowGet);
 

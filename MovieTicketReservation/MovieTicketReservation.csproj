@@ -288,7 +288,6 @@
     <Compile Include="Services\IGenreRepository.cs" />
     <Compile Include="Services\IMovieRepository.cs" />
     <Compile Include="Services\INewsRepository.cs" />
-    <Compile Include="Services\IPromotionCinemaRepository.cs" />
     <Compile Include="Services\IPromotionService.cs" />
     <Compile Include="Services\IRoomRepository.cs" />
     <Compile Include="Services\IScheduleRepository.cs" />

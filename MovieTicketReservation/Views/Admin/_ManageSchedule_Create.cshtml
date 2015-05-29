@@ -89,11 +89,17 @@
         <div class="form-group">
             <label>Khuyến mãi</label>
             <select class="form-control" id="selPromotion">
-                <option value="-1" disabled selected>Khuyến mãi</option>
-                @foreach (var item in ViewBag.Promotions) {
-                    <option value="@item.PromoteID">@item.Title</option>
+                @if (ViewBag.Promotion != null) {
+                    var promotion = (Promote)ViewBag.Promotion;
+                    <option value="@promotion.PromoteID" selected >@promotion.Title</option>
+                } else if (ViewBag.Promotions != null) {
+                    <option value="-1" disabled selected>Chọn</option>
+                    foreach (var item in ViewBag.Promotions) {
+                        <option value="@item.PromoteID">@item.Title</option>
+                    }
                 }
             </select>
+
         </div>
         <span style="float: right">
             <button id="btnCancel" type="button" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
@@ -189,7 +195,7 @@
         var showtimeId = $("#selShowtime").val();
         var firstShowtimeId = $("#selFirstShowtime").val();
         var numberOfSchedule = $("#txtNumberOfSchedule").val();
-        var promoteId = $("#selPromote").val();
+        var promoteId = $("#selPromotion").val();
 
         if (movieId == null || roomId == null || date == null) {
             alert("Không đủ thông tin, vui lòng kiểm tra lại.");

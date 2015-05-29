@@ -23,8 +23,28 @@ namespace MovieTicketReservation.Services.PromotionService {
             return context.Cinemas.Find(cinemaId).Promotes.ToList();
         }
 
+        public IEnumerable<Promote> GetFixedDayOfWeekPromotions() {
+            return context.Promotes.Where(p => p.FixedDayOfWeek != null).ToList();
+        }
+
+        public IEnumerable<Promote> GetDuratedPromotions() {
+            return context.Promotes.Where(p => p.BeginDay != null).ToList();
+        }
+
+        public IEnumerable<Promote> GetActiveDuratedPromotions() {
+            return context.Promotes.ToList().Where(p => ((DateTime)p.BeginDay).AddDays((int)p.Duration) >= DateTime.Now);
+        }
+
         public Promote GetPromotionByID(int promotionId) {
             return context.Promotes.Find(promotionId);
+        }
+
+        public Promote GetFixedDayOfWeekPromotionByDay(int dayOfWeek) {
+            return context.Promotes.FirstOrDefault(p => p.FixedDayOfWeek == dayOfWeek);
+        }
+
+        public Promote GetPromotionByScheduleID(int scheduleId) {
+            return context.Schedules.Find(scheduleId).Promote;
         }
 
         public bool Insert(Promote promotion) {
