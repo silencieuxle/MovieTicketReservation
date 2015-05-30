@@ -4,11 +4,11 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th width="5%">NewID</th>
-                    <th width="30%">Title</th>
-                    <th width="25%">Content</th>
-                    <th width="10%">ThumbnaiULR</th>
-                    <th width="15%">PostDate</th>
+                    <th width="5%">ID</th>
+                    <th width="55%">Tựa đề</th>
+                    <th width="20%">Ảnh cover</th>
+                    <th width="15%">Ngày đăng</th>
+                    <th width="5%"></th>
                 </tr>
             </thead>
             <tbody id="result">
@@ -24,3 +24,57 @@
     </nav>
     <input type="hidden" value="0" id="headIndex" />
 </div>
+
+<script>
+    $.post("/Admin/AjaxGetNews", { headIndex: 0, type: -1 }, function (data) {
+        $("#result").empty();
+        updateTable(data.Data);
+        $("#headIndex").val = data.HeadIndex
+    });
+
+    $(document).on("click", ".btnNav", function (event) {
+        event.preventDefault();
+
+        var headIndex = $("#headIndex").val();
+        var type = $(this).attr("data-type");
+        if (type == 0 && headIndex == 0) return false;
+
+        $.post("/Admin/AjaxGetNews", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+            $("#result").empty();
+            updateTable(data.Data);
+            $("#headIndex").val(data.HeadIndex);
+        });
+    });
+
+    $(document).on("click", ".btnDeleteNews", function (event) {
+        event.preventDefault();
+        if (!confirm("Bạn thật sự muốn xoá tin này?")) { return false; }
+        var id = $(this).attr("data-id");
+        $.post("/Admin/AjaxDeleteNews", { NewsId: id }, function (data) {
+            if (data.Success == true) {
+                alert("Đã xoá tin!");
+                $.post("/Admin/AjaxGetNews", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+                    updateTable(data.Data);
+                    $("#headIndex").val(data.HeadIndex);
+                });
+            } else {
+                alert(data.ErrorMessage);
+            }
+        });
+    });
+
+    function updateTable(data) {
+        $("#result").empty();
+        $.each(data, function (index, value) {
+            var htmlString =
+                "<tr>" +
+                    "<td>" + value.NewsID + "</td>" +
+                    "<td>" + value.NewsTitle + "</td>" +
+                    "<td>" + value.ThumbnailURL + " %</td>" +
+                    "<td>" + value.CreatedDate + "</td>" +
+                    "<td><a href='#' class='btnDeleteNews' data-id='" + value.NewsID + "'>Xoá</a></td>";
+            "</tr>";
+            $("#result").append(htmlString);
+        });
+    }
+</script>

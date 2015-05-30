@@ -28,12 +28,12 @@
             <label>Tên bài viết</label>
             <input type="text" required name="Title" value="" class="form-control" placeholder="Tên bài viết" />
             @Html.ValidationMessageFor(model => model.Title, "", htmlAttributes: new { @class = "validate-label" })
-        </div><br />
+        </div>
         <div class="form-group">
             <label>Mô tả ngắn</label>
             <input type="text" required name="Description" value="" class="form-control" placeholder="Mô tả ngắn" />
-            @Html.ValidationMessageFor(model => model.Title, "", htmlAttributes: new { @class = "validate-label" })
-        </div><br />
+            @Html.ValidationMessageFor(model => model.Description, "", htmlAttributes: new { @class = "validate-label" })
+        </div>
         <div class="form-group">
             <div class="btn btn-primary btn-file">
                 <i class="glyphicon glyphicon-folder-open"></i>
@@ -47,15 +47,58 @@
             @Html.ValidationMessageFor(model => model.Content, "", htmlAttributes: new { @class = "validate-label" })
         </div>
         <div class="form-group">
+            <label>Tên chương trình</label>
+            @Html.TextBoxFor(model => model.PromotionTitle, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.PromotionTitle, "", htmlAttributes: new { @class = "validate-label" })
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input type="radio" value="0" name="promotionType" checked class="promotionType" /> Khuyến mãi cố định
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input type="radio" value="1" name="PromotionType" class="promotionType" /> Khuyến mãi theo thời gian
+                </div>
+            </div>
+        </div>
+        <div id="fixedPromotion" class="form-group">
+            <select class="form-control" name="FixedDayOfWeek">
+                <option value="" selected disabled>Chọn thứ trong tuần</option>
+                <option value="1">Thứ 2</option>
+                <option value="2">Thứ 3</option>
+                <option value="3">Thứ 4</option>
+                <option value="4">Thứ 5</option>
+                <option value="5">Thứ 6</option>
+                <option value="6">Thứ 7</option>
+                <option value="7">Chủ nhật</option>
+            </select>
+        </div>
+        <div class="row" id="duratedPromotion">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Ngày bắt đầu</label>
+                    @Html.EditorFor(model => model.BeginDay, "", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Thời hạn</label>
+                    @Html.TextBoxFor(model => model.Duration, htmlAttributes: new { @class = "form-control", type = "number", max = "30", min = "0" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
             <label>Giảm giá</label>
             <input name="PriceOff" class="form-control" required min="0" max="50" type="number" placeholder="% giảm giá" />
             @Html.ValidationMessageFor(model => model.PriceOff, "", htmlAttributes: new { @class = "validate-label" })
         </div>
-    <div class="form-group">
-        <label>Rạp áp dụng (có thể chọn nhiều rạp)</label>
-        @Html.ListBoxFor(model => model.Cinemas, new MultiSelectList(ViewBag.Cinemas, "CinemaID", "Name"), htmlAttributes: new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Cinemas, "", new { @class = "validate-label" })
-    </div>
+        <div class="form-group">
+            <label>Rạp áp dụng (có thể chọn nhiều rạp)</label>
+            @Html.ListBoxFor(model => model.Cinemas, new MultiSelectList(ViewBag.Cinemas, "CinemaID", "Name"), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Cinemas, "", new { @class = "validate-label" })
+        </div>
         <div class="form-group">
             <label>Tags</label>
             <input name="Tags" class="form-control" placeholder="Nhập tags, cách nhau bằng space" />
@@ -66,3 +109,20 @@
         </div>
     }
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#duratedPromotion").slideUp('slow');
+        $("#fixedPromotion").slideDown('slow')
+    });
+
+    $(".promotionType").click(function () {
+        if ($(this).val() == 0) {
+            $("#fixedPromotion").slideDown('slow')
+            $("#duratedPromotion").slideUp('slow');
+        } else {
+            $("#fixedPromotion").slideUp('slow')
+            $("#duratedPromotion").slideDown('slow');
+        }
+    });
+</script>

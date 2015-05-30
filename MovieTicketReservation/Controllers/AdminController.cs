@@ -470,11 +470,6 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult ManageNews_Add() {
-            if (!IsCinema()) {
-                Session["RedirectURL"] = "/Admin/ManageNews_Add";
-                return Redirect("/Admin/Login");
-            }
-
             return View();
         }
 
@@ -518,25 +513,49 @@ namespace MovieTicketReservation.Controllers {
             return View("ManageNews_Add");
         }
 
+        [HttpPost]
+        public ActionResult AjaxGetNews(int headIndex, int type) {
+            var result = newsRepository.GetNews();
+            int index = 0;
+            switch (type) {
+                case 0:
+                    result = result.Skip(headIndex - 10).Take(10).ToList();
+                    index = headIndex - 10;
+                    break;
+                case 1:
+                    result = result.Skip(headIndex + 10).Take(10).ToList();
+                    index = headIndex + 10;
+                    break;
+                default:
+                    result = result.Take(10).ToList();
+                    index = headIndex;
+                    break;
+            }
+            return Json(new {
+                Data = result.Select(r => new {
+                    NewsID = r.NewsID,
+                    NewsTitle = r.Title,
+                    ThumbnailURL = r.ThumbnailURL,
+                    CreatedDate = ((DateTime)r.PostedDate).ToShortDateString()
+                }),
+                HeadIndex = index
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxDeleteNews(int newsId) {
+            var result = newsRepository.DeleteNews(newsId);
+            return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Manage Movie
 
         [HttpGet]
         public ActionResult ManageMovie_Add() {
-            if (!IsCompany()) {
-                return Redirect("/Admin/Login");
-            }
             InitializePage();
             return View();
-        }
-
-        private void InitializePage() {
-            ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
-            ViewBag.Editions = editionRepository.GetMovieEditions();
-            ViewBag.Subtitles = subtitleRepository.GetSubtitles();
-            ViewBag.Genres = genreRepository.GetMovieGenres();
-            ViewBag.Cinemas = cinemaRepository.GetCinemas();
         }
 
         [HttpPost]
@@ -626,22 +645,58 @@ namespace MovieTicketReservation.Controllers {
             return View();
         }
 
+        [HttpPost]
+        public ActionResult AjaxGetMovies(int headIndex, int type) {
+            var result = movieRepository.GetAllMovies();
+            int index = 0;
+            switch (type) {
+                case 0:
+                    result = result.Skip(headIndex - 10).Take(10).ToList();
+                    index = headIndex - 10;
+                    break;
+                case 1:
+                    result = result.Skip(headIndex + 10).Take(10).ToList();
+                    index = headIndex + 10;
+                    break;
+                default:
+                    result = result.Take(10).ToList();
+                    index = headIndex;
+                    break;
+            }
+            return Json(result.Select(m => new { MovieID = m.MovieID, Title = m.Title, Edition = m.MovieEdition.Name, ReleasedDate = ((DateTime)m.ReleasedDate).ToShortDateString(), BeginShowDate = ((DateTime)m.BeginShowDate).ToShortDateString() }), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxDeleteMovie(int movieId) {
+            var result = movieRepository.DeleteMovie(movieId);
+            return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        private void InitializePage() {
+            ViewBag.Ages = ageLimitationRepository.GetAgeLimitations();
+            ViewBag.Editions = editionRepository.GetMovieEditions();
+            ViewBag.Subtitles = subtitleRepository.GetSubtitles();
+            ViewBag.Genres = genreRepository.GetMovieGenres();
+            ViewBag.Cinemas = cinemaRepository.GetCinemas();
+        }
+
         #endregion
 
         #region Manage Promotion
 
         [HttpGet]
         public ActionResult ManagePromotion_Add() {
+            if (!IsCompany()) return View("Index");
             ViewBag.Cinemas = cinemaRepository.GetCinemas().ToList();
-            if (!IsCompany()) {
-                return Redirect("/Admin/Login");
-            }
             return View();
         }
 
         [HttpPost]
         public ActionResult ManagePromotion_Add(PromotionModel promotionModel) {
-            if (!ModelState.IsValid) return View(promotionModel);
+            if (!ModelState.IsValid) {
+                ViewBag.Cinemas = cinemaRepository.GetCinemas().ToList();
+                return View(promotionModel);
+            }
             string imagePath = "/Content/Images/NewsImages/";
             bool result = false;
 
@@ -656,10 +711,23 @@ namespace MovieTicketReservation.Controllers {
             thumbnail.SaveAs(Server.MapPath(Url.Content(thumbnailUrl)));
 
             var title = promotionModel.Title;
+            var promotionTitle = promotionModel.PromotionTitle;
             var description = promotionModel.Description;
             var content = promotionModel.Content;
             var priceOff = promotionModel.PriceOff;
             var cinemas = promotionModel.Cinemas;
+            var promotionType = promotionModel.PromotionType;
+
+            int? fixedDay = promotionModel.FixedDayOfWeek;
+            int? duration = promotionModel.Duration;
+            DateTime? beginDate = promotionModel.BeginDay;
+
+            if (promotionType == 0) {
+                duration = null;
+                beginDate = null;
+            } else {
+                fixedDay = null;
+            }
 
             var news = new News {
                 Title = title,
@@ -675,7 +743,11 @@ namespace MovieTicketReservation.Controllers {
             if (result) {
                 Promote promote = new Promote {
                     NewsID = news.NewsID,
-                    PriceOff = promotionModel.PriceOff
+                    PriceOff = priceOff,
+                    Title = promotionTitle,
+                    BeginDay = beginDate,
+                    Duration = duration,
+                    FixedDayOfWeek = fixedDay
                 };
                 result = promotionRepository.Insert(promote);
                 foreach (var cinemaId in cinemas) {
@@ -719,9 +791,11 @@ namespace MovieTicketReservation.Controllers {
             return Json(new {
                 Data = result.Select(r => new {
                     PromotionID = r.PromoteID,
-                    NewsTitle = r.News.Title,
+                    Title = r.Title,
                     PriceOff = r.PriceOff,
-                    CreatedDate = ((DateTime)r.News.PostedDate).ToShortDateString()
+                    FixedDay = r.FixedDayOfWeek != null ? r.FixedDayOfWeek.ToString() : "N/A",
+                    BeginDay = r.BeginDay != null ? ((DateTime)r.BeginDay).ToShortDateString() : "N/A",
+                    Duration = r.Duration != null ? r.Duration.ToString() : "N/A"
                 }),
                 HeadIndex = index
             }, JsonRequestBehavior.AllowGet);
@@ -729,9 +803,21 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult AjaxDeletePromotion(int promotionId) {
-            var promotion = promotionRepository.GetPromotionByID(promotionId);
-            var news = newsRepository.GetNewsByID((int)promotion.NewsID);
-            return View();
+            var cinemas = cinemaRepository.GetCinemas().Where(c => c.Promotes.Any(x => x.PromoteID == promotionId));
+            foreach (var item in cinemas) {
+                item.Promotes.Remove(promotionRepository.GetPromotionByID(promotionId));
+                cinemaRepository.UpdateCinema(item);
+            }
+            var data = promotionRepository.GetPromotionByID(promotionId);
+
+            var news = newsRepository.GetNewsByID((int)data.NewsID);
+            news.Tags.Clear();
+            newsRepository.UpdateNews(news);
+            var newsRes = newsRepository.DeleteNews((int)data.NewsID);
+
+            var promotionRes = promotionRepository.Delete(promotionId);
+            var result = (promotionRes && newsRes) ? true : false;
+            return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

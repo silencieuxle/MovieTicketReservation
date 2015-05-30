@@ -387,6 +387,6 @@ table.dataTable thead .sorting_desc_disabled {
     background-color: #000000;
 }
 
-select, input[type="text"], input[type="date"], textarea, input[type="password"] {
+select, input[type=text], input[type=date], input[type=password], input[type=number] textarea {
     border-radius: 0 !important;
 }

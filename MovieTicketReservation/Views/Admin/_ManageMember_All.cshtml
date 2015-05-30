@@ -54,7 +54,7 @@
         $.post("/Admin/AjaxDeleteMember", { memberId: id }, function (data) {
             if (data.Success == true) {
                 alert("Đã xoá thành viên!");
-                $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+                $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: 0 }, function (data) {
                     updateTable(data.Data);
                     $("#headIndex").val(data.HeadIndex);
                 });

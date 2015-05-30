@@ -1,34 +1,86 @@
 ﻿<h2>Tất cả film</h2>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Tên film</th>
-                            <th>Ngày bắt đầu chiếu</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="content">
-                        
-                    </tbody>
-                </table>
-                <script>
-                    $.get("/Admin/AjaxGetAllMovie", function (data) {
-                        $.each(data, function (index, value) {
-                            var htmlString = "<tr>" +
-                                             "<td>" + value.Title + "</td>" +
-                                             "<td>" + value.BeginShowDate + "</td>" +
-                                             "<td>" + "<a class='btn btn-primary' href='/Admin/DeleteMovie?id='" + value.MovieID + ">Edit</a>" +
-                                                      "<a class='btn btn-primary' href='/Admin/EditMovie?id='" + value.MovieID + ">Edit</a>"
-                            $("#content").append(htmlString);
-                        });
-                    });
-                </script>
 
-            </div>
-        </div>
+<div class="col-sm-12">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Tên film</th>
+                    <th>Phiên bản</th>
+                    <th>Ngày ra mắt</th>
+                    <th>Công chiếu</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="result"></tbody>
+        </table>
     </div>
+    <nav>
+        <ul class="pager">
+            <li class="previous"><a href="#" class="btnNav" data-type="0"><span aria-hidden="true">&larr;</span> Older</a></li>
+            <li class="next"><a href="#" class="btnNav" data-type="1">Newer <span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
+    <input type="hidden" value="0" id="headIndex" />
 </div>
+<script>
+    $.post("/Admin/AjaxGetMovies", { headIndex: 0, type: -1 }, function (data) {
+        $("#result").empty();
+        updateTable(data.Data);
+        $("#headIndex").val = data.HeadIndex
+    });
+
+    $(document).on("click", ".btnNav", function (event) {
+        event.preventDefault();
+
+        var headIndex = $("#headIndex").val();
+        var type = $(this).attr("data-type");
+        if (type == 0 && headIndex == 0) return false;
+
+        $.post("/Admin/AjaxGetMovies", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+            $("#result").empty();
+            updateTable(data.Data);
+            $("#headIndex").val(data.HeadIndex);
+        });
+    });
+
+    $(document).on("click", ".btnDeleteMovie", function (event) {
+        event.preventDefault();
+        if (!confirm("Bạn thật sự muốn xoá film này?")) { return false; }
+        var id = $(this).attr("data-id");
+        $.post("/Admin/AjaxDeleteMovie", { movieId: id }, function (data) {
+            if (data.Success == true) {
+                alert("Đã xoá film !");
+                $.post("/Admin/AjaxGetMovies", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+                    updateTable(data.Data);
+                    $("#headIndex").val(data.HeadIndex);
+                });
+            } else {
+                alert(data.ErrorMessage);
+            }
+        });
+    });
+
+    $(document).on("click", ".btnEditMovie", function (event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $.get("/Admin/GetPage", { page: 'managemovie_edit', param: id }, function (htmlResponse) {
+            $("#main_content").html(htmlResponse);
+        });
+    });
+
+    function updateTable(data) {
+        $("#result").empty();
+        $.each(data, function (index, value) {
+            var htmlString = "<tr>" +
+                                 "<td>" + value.Title + "</td>" +
+                                 "<td>" + value.Edition.Name + "</td>" +
+                                 "<td>" + value.ReleaseDate + "</td>" +
+                                 "<td>" + value.BeginShowDate + "</td>" +
+                                 "<td>" + "<a class='btn btn-primary' href='/Admin/AjaxDeleteMovie?id='" + value.MovieID + ">E</a> | " +
+                                          "<a class='btn btn-primary' href='/Admin/AjaxEditMovie?id='" + value.MovieID + ">D</a>" + "</td>" +
+                             "</tr>"
+            $("#result").append(htmlString);
+        });
+    }
+</script>

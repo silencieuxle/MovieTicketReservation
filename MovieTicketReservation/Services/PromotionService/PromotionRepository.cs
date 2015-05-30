@@ -32,7 +32,7 @@ namespace MovieTicketReservation.Services.PromotionService {
         }
 
         public IEnumerable<Promote> GetActiveDuratedPromotions() {
-            return context.Promotes.ToList().Where(p => ((DateTime)p.BeginDay).AddDays((int)p.Duration) >= DateTime.Now);
+            return context.Promotes.ToList().Where(p => p.BeginDay != null && ((DateTime)p.BeginDay).AddDays((int)p.Duration) >= DateTime.Now);
         }
 
         public Promote GetPromotionByID(int promotionId) {

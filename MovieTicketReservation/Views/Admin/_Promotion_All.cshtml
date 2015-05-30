@@ -5,9 +5,11 @@
             <thead>
                 <tr>
                     <th width="5%">ID</th>
-                    <th width="65%">Tên tin</th>
-                    <th width="15%">Giảm</th>
-                    <th width="15%">Ngày tạo</th>
+                    <th width="40%">Tên chương trình</th>
+                    <th width="10%">Giảm</th>
+                    <th width="15%">Cố định ngày</th>
+                    <th>Bắt đầu</th>
+                    <th>Thời hạn</th>
                 </tr>
             </thead>
             <tbody id="result">
@@ -51,13 +53,13 @@
         var id = $(this).attr("data-id");
         $.post("/Admin/AjaxDeletePromotion", { promotionId: id }, function (data) {
             if (data.Success == true) {
-                alert("Đã xoá thành viên!");
-                $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
+                alert("Đã xoá khuyến mãi!");
+                $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: 0 }, function (data) {
                     updateTable(data.Data);
                     $("#headIndex").val(data.HeadIndex);
                 });
             } else {
-                alert(data.ErrorMessage);
+                alert("Có lỗi xảy ra, không thể xoá khuyến mãi này, hãy chắc rằng không có suất chiếu nào đang sử dụng khuyến mãi này.");
             }
         });
     });
@@ -68,16 +70,14 @@
             var htmlString =
                 "<tr>" +
                     "<td>" + value.PromotionID + "</td>" +
-                    "<td>" + value.NewsTitle + "</td>" +
+                    "<td>" + value.Title + "</td>" +
                     "<td>" + value.PriceOff + " %</td>" +
-                    "<td>" + value.CreatedDate + "</td>" +
-                    "<td><a href='#' class='btnDeleteMember' data-id='" + value.MemberID + "'>Xoá</a></td>";
+                    "<td>" + value.FixedDay + "</td>" +
+                    "<td>" + value.BeginDay + "</td>" +
+                    "<td>" + value.Duration + "</td>" +
+                    "<td><a href='#' class='btnDeletePromotion btn btn-danger' data-id='" + value.PromotionID + "'>Xoá</a></td>";
             "</tr>";
             $("#result").append(htmlString);
         });
     }
 </script>
-
-
-
-
