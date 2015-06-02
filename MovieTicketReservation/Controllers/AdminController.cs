@@ -296,8 +296,15 @@ namespace MovieTicketReservation.Controllers {
             if (promotion != null) {
                 return Json(new List<object> { new { PromotionID = promotion.PromoteID, Title = promotion.Title, Type = "Fixed" } }, JsonRequestBehavior.AllowGet);
             } else {
+                var cinemas = cinemaRepository.GetCinemaByID((string)Session["AdminSection"]);
                 var promotions = promotionRepository.GetActiveDuratedPromotions();
-                return Json(promotions.Select(p => new { PromotionID = p.PromoteID, Title = p.Title, Type = "Duration" }), JsonRequestBehavior.AllowGet);
+                var pr = cinemas.Promotes.Join(promotions, c => c.PromoteID, p => p.PromoteID, (c, p) => new { 
+                    PromotionID = p.PromoteID,
+                    Title = p.Title,
+                    Type = "Duration"
+                });
+                return Json(pr, JsonRequestBehavior.AllowGet);
+                //return Json(promotions.Select(p => new { PromotionID = p.PromoteID, Title = p.Title, Type = "Duration" }), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -828,13 +835,20 @@ namespace MovieTicketReservation.Controllers {
 
         #region Staticstics
 
-        public ActionResult AjaxMovieStat_ReservableMovies() {
-            var movieList = new List<Movie>();
+        //public ActionResult AjaxTicketStat_OverallStat() {
+        //    var bookingHeaders = bookingRepository.GetBookingHeaders();
 
-            var movies = movieRepository.GetCanBeReservedMovies();
+        //    return Json(new { Count = bookingHeaders.Count() }, JsonRequestBehavior.AllowGet);
+        //}
 
-            return null;
-        }
+        //public ActionResult AjaxTicketStat_OverallByWeek() {
+
+        //}
+
+        //public ActionResult AjaxTicketStat_OverallByDate(string stringDate) {
+        //    var date = DateTime.Parse(stringDate);
+        //    var bookingHeaders = bookingRepository.GetBookingHeadersByDate(date).ToList();
+        //}
 
         #endregion
     }
