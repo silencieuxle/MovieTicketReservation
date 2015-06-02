@@ -25,8 +25,10 @@ namespace MovieTicketReservation.Models
         public Nullable<bool> Took { get; set; }
         public Nullable<decimal> Total { get; set; }
         public Nullable<System.DateTime> ReservedTime { get; set; }
+        public Nullable<int> MovieID { get; set; }
     
         public virtual Member Member { get; set; }
         public virtual ICollection<Seat_ShowDetails> Seat_ShowDetails { get; set; }
+        public virtual Movie Movie { get; set; }
     }
 }

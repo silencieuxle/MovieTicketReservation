@@ -87,6 +87,9 @@ namespace MovieTicketReservation.Controllers {
                     Session.Abandon();
                     return Redirect("Login");
                 case "moviestats_overall":
+                    ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
+                    ViewBag.ShowingMovies = movieRepository.GetCanBeReservedMovies().Count();
+                    ViewBag.CommingMovies = movieRepository.GetCommingMovies().Count();
                     return PartialView("_MovieStats_Overall");
                 case "moviestats_view":
                     return PartialView("_MovieStats_View");
@@ -287,13 +290,14 @@ namespace MovieTicketReservation.Controllers {
         #region Schedule Management
 
         [HttpPost]
-        [Obsolete]
-        public ActionResult AjaxGetTicketType(int movieId) {
-            var edition = movieRepository.GetMovieByID(movieId).EditionID;
-            if (edition == "MOV2D") {
-                return Json(new List<object> { new { ID = "CLASS1", Name = "2D" }, new { ID = "CLASS3", Name = "Happy Day 2D" } }, JsonRequestBehavior.AllowGet);
+        public ActionResult AjaxGetPromotionsByDate(string stringDate) {
+            var date = DateTime.Parse(stringDate);
+            var promotion = promotionRepository.GetFixedDayOfWeekPromotionByDay((int)date.DayOfWeek);
+            if (promotion != null) {
+                return Json(new List<object> { new { PromotionID = promotion.PromoteID, Title = promotion.Title, Type = "Fixed" } }, JsonRequestBehavior.AllowGet);
             } else {
-                return Json(new List<object> { new { ID = "CLASS2", Name = "3D" }, new { ID = "CLASS4", Name = "Happy Day 3D" } }, JsonRequestBehavior.AllowGet);
+                var promotions = promotionRepository.GetActiveDuratedPromotions();
+                return Json(promotions.Select(p => new { PromotionID = p.PromoteID, Title = p.Title, Type = "Duration" }), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -818,6 +822,18 @@ namespace MovieTicketReservation.Controllers {
             var promotionRes = promotionRepository.Delete(promotionId);
             var result = (promotionRes && newsRes) ? true : false;
             return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Staticstics
+
+        public ActionResult AjaxMovieStat_ReservableMovies() {
+            var movieList = new List<Movie>();
+
+            var movies = movieRepository.GetCanBeReservedMovies();
+
+            return null;
         }
 
         #endregion

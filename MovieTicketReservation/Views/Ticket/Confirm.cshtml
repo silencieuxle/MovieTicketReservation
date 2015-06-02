@@ -13,7 +13,7 @@
             <div class="col-panel">
                 <h2>Thông tin vé</h2>
                 <hr />
-                <div class="col-sm-12">
+                <div class="col-sm-8">
                     <div class="inline-child">
                         <p class="detail-header">Film: </p>@Model.MovieTitle
                     </div>
@@ -35,6 +35,9 @@
                     <div class="inline-child">
                         <p class="detail-header">Tổng tiền </p>@Model.Total
                     </div>
+                </div>
+                <div class="col-sm-4">
+                    <img src="@Model.MovieThumbnail" alt="" class="img-responsive" />
                 </div>
                 <div class="table-responsive col-sm-12">
                     <table class="table table-hover">

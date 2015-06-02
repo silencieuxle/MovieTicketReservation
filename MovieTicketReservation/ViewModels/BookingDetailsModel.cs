@@ -13,5 +13,6 @@ namespace MovieTicketReservation.ViewModels {
 		public DateTime ReservedDate { get; set; }
 		public List<String> Seats { get; set; }
         public decimal Total { get; set; }
+        public string MovieThumbnail { get; set; }
 	}
 }

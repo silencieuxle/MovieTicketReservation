@@ -31,6 +31,7 @@
           <Property Name="Took" Type="bit" />
           <Property Name="Total" Type="money" />
           <Property Name="ReservedTime" Type="datetime" />
+          <Property Name="MovieID" Type="int" />
         </EntityType>
         <EntityType Name="Cine_MovieDetails">
           <Key>
@@ -269,6 +270,18 @@
             </Principal>
             <Dependent Role="BookingHeader">
               <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BookingHeader_Movies">
+          <End Role="Movie" Type="Self.Movie" Multiplicity="0..1" />
+          <End Role="BookingHeader" Type="Self.BookingHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="BookingHeader">
+              <PropertyRef Name="MovieID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -585,6 +598,10 @@
             <End Role="Member" EntitySet="Member" />
             <End Role="BookingHeader" EntitySet="BookingHeader" />
           </AssociationSet>
+          <AssociationSet Name="FK_BookingHeader_Movies" Association="Self.FK_BookingHeader_Movies">
+            <End Role="Movie" EntitySet="Movie" />
+            <End Role="BookingHeader" EntitySet="BookingHeader" />
+          </AssociationSet>
           <AssociationSet Name="FK_Cine_MovieDetails_Cinema" Association="Self.FK_Cine_MovieDetails_Cinema">
             <End Role="Cinema" EntitySet="Cinema" />
             <End Role="Cine_MovieDetails" EntitySet="Cine_MovieDetails" />
@@ -702,6 +719,8 @@
           <Property Name="ReservedTime" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Member" Relationship="Self.FK_BookingHeader_Member" FromRole="BookingHeader" ToRole="Member" />
           <NavigationProperty Name="Seat_ShowDetails" Relationship="Self.FK_Seat_ShowDetails_BookingHeader" FromRole="BookingHeader" ToRole="Seat_ShowDetails" />
+          <Property Name="MovieID" Type="Int32" />
+          <NavigationProperty Name="Movie" Relationship="DbModel.FK_BookingHeader_Movies" FromRole="BookingHeader" ToRole="Movie" />
         </EntityType>
         <EntityType Name="Cine_MovieDetails">
           <Key>
@@ -782,6 +801,7 @@
           <Property Name="SubtitleID" Type="Int32" />
           <NavigationProperty Name="MovieEdition" Relationship="DbModel.FK_Movie_MovieEdition" FromRole="Movie" ToRole="MovieEdition" />
           <NavigationProperty Name="Subtitle" Relationship="DbModel.FK_Movie_Subtitle" FromRole="Movie" ToRole="Subtitle" />
+          <NavigationProperty Name="BookingHeaders" Relationship="DbModel.FK_BookingHeader_Movies" FromRole="Movie" ToRole="BookingHeader" />
         </EntityType>
         <EntityType Name="MovieEdition">
           <Key>
@@ -1179,6 +1199,10 @@
             <End Role="Subtitle" EntitySet="Subtitles" />
             <End Role="Movie" EntitySet="Movies" />
           </AssociationSet>
+          <AssociationSet Name="FK_BookingHeader_Movies" Association="DbModel.FK_BookingHeader_Movies">
+            <End Role="Movie" EntitySet="Movies" />
+            <End Role="BookingHeader" EntitySet="BookingHeaders" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Promote">
           <Key>
@@ -1302,6 +1326,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BookingHeader_Movies">
+          <End Type="DbModel.Movie" Role="Movie" Multiplicity="0..1" />
+          <End Type="DbModel.BookingHeader" Role="BookingHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="BookingHeader">
+              <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1319,6 +1355,7 @@
           <EntitySetMapping Name="BookingHeaders">
             <EntityTypeMapping TypeName="DbModel.BookingHeader">
               <MappingFragment StoreEntitySet="BookingHeader">
+                <ScalarProperty Name="MovieID" ColumnName="MovieID" />
                 <ScalarProperty Name="HeaderID" ColumnName="HeaderID" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="SessionID" ColumnName="SessionID" />

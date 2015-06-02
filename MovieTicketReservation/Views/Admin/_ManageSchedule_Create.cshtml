@@ -89,15 +89,7 @@
         <div class="form-group">
             <label>Khuyến mãi</label>
             <select class="form-control" id="selPromotion">
-                @if (ViewBag.Promotion != null) {
-                    var promotion = (Promote)ViewBag.Promotion;
-                    <option value="@promotion.PromoteID" selected >@promotion.Title</option>
-                } else if (ViewBag.Promotions != null) {
-                    <option value="-1" disabled selected>Chọn</option>
-                    foreach (var item in ViewBag.Promotions) {
-                        <option value="@item.PromoteID">@item.Title</option>
-                    }
-                }
+                <option value="" disabled selected>Chọn</option>
             </select>
 
         </div>
@@ -135,37 +127,36 @@
                 $(".table-responsive").css("overflow-y", "scroll");
             }
         });
-
     }
-
-    //$(document).on("change", "#selTicketClass", function () {
-    //    if (parseInt($("#selTicketClass").val()) != -1) {
-    //        $("#selPromotion").val(-1);
-    //    }
-    //});
-
-    //$(document).on("change", "#selPromotion", function () {
-    //    if (parseInt($("#selPromotion").val()) != -1) {
-    //        if ($("#selTicketClass option")[1].val() == "CLASS1") {
-    //            $("#selTicketClass").val("CLASS1");
-    //        } else {
-    //            $("#selTicketClass").val("CLASS2");
-    //        }
-
-    //    }
-    //});
 
     $(document).on("change", "#selMovie", function () {
         var movieId = $(this).val();
         $("#selDate").empty();
         $.post("/Admin/AjaxGetDatesByMovieID", { movieId: movieId }, function (data) {
-            $("#selDate").append('<option value="-1" disabled selected>Chọn ngày</option>');
+            $("#selDate").append('<option value="" disabled selected>Chọn ngày</option>');
             $.each(data, function (index, value) {
                 var htmlString = "<option>" + value + "</option>";
                 $("#selDate").append(htmlString);
             });
         });
         updateTable(movieId);
+    });
+
+    $(document).on("change", "#selDate", function () {
+        var stringDate = $(this).val();
+        $("#selPromotion").empty();
+        $.post("/Admin/AjaxGetPromotionsByDate", { stringDate: stringDate }, function (response) {
+            $("#selPromotion").append("<option value='' disabled selected>Chọn</option>");
+            $.each(response, function (index, value) {
+                var htmlString = "";
+                if (value.Type == "Fixed") {
+                    htmlString = "<option selected disabled value='" + value.PromotionID + "'>" + value.Title + "</option>";
+                } else {
+                    htmlString = "<option value='" + value.PromotionID + "'>" + value.Title + "</option>";
+                }
+                $("#selPromotion").append(htmlString);
+            });
+        });
     });
 
     $(document).on("click", "#btnCancel", function () {

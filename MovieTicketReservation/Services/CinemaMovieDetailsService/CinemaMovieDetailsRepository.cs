@@ -49,7 +49,7 @@ namespace MovieTicketReservation.Services.CinemaMovieDetailsService {
                     return false;
                 }
             }
-            return false;
+            return true;
         }
 
         public bool UpdateDetails(Cine_MovieDetails cinemaMovieDetails) {

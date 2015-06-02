@@ -95,10 +95,11 @@ namespace MovieTicketReservation.Controllers {
                 return Redirect("/User/Login");
             }
             var showingDate = scheduleRepository.GetScheduleByID(scheduleId).Date;
+            var movieId = scheduleRepository.GetScheduleByID(scheduleId).Cine_MovieDetails.Movie.MovieID;
             if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movies");
             Session["Schedule"] = scheduleId;
             Session["ReservedSeats"] = new List<int>();
-
+            Session["MovieID"] = movieId;
             var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
             bool canReserve = seats.Any(s => s.Reserved == false);
             if (canReserve) return View(seats);
@@ -159,7 +160,8 @@ namespace MovieTicketReservation.Controllers {
                 ScheduleId = scheduleId,
                 Seats = reservedSeats,
                 Showtime = showtime,
-                Total = GetTotalPrice()
+                Total = GetTotalPrice(),
+                MovieThumbnail = movie.ThumbnailURL
             };
 
             return View(details);
@@ -301,6 +303,7 @@ namespace MovieTicketReservation.Controllers {
         /// <returns>If the booking header is created, return the booking header ID, else return 0.</returns>
         private int CreateBookingHeader() {
             var schedule = Session["Schedule"];
+            var movieId = Session["MovieID"];
             var sessionString = Helper.GenerateUniqueString(16);
             int bookingHeaderId;
 
@@ -309,6 +312,7 @@ namespace MovieTicketReservation.Controllers {
                 ReservedTime = DateTime.Now,
                 SessionID = sessionString,
                 Took = false,
+                MovieID = (int)movieId,
                 Total = GetTotalPrice()
             };
             bookingHeaderId = bookingRepository.InsertBookingHeader(bookingHeader);

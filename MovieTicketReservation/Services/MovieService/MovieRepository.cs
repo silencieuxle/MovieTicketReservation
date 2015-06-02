@@ -26,6 +26,10 @@ namespace MovieTicketReservation.Services.MovieService {
             return movies.Where(m => GetScheduleType(m) != 0);
         }
 
+        public IEnumerable<Movie> GetCommingMovies() {
+            return context.Movies.ToList().Where(m => GetScheduleType(m) == 2);
+        }
+
         public IEnumerable<Movie> GetAvailableMovies() {
             return context.Movies.Where(m => (bool)m.Available == true).ToList();
         }
