@@ -10,6 +10,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<BookingHeader> GetBookingHeaders();
         IEnumerable<BookingHeader> GetBookingHeadersByMemberID(int memberId);
         IEnumerable<BookingHeader> GetBookingHeadersByDate(DateTime date);
+        IEnumerable<BookingHeader> GetBookingHeadersByMovieID(int movieId);
 
         BookingHeader GetBookingHeaderByID(int bookingHeaderId);
         int InsertBookingHeader(BookingHeader bookingHeader);

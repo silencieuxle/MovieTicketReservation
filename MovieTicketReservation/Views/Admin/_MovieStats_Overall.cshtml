@@ -70,19 +70,3 @@
         </div>
     </div>
 </div>
-
-<div class="col-sm-12">
-    <div id="barChart">
-        <script>
-            $.post("/Admin/AjaxMovieStat_ReservableMovies", function (data) {
-                Morris.Donut({
-                    element: 'barChart',
-                    data: [
-                        { label: '', value: 0 },
-                        { d: '', value: 0 },
-                    ]
-                });
-            });
-        </script>
-    </div>
-</div>

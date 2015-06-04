@@ -98,11 +98,13 @@ namespace MovieTicketReservation.Controllers {
                 case "ticketstats_overall":
                     return PartialView("_TicketStats_Overall");
                 case "ticketstats_movie":
-                    return PartialView("_TicketStats_Movie", movieRepository.GetAllMovies());
-                case "ticketstats_showtime":
-                    return PartialView("_TicketStats_Showtime", showtimeRepository.GetShowtimes());
-                case "ticketstats_room":
-                    return PartialView("_TicketStats_Room");
+                    var dates = new List<string>();
+                    for (var date = DateTime.Now; date >= DateTime.Now.AddDays(-30); date = date.AddDays(-1)) {
+                        dates.Add(date.ToShortDateString());
+                    }
+                    ViewBag.Dates = dates;
+
+                    return PartialView("_TicketStats_CanBeReservedMovies");
                 case "systemstats":
                     return PartialView("_SystemStats");
                 case "managemovie_all":
@@ -298,7 +300,7 @@ namespace MovieTicketReservation.Controllers {
             } else {
                 var cinemas = cinemaRepository.GetCinemaByID((string)Session["AdminSection"]);
                 var promotions = promotionRepository.GetActiveDuratedPromotions();
-                var pr = cinemas.Promotes.Join(promotions, c => c.PromoteID, p => p.PromoteID, (c, p) => new { 
+                var pr = cinemas.Promotes.Join(promotions, c => c.PromoteID, p => p.PromoteID, (c, p) => new {
                     PromotionID = p.PromoteID,
                     Title = p.Title,
                     Type = "Duration"
@@ -835,15 +837,44 @@ namespace MovieTicketReservation.Controllers {
 
         #region Staticstics
 
-        //public ActionResult AjaxTicketStat_OverallStat() {
-        //    var bookingHeaders = bookingRepository.GetBookingHeaders();
+        public ActionResult AjaxTicketStat_OverallStats_CanBeReserved(string stringDate = null) {
+            if (stringDate == null) {
 
-        //    return Json(new { Count = bookingHeaders.Count() }, JsonRequestBehavior.AllowGet);
-        //}
+                var bookingHeaders = bookingRepository.GetBookingHeaders();
+                var movies = movieRepository.GetCanBeReservedMovies();
 
-        //public ActionResult AjaxTicketStat_OverallByWeek() {
+                var result = new List<object>();
 
-        //}
+                foreach (var movie in movies) {
+                    result.Add(new { label = movie.Title, value = bookingRepository.GetBookingHeadersByMovieID(movie.MovieID).Count() });
+                }
+                return Json(result, JsonRequestBehavior.AllowGet);
+            } else {
+                var date = DateTime.Parse(stringDate);
+                var bookingHeaders = bookingRepository.GetBookingHeadersByDate(date);
+                var movies = movieRepository.GetCanBeReservedMovies();
+
+                var result = new List<object>();
+
+                foreach (var movie in movies) {
+                    result.Add(new { label = movie.Title, value = bookingRepository.GetBookingHeadersByMovieID(movie.MovieID).Count() });
+                }
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult AjaxTicketStat_OverallStats_AllMovies() {
+            var bookingHeaders = bookingRepository.GetBookingHeaders();
+            var movies = movieRepository.GetAllMovies();
+
+            var result = new List<object>();
+
+            foreach (var movie in movies) {
+                result.Add(new { label = movie.Title, value = bookingRepository.GetBookingHeadersByMovieID(movie.MovieID).Count() });
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
 
         //public ActionResult AjaxTicketStat_OverallByDate(string stringDate) {
         //    var date = DateTime.Parse(stringDate);

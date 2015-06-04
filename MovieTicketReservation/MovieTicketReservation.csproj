@@ -650,7 +650,7 @@
     <Content Include="Views\Admin\_MovieStats_View.cshtml" />
     <Content Include="Views\Admin\_MovieStats_Ticket.cshtml" />
     <Content Include="Views\Admin\_TicketStats_Overall.cshtml" />
-    <Content Include="Views\Admin\_TicketStats_Movie.cshtml" />
+    <Content Include="Views\Admin\_TicketStats_CanBeReservedMovies.cshtml" />
     <Content Include="Views\Admin\_TicketStats_Showtime.cshtml" />
     <Content Include="Views\Admin\_SystemStats.cshtml" />
     <Content Include="Views\Admin\_ManageMovie_All.cshtml" />
