@@ -68,6 +68,7 @@ namespace MovieTicketReservation.Controllers {
             int userId = 0;
             if ((userId = Authenticate(loginModel.Email, loginModel.Password)) != 0) {
                 Session["UID"] = userId;
+                Session["ReservingSeats"] = new List<int>();
                 string redirectUrl = (String)Session["RedirectURL"];
                 Session["RedirectURL"] = null;
                 if (!String.IsNullOrEmpty(redirectUrl)) return Redirect(redirectUrl);

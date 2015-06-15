@@ -3,71 +3,71 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MovieTicketReservation.App_Code;
 using MovieTicketReservation.Models;
 using MovieTicketReservation.Services;
 using MovieTicketReservation.Services.AdminAccountService;
-using MovieTicketReservation.Services.MovieService;
-using MovieTicketReservation.Services.MemberService;
-using MovieTicketReservation.Services.ScheduleService;
-using MovieTicketReservation.Services.ShowtimeService;
-using MovieTicketReservation.Services.CinemaMovieDetailsService;
-using MovieTicketReservation.Services.NewsRepository;
-using MovieTicketReservation.Services.RoomService;
-using MovieTicketReservation.Services.TagRepository;
-using MovieTicketReservation.Services.SeatShowDetailsService;
-using MovieTicketReservation.Services.TicketClassService;
-using MovieTicketReservation.Services.BookingHeaderService;
 using MovieTicketReservation.Services.AgeLimitationService;
+using MovieTicketReservation.Services.BookingHeaderService;
+using MovieTicketReservation.Services.CinemaMovieDetailsService;
+using MovieTicketReservation.Services.CinemaService;
 using MovieTicketReservation.Services.EditionService;
 using MovieTicketReservation.Services.GenreService;
-using MovieTicketReservation.Services.SubtitleService;
-using MovieTicketReservation.Services.CinemaService;
+using MovieTicketReservation.Services.MemberService;
+using MovieTicketReservation.Services.MovieService;
+using MovieTicketReservation.Services.NewsRepository;
 using MovieTicketReservation.Services.PromotionService;
-using MovieTicketReservation.App_Code;
+using MovieTicketReservation.Services.RoomService;
+using MovieTicketReservation.Services.ScheduleService;
+using MovieTicketReservation.Services.SeatShowDetailsService;
+using MovieTicketReservation.Services.ShowtimeService;
+using MovieTicketReservation.Services.SubtitleService;
+using MovieTicketReservation.Services.TagRepository;
+using MovieTicketReservation.Services.TicketClassService;
 using MovieTicketReservation.ViewModels;
 
 namespace MovieTicketReservation.Controllers {
     public class AdminController : Controller {
         private DbEntities context = new DbEntities();
 
-        private IPromotionService promotionRepository;
-        private ICinemaRepository cinemaRepository;
-        private ISubtitleRepository subtitleRepository;
-        private IEditionRepository editionRepository;
-        private IGenreRepository genreRepository;
-        private ITagRepository tagRepository;
-        private IMovieRepository movieRepository;
-        private IScheduleRepository scheduleRepository;
-        private IRoomRepository roomRepository;
-        private IMemberRepository memberRepository;
-        private IShowtimeRepository showtimeRepository;
-        private INewsRepository newsRepository;
-        private ICinemaMovieRepository cinemaMovieRepository;
-        private ISeatShowRepository seatShowRepository;
-        private IAdminAccountRepository adminAccountRepository;
-        private ITicketClassRepository ticketClassRepository;
-        private IBookingRepository bookingRepository;
-        private IAgeLimitationRepository ageLimitationRepository;
+        private IAdminAccountRepository     adminAccountRepository;
+        private IAgeLimitationRepository    ageLimitationRepository;
+        private IBookingRepository          bookingRepository;
+        private ICinemaMovieRepository      cinemaMovieRepository;
+        private ICinemaRepository           cinemaRepository;
+        private IEditionRepository          editionRepository;
+        private IGenreRepository            genreRepository;
+        private IMemberRepository           memberRepository;
+        private IMovieRepository            movieRepository;
+        private INewsRepository             newsRepository;
+        private IPromotionService           promotionRepository;
+        private IRoomRepository             roomRepository;
+        private IScheduleRepository         scheduleRepository;
+        private ISeatShowRepository         seatShowRepository;
+        private IShowtimeRepository         showtimeRepository;
+        private ISubtitleRepository         subtitleRepository;
+        private ITagRepository              tagRepository;
+        private ITicketClassRepository      ticketClassRepository;
 
         public AdminController() {
-            this.promotionRepository = new PromotionRepository(context);
-            this.cinemaRepository = new CinemaRepository(context);
-            this.subtitleRepository = new SubtitleRepository(context);
-            this.genreRepository = new GenreRepository(context);
-            this.editionRepository = new EditionRepository(context);
-            this.bookingRepository = new BookingHeaderRepository(context);
-            this.tagRepository = new TagRepository(context);
-            this.movieRepository = new MovieRepository(context);
-            this.scheduleRepository = new ScheduleRepository(context);
-            this.memberRepository = new MemberRepository(context);
-            this.showtimeRepository = new ShowtimeRepository(context);
-            this.roomRepository = new RoomRepository(context);
-            this.newsRepository = new NewsRepository(context);
-            this.seatShowRepository = new SeatShowRepository(context);
-            this.ticketClassRepository = new TicketClassRepository(context);
             this.adminAccountRepository = new AdminAccountRepository(context);
-            this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
             this.ageLimitationRepository = new AgeLimitationRepository(context);
+            this.bookingRepository = new BookingHeaderRepository(context);
+            this.cinemaMovieRepository = new CinemaMovieDetailsRepository(context);
+            this.cinemaRepository = new CinemaRepository(context);
+            this.editionRepository = new EditionRepository(context);
+            this.genreRepository = new GenreRepository(context);
+            this.memberRepository = new MemberRepository(context);
+            this.movieRepository = new MovieRepository(context);
+            this.newsRepository = new NewsRepository(context);
+            this.promotionRepository = new PromotionRepository(context);
+            this.roomRepository = new RoomRepository(context);
+            this.scheduleRepository = new ScheduleRepository(context);
+            this.seatShowRepository = new SeatShowRepository(context);
+            this.showtimeRepository = new ShowtimeRepository(context);
+            this.subtitleRepository = new SubtitleRepository(context);
+            this.tagRepository = new TagRepository(context);
+            this.ticketClassRepository = new TicketClassRepository(context);
         }
 
         public ActionResult Index() {
@@ -77,7 +77,14 @@ namespace MovieTicketReservation.Controllers {
             }
             ViewBag.TotalMembers = memberRepository.GetAllMembers().Count();
             ViewBag.TotalBookings = bookingRepository.GetBookingHeadersByDate(DateTime.Now).Count();
-            ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
+            ViewBag.ShowingMovies = movieRepository.GetCanBeReservedMovies().Count();
+            var bookingHeaders = bookingRepository.GetBookingHeadersByDate(DateTime.Now.Date);
+            long total = 0;
+            foreach (var item in bookingHeaders) {
+                var price = seatShowRepository.GetDetailsByBookingHeaderID(item.HeaderID).Sum(x => x.TicketClass.Price);
+                total += (int)price;
+            }
+            ViewBag.TodayRevenue = total;
             return View();
         }
 
@@ -90,9 +97,8 @@ namespace MovieTicketReservation.Controllers {
                     ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
                     ViewBag.ShowingMovies = movieRepository.GetCanBeReservedMovies().Count();
                     ViewBag.CommingMovies = movieRepository.GetCommingMovies().Count();
+                    ViewBag.FutureMovies = movieRepository.GetFutureMovies().Count();
                     return PartialView("_MovieStats_Overall");
-                case "moviestats_view":
-                    return PartialView("_MovieStats_View");
                 case "moviestats_ticket":
                     return PartialView("_MovieStats_Ticket");
                 case "ticketstats_overall":
@@ -118,15 +124,19 @@ namespace MovieTicketReservation.Controllers {
                     var movies = movieRepository.GetCanBeScheduledMovies()
                         .Join(cinemaMovieRepository.GetDetailsByCinemaID((string)Session["AdminSection"]), m => m.MovieID, d => d.MovieID, (m, d) => new { Movie = m })
                         .Select(x => x.Movie).ToList();
+
                     ViewBag.Movies = movies;
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID(cinemaId);
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
+
                     var promotion = promotionRepository.GetFixedDayOfWeekPromotionByDay((int)DateTime.Now.DayOfWeek);
+
                     if (promotion != null) {
                         ViewBag.Promotion = promotion;
                     } else {
                         ViewBag.Promotions = promotionRepository.GetActiveDuratedPromotions();
                     }
+
                     return PartialView("_ManageSchedule_Create");
                 case "managemember_all":
                     return PartialView("_ManageMember_All");
@@ -146,19 +156,24 @@ namespace MovieTicketReservation.Controllers {
                     return PartialView("_ManageNews_Add");
                 case "managenews_edit":
                     return PartialView("_ManageNews_Edit");
-                default: return View("Index");
+                default:
+                    return View("Index");
             }
         }
 
         private bool IsCinema() {
-            if (Session["Role"] == null) return false;
-            if ((int)Session["Role"] == 2) return true;
+            if (Session["Role"] == null)
+                return false;
+            if ((int)Session["Role"] == 2)
+                return true;
             return false;
         }
 
         private bool IsCompany() {
-            if (Session["Role"] == null) return false;
-            if ((int)Session["Role"] == 1) return true;
+            if (Session["Role"] == null)
+                return false;
+            if ((int)Session["Role"] == 1)
+                return true;
             return false;
         }
 
@@ -169,7 +184,8 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult Login(LoginModel loginModel) {
-            if (!ModelState.IsValid) return View(loginModel);
+            if (!ModelState.IsValid)
+                return View(loginModel);
             var user = memberRepository.GetMemberByEmailAndPassword(loginModel.Email, Helper.GenerateSHA1String(loginModel.Password));
             if (user == null) {
                 ModelState.AddModelError("", "Sai thông tin đăng nhập");
@@ -201,20 +217,25 @@ namespace MovieTicketReservation.Controllers {
             string avatarUrl = imagePath + Session["UID"].ToString() + "-" + avatar.FileName;
 
             // Save uploaded poster and cover image
-            if (avatar.ContentLength != 0) avatar.SaveAs(Server.MapPath(Url.Content(avatarUrl)));
+            if (avatar.ContentLength != 0)
+                avatar.SaveAs(Server.MapPath(Url.Content(avatarUrl)));
             else {
                 return Json(new { Success = false, ErrorMessage = "Lỗi khi nhận file" }, JsonRequestBehavior.AllowGet);
             }
             var member = memberRepository.GetMemberByID((int)Session["UID"]);
             member.AvatarURL = avatarUrl;
             var result = memberRepository.UpdateMember(member);
-            if (!result) return Json(new { Success = false, ErrorMessage = "Xảy ra lỗi khi cập nhật thông tin." }, JsonRequestBehavior.AllowGet);
+            if (!result)
+                return Json(new { Success = false, ErrorMessage = "Xảy ra lỗi khi cập nhật thông tin." }, JsonRequestBehavior.AllowGet);
             return Json(new { Success = true, AvatarURL = avatarUrl }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult AjaxGetMembers(int headIndex, int type) {
             var result = memberRepository.GetAllMembers();
+            if (headIndex >= result.Count()) {
+                return null;
+            }
             int index = 0;
             switch (type) {
                 case 0:
@@ -231,7 +252,13 @@ namespace MovieTicketReservation.Controllers {
                     break;
             }
             return Json(new {
-                Data = result.Select(r => new { MemberID = r.MemberID, Email = r.Email, Fullname = r.Lastname + " " + r.Firstname, IDCardNumber = r.IDCardNumber, Phone = r.Phone }),
+                Data = result.Select(r => new {
+                    MemberID = r.MemberID,
+                    Email = r.Email,
+                    Fullname = r.Lastname + " " + r.Firstname,
+                    IDCardNumber = r.IDCardNumber,
+                    Phone = r.Phone
+                }),
                 HeadIndex = index
             }, JsonRequestBehavior.AllowGet);
         }
@@ -244,7 +271,8 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult AjaxUpdateMember([Bind(Exclude = "Password, MemberID")]Member updateMember, int memberId) {
-            if (!ModelState.IsValid) return Json(new { Success = false, ErrorMessage = "Cannot update member information." }, JsonRequestBehavior.AllowGet);
+            if (!ModelState.IsValid)
+                return Json(new { Success = false, ErrorMessage = "Cannot update member information." }, JsonRequestBehavior.AllowGet);
 
             var member = memberRepository.GetMemberByID(memberId);
             member.Firstname = updateMember.Firstname;
@@ -257,7 +285,8 @@ namespace MovieTicketReservation.Controllers {
 
             var result = memberRepository.UpdateMember(member);
 
-            if (result) return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            if (result)
+                return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
             return Json(new { Success = false, ErrorMessage = "Cannot update member information." }, JsonRequestBehavior.AllowGet);
         }
 
@@ -311,19 +340,38 @@ namespace MovieTicketReservation.Controllers {
         }
 
         [HttpPost]
-        public ActionResult AjaxGetAvailableSchedules() {
-            if (IsCinema()) {
-                var result = scheduleRepository.GetAvailableSchedules().Select(s => new {
-                    ScheduleID = s.ScheduleID,
-                    MovieTitle = s.Cine_MovieDetails.Movie.Title,
-                    Date = ((DateTime)s.Date).ToShortDateString(),
-                    Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
-                    Room = s.Room.Name
-                }).ToList();
-                return Json(result, JsonRequestBehavior.AllowGet);
-            } else {
+        public ActionResult AjaxGetSchedules(int headIndex, int type) {
+            var result = scheduleRepository.GetSchedules();
+            if (headIndex >= result.Count()) {
                 return null;
             }
+            int index = 0;
+            switch (type) {
+                case 0:
+                    result = result.Skip(headIndex - 10).Take(10).ToList();
+                    index = headIndex - 10;
+                    break;
+                case 1:
+                    result = result.Skip(headIndex + 10).Take(10).ToList();
+                    index = headIndex + 10;
+                    break;
+                default:
+                    result = result.Take(10).ToList();
+                    index = headIndex;
+                    break;
+            }
+
+            return Json(new {
+                Data = result.Select(s => new {
+                    ID = s.ScheduleID,
+                    MovieID = s.Cine_MovieDetails.MovieID,
+                    MovieTitle = s.Cine_MovieDetails.Movie.Title,
+                    Room = s.Room.Name,
+                    Date = ((DateTime)s.Date).ToShortDateString(),
+                    Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime)
+                }),
+                HeadIndex = index
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -349,8 +397,10 @@ namespace MovieTicketReservation.Controllers {
                 var beginShowDate = (DateTime)movie.BeginShowDate;
                 var endShowDate = beginShowDate.AddDays((int)movie.Duration);
                 DateTime startDate;
-                if (beginShowDate > DateTime.Now) startDate = beginShowDate;
-                else startDate = DateTime.Now;
+                if (beginShowDate > DateTime.Now)
+                    startDate = beginShowDate;
+                else
+                    startDate = DateTime.Now;
 
                 List<String> result = new List<string>();
                 for (var d = startDate; d <= endShowDate; d = d.AddDays(1)) {
@@ -395,11 +445,15 @@ namespace MovieTicketReservation.Controllers {
                 if (result != 0) {
                     string ticketClassId = "";
                     if (movie.EditionID == "MOV2D") {
-                        if (showtime.Hours >= 17) ticketClassId = "2DM";
-                        else ticketClassId = "2DN";
+                        if (showtime.Hours >= 17)
+                            ticketClassId = "2DM";
+                        else
+                            ticketClassId = "2DN";
                     } else {
-                        if (showtime.Hours >= 17) ticketClassId = "3DM";
-                        else ticketClassId = "3DN";
+                        if (showtime.Hours >= 17)
+                            ticketClassId = "3DM";
+                        else
+                            ticketClassId = "3DN";
                     }
                     CreateSeatShowDetails(result, roomId, ticketClassId);
                     return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
@@ -455,11 +509,15 @@ namespace MovieTicketReservation.Controllers {
                     if (result != 0) {
                         string ticketClassId = "";
                         if (movie.EditionID == "MOV2D") {
-                            if (currentShowTime.Hours < 17) ticketClassId = "2DM";
-                            else ticketClassId = "2DN";
+                            if (currentShowTime.Hours < 17)
+                                ticketClassId = "2DM";
+                            else
+                                ticketClassId = "2DN";
                         } else {
-                            if (currentShowTime.Hours < 17) ticketClassId = "3DM";
-                            else ticketClassId = "3DN";
+                            if (currentShowTime.Hours < 17)
+                                ticketClassId = "3DM";
+                            else
+                                ticketClassId = "3DN";
                         }
                         CreateSeatShowDetails(result, roomId, ticketClassId);
                     } else {
@@ -467,7 +525,7 @@ namespace MovieTicketReservation.Controllers {
                     }
                     currentShowTimeId += movielength / 15 + 1;
                 }
-                return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+                return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
             } else {
                 return null;
             }
@@ -491,7 +549,8 @@ namespace MovieTicketReservation.Controllers {
             string imagePath = "/Content/Images/NewsImages/";
             bool result = false;
 
-            if (!ModelState.IsValid) return View(newsModel);
+            if (!ModelState.IsValid)
+                return View(newsModel);
 
             // Get uploaded HttpPostedFileBase
             var thumbnail = newsModel.Thumbnail;
@@ -529,6 +588,9 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetNews(int headIndex, int type) {
             var result = newsRepository.GetNews();
+            if (headIndex >= result.Count()) {
+                return null;
+            }
             int index = 0;
             switch (type) {
                 case 0:
@@ -646,7 +708,10 @@ namespace MovieTicketReservation.Controllers {
                         CinemaID = item,
                         MovieID = movie.MovieID
                     });
-                    if (result) continue; else break;
+                    if (result)
+                        continue;
+                    else
+                        break;
                 }
             }
 
@@ -661,6 +726,9 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetMovies(int headIndex, int type) {
             var result = movieRepository.GetAllMovies();
+            if (headIndex >= result.Count()) {
+                return null;
+            }
             int index = 0;
             switch (type) {
                 case 0:
@@ -676,7 +744,17 @@ namespace MovieTicketReservation.Controllers {
                     index = headIndex;
                     break;
             }
-            return Json(result.Select(m => new { MovieID = m.MovieID, Title = m.Title, Edition = m.MovieEdition.Name, ReleasedDate = ((DateTime)m.ReleasedDate).ToShortDateString(), BeginShowDate = ((DateTime)m.BeginShowDate).ToShortDateString() }), JsonRequestBehavior.AllowGet);
+            return Json(new {
+                Data = result.Select(m => new {
+                    MovieID = m.MovieID,
+                    Title = m.Title,
+                    Edition = m.MovieEdition.Name,
+                    ReleasedDate = ((DateTime)m.ReleasedDate).ToShortDateString(),
+                    BeginShowDate = ((DateTime)m.BeginShowDate).ToShortDateString()
+                }),
+                HeadIndex = index
+            },
+            JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -699,7 +777,8 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpGet]
         public ActionResult ManagePromotion_Add() {
-            if (!IsCompany()) return View("Index");
+            if (!IsCompany())
+                return View("Index");
             ViewBag.Cinemas = cinemaRepository.GetCinemas().ToList();
             return View();
         }
@@ -786,6 +865,9 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetPromotions(int headIndex, int type) {
             var result = promotionRepository.GetPromotions();
+            if (headIndex >= result.Count()) {
+                return null;
+            }
             int index = 0;
             switch (type) {
                 case 0:
@@ -880,6 +962,17 @@ namespace MovieTicketReservation.Controllers {
         //    var date = DateTime.Parse(stringDate);
         //    var bookingHeaders = bookingRepository.GetBookingHeadersByDate(date).ToList();
         //}
+
+        public ActionResult AjaxRevenue_OverallStat_Week() {
+            int today = (int)DateTime.Now.DayOfWeek;
+            var result = bookingRepository.GetBookingHeaders()
+                .Where(b => ((DateTime)b.ReservedTime).Date >= DateTime.Now.AddDays(-today).Date && ((DateTime)b.ReservedTime).Date <= DateTime.Now.Date).ToList()
+                .GroupBy(b => ((DateTime)b.ReservedTime).Date, (date, data) => new { 
+                    date = date.ToShortDateString(),
+                    total = (int)data.Sum(x => x.Total)
+                });
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
     }

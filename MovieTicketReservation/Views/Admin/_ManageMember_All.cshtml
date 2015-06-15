@@ -17,7 +17,7 @@
             </tbody>
         </table>
     </div>
-    <nav>
+    <nav class="col-sm-4 col-sm-offset-4">
         <ul class="pager">
             <li class="previous"><a href="#" class="btnNav" data-type="0"><span aria-hidden="true">&larr;</span> Older</a></li>
             <li class="next"><a href="#" class="btnNav" data-type="1">Newer <span aria-hidden="true">&rarr;</span></a></li>
@@ -27,10 +27,12 @@
 </div>
 
 <script>
-    $.post("/Admin/AjaxGetMembers", { headIndex: 0, type: -1 }, function (data) {
-        $("#result").empty();
-        updateTable(data.Data);
-        $("#headIndex").val = data.HeadIndex
+    $.post("/Admin/AjaxGetMembers", { headIndex: 0, type: -1 }, function (response) {
+        if (response != null) {
+            $("#result").empty();
+            updateTable(response.Data);
+            $("#headIndex").val(response.HeadIndex);
+        }
     });
 
     $(document).on("click", ".btnNav", function (event) {
@@ -40,10 +42,12 @@
         var type = $(this).attr("data-type");
         if (type == 0 && headIndex == 0) return false;
 
-        $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
-            $("#result").empty();
-            updateTable(data.Data);
-            $("#headIndex").val(data.HeadIndex);
+        $.post("/Admin/AjaxGetMembers", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (response) {
+            if (response != null) {
+                $("#result").empty();
+                updateTable(response.Data);
+                $("#headIndex").val(response.HeadIndex);
+            }
         });
     });
 

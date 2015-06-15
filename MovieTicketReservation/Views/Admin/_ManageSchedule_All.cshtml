@@ -1,1 +1,69 @@
-﻿<h2>Manage Schedules</h2>
+﻿<div class="col-sm-12">
+    <h2 class="separator">Tất cả suất chiếu</h2>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="5%">Movie ID</th>
+                    <th width="60%">Tên film</th>
+                    <th width="5%">Rạp</th>
+                    <th width="15">Ngày</th>
+                    <th width="10%">Giờ</th>
+                </tr>
+            </thead>
+            <tbody id="result">
+                <!-- Row template  -->
+            </tbody>
+        </table>
+    </div>
+    <nav class="col-sm-4 col-sm-offset-4">
+        <ul class="pager">
+            <li class="previous"><a href="#" class="btnNav" data-type="0"><span aria-hidden="true">&larr;</span> Older</a></li>
+            <li class="next"><a href="#" class="btnNav" data-type="1">Newer <span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
+    <input type="hidden" value="0" id="headIndex" />
+</div>
+
+<script>
+    $.post("/Admin/AjaxGetSchedules", { headIndex: 0, type: -1 }, function (response) {
+        if (response != null) {
+            $("#result").empty();
+            updateTable(response.Data);
+            $("#headIndex").val(response.HeadIndex);
+        }
+    });
+
+    $(document).on("click", ".btnNav", function (event) {
+        event.preventDefault();
+
+        var headIndex = $("#headIndex").val();
+        var type = $(this).attr("data-type");
+        if (type == 0 && headIndex == 0) return false;
+
+        $.post("/Admin/AjaxGetSchedules", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (response) {
+            if (response != null) {
+                $("#result").empty();
+                updateTable(response.Data);
+                $("#headIndex").val(response.HeadIndex);
+            }
+        });
+    });
+
+    function updateTable(data) {
+        $("#result").empty();
+        $.each(data, function (index, value) {
+            var htmlString =
+                "<tr>" +
+                    "<td>" + value.ID + "</td>" +
+                    "<td>" + value.MovieID + "</td>" +
+                    "<td>" + value.MovieTitle + "</td>" +
+                    "<td>" + value.Room + "</td>" +
+                    "<td>" + value.Date + "</td>" +
+                    "<td>" + value.Time + "</td>" +
+                "</tr>";
+            $("#result").append(htmlString);
+        });
+    }
+</script>

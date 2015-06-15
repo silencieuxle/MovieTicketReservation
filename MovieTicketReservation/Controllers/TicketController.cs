@@ -49,7 +49,8 @@ namespace MovieTicketReservation.Controllers {
                 /* Workaround to fix UNKNOWN ERROR that the reserved seats that associated with the booking header IS NOT CHECKED TO BE RESERVED
                  * Until we know the reason why, this is the only way
                 */
-                if (seats.Count() == 0) continue;
+                if (seats.Count() == 0)
+                    continue;
 
                 decimal total = 0;
                 foreach (var seat in seats) {
@@ -82,7 +83,8 @@ namespace MovieTicketReservation.Controllers {
         /// </summary>
         /// <returns>True if logged in, False if not</returns>
         private bool IsLoggedIn() {
-            if (Session["UID"] == null) return false;
+            if (Session["UID"] == null)
+                return false;
             return true;
         }
 
@@ -96,13 +98,16 @@ namespace MovieTicketReservation.Controllers {
             }
             var showingDate = scheduleRepository.GetScheduleByID(scheduleId).Date;
             var movieId = scheduleRepository.GetScheduleByID(scheduleId).Cine_MovieDetails.Movie.MovieID;
-            if (((DateTime)showingDate).Date < DateTime.Now.Date) return Redirect("/Movies");
+            if (((DateTime)showingDate).Date < DateTime.Now.Date)
+                return Redirect("/Movies");
             Session["Schedule"] = scheduleId;
-            Session["ReservedSeats"] = new List<int>();
             Session["MovieID"] = movieId;
+            ViewBag.TotalSeat = Session["ReservingSeats"] != null ? ((List<int>)Session["ReservingSeats"]).Count() : 0;
+            ViewBag.TotalPrice = GetTotalPrice();
             var seats = seatShowRepository.GetDetailsByScheduleID(scheduleId).ToList();
             bool canReserve = seats.Any(s => s.Reserved == false);
-            if (canReserve) return View(seats);
+            if (canReserve)
+                return View(seats);
             else {
                 ViewBag.ReturnURL = Request.RawUrl;
                 ViewBag.ReturnMessage = "Nhấn vào để chọn suất chiếu khác.";
@@ -115,11 +120,13 @@ namespace MovieTicketReservation.Controllers {
         [HttpGet]
         public ActionResult Confirm() {
             // Check if member is authenticated or the request is perform without logged in member
-            if (!IsLoggedIn()) return Redirect("/Home/");
-            if (Session["Schedule"] == null) return Redirect("/Home/");
+            if (!IsLoggedIn())
+                return Redirect("/Home/");
+            if (Session["Schedule"] == null)
+                return Redirect("/Home/");
 
             // Get needed info
-            var seats = (List<int>)Session["ReservedSeats"];
+            var seats = (List<int>)Session["ReservingSeats"];
             var scheduleId = (int)Session["Schedule"];
 
             // Check if any seat is reserve while current user is checking seats or there is no seat is created for this schedule
@@ -171,8 +178,10 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult CheckOut() {
             bool error = false;
             // Check if member is authenticated or the request is perform without logged in member
-            if (!IsLoggedIn()) return Redirect("/Home/");
-            if (Session["Schedule"] == null) return Redirect("/Home/");
+            if (!IsLoggedIn())
+                return Redirect("/Home/");
+            if (Session["Schedule"] == null)
+                return Redirect("/Home/");
 
             // Because the reason that SeatShowDetails can only be check for reserved when a booking header is created.
             // we need to create the booking header first
@@ -200,23 +209,26 @@ namespace MovieTicketReservation.Controllers {
                 return View("OutOfService");
             } else {
                 Session["Schedule"] = null;
-                Session["ReservedSeats"] = null;
+                Session["ReservingSeats"] = new List<int>();
                 return View();
             }
         }
 
         [HttpGet]
         public ActionResult CancelConfirmation() {
-            if (!IsLoggedIn()) return Redirect("/Home/");
-            if (Session["Schedule"] == null) return Redirect("/Home/");
+            if (!IsLoggedIn())
+                return Redirect("/Home/");
+            if (Session["Schedule"] == null)
+                return Redirect("/Home/");
             Session["Schedule"] = null;
-            Session["ReservedSeats"] = null;
+            Session["ReservingSeats"] = null;
             return Redirect("/Movies/");
         }
 
         [HttpGet]
         public ActionResult ChangeSeat(int bookingHeaderId) {
-            if (!IsLoggedIn()) return Redirect("/Home/");
+            if (!IsLoggedIn())
+                return Redirect("/Home/");
             return View();
         }
 
@@ -230,11 +242,18 @@ namespace MovieTicketReservation.Controllers {
         /// <param name="seatId">Seat id</param>
         [HttpPost]
         public ActionResult AjaxAddSeat(int seatId) {
-            if (Session["Schedule"] == null) return Redirect("/Home/");
-            ((List<int>)Session["ReservedSeats"]).Add(seatId);
-            var totalPrice = GetTotalPrice();
-            var totalSeat = ((List<int>)Session["ReservedSeats"]).Count();
-            return Json(new { TotalSeat = totalSeat, TotalPrice = totalPrice }, JsonRequestBehavior.AllowGet);
+            if (Session["Schedule"] == null)
+                return Redirect("/Home/");
+
+            var seatList = (List<int>)Session["ReservingSeats"];
+            if (seatList.Contains(seatId))
+                return Json(new { Success = false }, JsonRequestBehavior.AllowGet);
+            else {
+                ((List<int>)Session["ReservingSeats"]).Add(seatId);
+                var totalPrice = GetTotalPrice();
+                var totalSeat = ((List<int>)Session["ReservingSeats"]).Count();
+                return Json(new { Success = true, TotalSeat = totalSeat, TotalPrice = totalPrice }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>
@@ -243,11 +262,18 @@ namespace MovieTicketReservation.Controllers {
         /// <param name="seatId">Seat id</param>
         [HttpPost]
         public ActionResult AjaxRemoveSeat(int seatId) {
-            if (Session["Schedule"] == null) return Redirect("/Home");
-            ((List<int>)Session["ReservedSeats"]).Remove(seatId);
-            var totalPrice = GetTotalPrice();
-            var totalSeat = ((List<int>)Session["ReservedSeats"]).Count();
-            return Json(new { TotalSeat = totalSeat, TotalPrice = totalPrice }, JsonRequestBehavior.AllowGet);
+            if (Session["Schedule"] == null)
+                return Redirect("/Home");
+
+            var seatList = (List<int>)Session["ReservingSeats"];
+            if (!seatList.Contains(seatId))
+                return Json(new { Success = false }, JsonRequestBehavior.AllowGet);
+            else {
+                ((List<int>)Session["ReservingSeats"]).Remove(seatId);
+                var totalPrice = GetTotalPrice();
+                var totalSeat = ((List<int>)Session["ReservingSeats"]).Count();
+                return Json(new { Success = true, TotalSeat = totalSeat, TotalPrice = totalPrice }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>
@@ -282,7 +308,7 @@ namespace MovieTicketReservation.Controllers {
         /// </summary>
         /// <returns>Total price</returns>
         private decimal GetTotalPrice() {
-            var seats = (List<int>)Session["ReservedSeats"];
+            var seats = (List<int>)Session["ReservingSeats"];
             // Promotion?
             var promotion = promotionRepository.GetPromotionByScheduleID((int)Session["Schedule"]);
 
@@ -293,7 +319,8 @@ namespace MovieTicketReservation.Controllers {
             }
 
             // If we have promotion for this schedule
-            if (promotion != null) total -= (total * (decimal)promotion.PriceOff) / 100;
+            if (promotion != null)
+                total -= (total * (decimal)promotion.PriceOff) / 100;
             return total;
         }
 
@@ -316,7 +343,8 @@ namespace MovieTicketReservation.Controllers {
                 Total = GetTotalPrice()
             };
             bookingHeaderId = bookingRepository.InsertBookingHeader(bookingHeader);
-            if (bookingHeaderId != 0) return bookingHeaderId;
+            if (bookingHeaderId != 0)
+                return bookingHeaderId;
             return 0;
         }
 
@@ -326,14 +354,16 @@ namespace MovieTicketReservation.Controllers {
         /// <param name="bookingHeader">The booking header that is created previously.</param>
         /// <returns>Return -1 if no seat or failed to check, total seat if success</returns>
         private int CheckSeats(int bookingHeaderId) {
-            var seats = (List<int>)Session["ReservedSeats"];
+            var seats = (List<int>)Session["ReservingSeats"];
             var scheduleId = (int)Session["Schedule"];
             var totalSeat = seats.Count();
 
             foreach (var seat in seats) {
                 var seatShowDetails = seatShowRepository.GetDetailsByScheduleIDAndSeatID(scheduleId, seat);
-                if (seatShowDetails == null) return -1;
-                if ((bool)seatShowDetails.Reserved) return -2;
+                if (seatShowDetails == null)
+                    return -1;
+                if ((bool)seatShowDetails.Reserved)
+                    return -2;
                 seatShowDetails.Reserved = true;
                 seatShowDetails.Paid = false;
                 seatShowDetails.BookingHeaderID = bookingHeaderId;
@@ -352,7 +382,8 @@ namespace MovieTicketReservation.Controllers {
             var bookingHeader = bookingRepository.GetBookingHeaderByID(bookingHeaderId);
             if (bookingHeader != null) {
                 bookingHeader.Total = totalSeat;
-                if (bookingRepository.UpdateBookingHeader(bookingHeader) != 0) return totalSeat;
+                if (bookingRepository.UpdateBookingHeader(bookingHeader) != 0)
+                    return totalSeat;
             }
             return -1;
         }
@@ -363,11 +394,13 @@ namespace MovieTicketReservation.Controllers {
         /// <param name="scheduleId">The schedule that need to be checked</param>
         /// <returns>-1 if any seat that is reserved not found, 0 if the seat is reserved and 1 if success</returns>
         private int CheckSeatsForAvailability(int scheduleId) {
-            var seats = (List<int>)Session["ReservedSeats"];
+            var seats = (List<int>)Session["ReservingSeats"];
             foreach (var seat in seats) {
                 var currentSeat = seatShowRepository.GetDetailsByScheduleIDAndSeatID(scheduleId, seat);
-                if (currentSeat == null) return -1;
-                else if ((bool)currentSeat.Reserved) return 0;
+                if (currentSeat == null)
+                    return -1;
+                else if ((bool)currentSeat.Reserved)
+                    return 0;
             }
             return 1;
         }

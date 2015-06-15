@@ -1,7 +1,7 @@
 ﻿@using MovieTicketReservation.Models
 @model List<Seat_ShowDetails>
 @{
-    ViewBag.Title = "Reserve";
+    ViewBag.Title = "Đổi ghế đã đặt";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/ticket.css" rel="stylesheet" />
@@ -11,6 +11,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="col-panel">
+                <h2 class="separator">Đổi ghế</h2>
                 <div class="col-sm-4">
                     <h4>Lưu ý</h4>
                     <p>
@@ -31,28 +32,28 @@
                         @if (Model != null) {
                             foreach (var seat in Model) {
                                 if ((bool)seat.Reserved) {
-                                    <div class="col-xs-1 seat taken">
-                                        <a class="taken-seat" href="#">
-                                            <text>@seat.Seat.Name</text>
-                                            <img class="img-responsive" src="~/Content/Images/takenseat.png" alt="" />
-                                        </a>
-                                    </div>
-                                } else {
-                                    if (((List<int>)Session["ReservingSeats"]).Contains(seat.SeatID)) {
-                                        <div class="col-xs-1 seat">
-                                            <a class="avail-seat selected" href="#" data-seat="@seat.SeatID">
+                                    if (((List<int>)Session["ReservedSeats"]).Contains(seat.SeatID)) {
+                                        <div class="col-xs-1 seat avail-seat selected">
+                                            <a class="avail-seat" href="#" data-seat="@seat.SeatID">
                                                 <text>@seat.Seat.Name</text>
                                                 <img class="img-responsive" src="~/Content/Images/selectingseat.png" alt="" />
                                             </a>
                                         </div>
                                     } else {
-                                        <div class="col-xs-1 seat">
-                                            <a class="avail-seat" href="#" data-seat="@seat.SeatID">
+                                        <div class="col-xs-1 seat taken">
+                                            <a class="seat" href="#" data-seat="@seat.SeatID">
                                                 <text>@seat.Seat.Name</text>
-                                                <img class="img-responsive" src="~/Content/Images/availseat.png" alt="" />
+                                                <img class="img-responsive" src="~/Content/Images/takenseat.png" alt="" />
                                             </a>
                                         </div>
                                     }
+                                } else {
+                                    <div class="col-xs-1 seat">
+                                        <a class="avail-seat" href="#" data-seat="@seat.SeatID">
+                                            <text>@seat.Seat.Name</text>
+                                            <img class="img-responsive" src="~/Content/Images/availseat.png" alt="" />
+                                        </a>
+                                    </div>
                                 }
                             }
                         }
@@ -93,18 +94,23 @@
                         });
                     </script>
                     <div class="booking-info">
-                        <p>Số ghế đã chọn: <span id="totalSeat">@ViewBag.TotalSeat ghế</span></p>
-                        <p>Tổng tiền: <span id="totalPrice">@((int)ViewBag.TotalPrice) VND</span></p>
+                        <p>Số ghế đã chọn: <span id="totalSeat"></span></p>
+                        <p>Tổng tiền: <span id="totalPrice"></span></p>
                     </div>
                     <span>
-                        @Html.ActionLink("Xác nhận", "Confirm", "Ticket", null, new { @class = "btn btn-success", id = "btnConfirm" })
-                        @Html.ActionLink("Huỷ bỏ", "Index", "Movies", new { }, new { @class = "btn btn-danger" })
+                        <a class="btn btn-success" id="btnConfirm" href="#">Xác nhận đổi</a>
+                        @Html.ActionLink("Huỷ bỏ", "Index", "Movies", null, new { @class = "btn btn-danger" })
                     </span>
                 </div>
             </div>
         </div>
     </div>
     <script>
+        $(document).ready(function () {
+            $("#totalPrice").text();
+            $("#totalSeat").text(@(((List<int>)Session["ReservedSeats"]).Count()) + " ghế");
+        });
+
         $(".selected").click(function (e) {
             e.preventDefault();
         });
@@ -115,24 +121,20 @@
             var id = target.attr("data-seat");
             if (target.hasClass("selected")) {
                 $(this).find('img').attr("src", "../Content/Images/availseat.png");
-                $.post("/Ticket/AjaxRemoveSeat", { seatId: id }, function (data) {
+                $.post("/Ticket/AjaxRemoveSeat", { seatId: id, type: "old" }, function (data) {
                     $("#totalPrice").text(data.TotalPrice + " VND");
                     $("#totalSeat").text(data.TotalSeat + " ghế");
                     target.removeClass("selected");
                 });
             } else {
                 $(this).find('img').attr("src", "../Content/Images/selectingseat.png");
-                $.post("/Ticket/AjaxAddSeat", { seatId: id }, function (data) {
+                $.post("/Ticket/AjaxAddSeat", { seatId: id, type: "old" }, function (data) {
                     $("#totalPrice").text(data.TotalPrice + " VND");
                     $("#totalSeat").text(data.TotalSeat + " ghế");
                     target.addClass("selected");
                 });
             }
         });
-
-        function changeTotalProp() {
-
-        }
 
         $("#btnConfirm").click(function () {
             if ($(".selected").length == 0) {

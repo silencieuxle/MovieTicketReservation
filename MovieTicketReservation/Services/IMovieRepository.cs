@@ -11,6 +11,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Movie> GetCanBeScheduledMovies();
         IEnumerable<Movie> GetCommingMovies();
         IEnumerable<Movie> GetAvailableMovies();
+        IEnumerable<Movie> GetFutureMovies();
         IEnumerable<Movie> GetAllMovies();
         IEnumerable<Movie> GetMoviesByScheduleTypes(string[] scheduleTypes, IEnumerable<Movie> data = null);
         IEnumerable<Movie> GetMoviesByGenres(string[] genreIds, IEnumerable<Movie> data = null);
