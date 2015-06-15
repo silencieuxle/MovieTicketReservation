@@ -88,10 +88,7 @@
         </div>
         <div class="form-group">
             <label>Khuyến mãi</label>
-            <select class="form-control" id="selPromotion">
-                <option value="" disabled selected>Chọn</option>
-            </select>
-
+            <select class="form-control" id="selPromotion" name="selPromotion"></select>   
         </div>
         <span style="float: right">
             <button id="btnCancel" type="button" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
@@ -157,12 +154,13 @@
         var stringDate = $(this).val();
         $("#selPromotion").empty();
         $.post("/Admin/AjaxGetPromotionsByDate", { stringDate: stringDate }, function (response) {
-            $("#selPromotion").append("<option value='' disabled selected>Chọn</option>");
+            $("#selPromotion").append("<option value='' disabled>Chọn</option>");
             $.each(response, function (index, value) {
                 var htmlString = "";
                 if (value.Type == "Fixed") {
-                    htmlString = "<option selected disabled value='" + value.PromotionID + "'>" + value.Title + "</option>";
+                    htmlString = "<option selected value='" + value.PromotionID + "'>" + value.Title + "</option>";
                 } else {
+                    $("#selPromotion option:first").attr("selected", "selected");
                     htmlString = "<option value='" + value.PromotionID + "'>" + value.Title + "</option>";
                 }
                 $("#selPromotion").append(htmlString);

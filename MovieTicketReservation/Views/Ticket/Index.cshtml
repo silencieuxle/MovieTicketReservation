@@ -15,8 +15,10 @@
                 @if (Model.Count() != 0) {
                     foreach (var item in Model) {
                         <div class="item item-@item.BookingHeaderId">
-                            <div class="col-sm-3"><img class="img img-responsive" src="@item.ThumbnailUrl" alt="Alternate Text" /></div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
+                                <img class="img img-responsive" src="@item.ThumbnailUrl" alt="Alternate Text" />
+                            </div>
+                            <div class="col-sm-8">
                                 <div class="inline-child">
                                     <p class="detail-header">Film: </p>@item.MovieTitle
                                 </div>
@@ -26,9 +28,7 @@
                                 <div class="inline-child">
                                     <p class="detail-header">Địa điểm: </p>@Html.ActionLink(item.Cinema.Name, "Details", "Cinema",
                                         routeValues: new { cinemaID = item.Cinema.CinemaId }, htmlAttributes: null)
-                                </div>
-                                <div class="inline-child">
-                                    <p class="detail-header">Rạp: </p>@item.RoomName
+                                    @item.RoomName
                                 </div>
                                 <div class="inline-child">
                                     <p class="detail-header">Ngày giờ chiếu: </p>@item.ShowTime.Hours giờ @item.ShowTime.Minutes phút ngày @item.ShowDate.ToShortDateString()
@@ -37,39 +37,45 @@
                                     <p class="detail-header">Số ghế: </p>@item.Seats.Count()
                                 </div>
                                 <div class="inline-child">
-                                    <p class="detail-header">Tổng tiền </p>@item.Total
+                                    <p class="detail-header">Tổng tiền </p>@((int)item.Total) VND
                                 </div>
                                 <div class="inline-child">
                                     <p class="detail-header">Tình trạng: </p>
                                     @if (item.IsTaken == true) {
-                                        <text>Đã nhận</text>
+                                        <text>Đã nhận vé</text>
                                     } else {
-                                        <text>Chưa nhận</text>}
+                                        <text>Chưa nhận vé</text>
+                                    }
                                 </div>
                             </div>
-                            <div class="col-sm-3">
-                                <button id="btnCancelTicket" class="btn btn-danger" onclick="cancelReservation(@item.BookingHeaderId);">Huỷ vé</button>
-                                @Html.ActionLink("Huỷ ghế", "ChangeReservedSeats", "Ticket", new { bookingHeaderId = item.BookingHeaderId }, new { @class="btn btn-danger" })
-                            </div>
-                            <div class="table-responsive col-sm-12">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Hàng</th>
-                                            <th>Cột</th>
-                                            <th>Tên</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var seat in item.Seats) {
+                            <span>&nbsp;</span>
+                            <div class="col-sm-12">
+                                <div class="table-responsive col-sm-8">
+                                    <table class="table table-hover">
+                                        <thead>
                                             <tr>
-                                                <td>@seat.Substring(0, 1)</td>
-                                                <td>@seat.Substring(1, 2)</td>
-                                                <td>@seat</td>
+                                                <th>Hàng</th>
+                                                <th>Cột</th>
+                                                <th>Tên</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var seat in item.Seats) {
+                                                <tr>
+                                                    <td>@seat.Substring(0, 1)</td>
+                                                    <td>@seat.Substring(1, 2)</td>
+                                                    <td>@seat</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>&nbsp;</span>
+                                    <button style="width: 100%" id="btnCancelTicket" class="btn btn-danger" onclick="cancelReservation(@item.BookingHeaderId);">Huỷ vé</button>
+                                    <span>&nbsp;</span>
+                                    @Html.ActionLink("Huỷ ghế", "ChangeReservedSeats", "Ticket", new { bookingHeaderId = item.BookingHeaderId }, new { @class = "btn btn-danger", style = "width: 100%" })
+                                </div>
                             </div>
                         </div>
                     }
@@ -90,7 +96,7 @@
         if (!confirm("Bạn chắc chắn muốn huỷ đặt vé?")) {
             return false;
         }
-        $.post("/Ticket/AjaxCancelReservedSeats", { bookingHeaderId: parseInt(bookingHeaderId) }, function (data) {
+        $.post("/Ticket/AjaxCancelReservation", { bookingHeaderId: parseInt(bookingHeaderId) }, function (data) {
             if (data.Success == true) {
                 $("div.item-" + bookingHeaderId).remove();
                 alert("Đã huỷ vé thành công!");

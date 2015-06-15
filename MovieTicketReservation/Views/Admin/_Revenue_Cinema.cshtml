@@ -1,0 +1,50 @@
+﻿<div class="col-sm-12">
+    <h2 class="separator">Doanh thu theo rạp</h2>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Chọn rạp</label>
+            <select class="form-control" id="selCinema">
+                <option selected disabled value="-1">Chọn rạp</option>
+                @foreach (var item in ViewBag.Cinemas) {
+                    <option value="@item.CinemaID">@item.Name</option>
+                }
+            </select>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-desktop fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="cinemaRevenue"></div>
+                            <div>Doanh thu trong ngày</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="line-result">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div id="donut-result"></div>
+    </div>
+</div>
+
+<script>
+    $(document).on("change", "#selCinema", function () {
+        var cinemaId = $(this).val();
+        $.getJSON("/Admin/AjaxRevenue_Cinema", function (response) {
+            $("#cinemaRevenue").text(response.Today + " VND");
+            Morris.Line({
+                element: "line-result",
+                data: response.Line,
+                xkey: "date",
+                ykeys: ["total"],
+                labels: ["Lượt đặt"],
+                parseTime: false,
+            });
+        });
+    });
+</script>

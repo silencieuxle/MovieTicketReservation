@@ -52,6 +52,7 @@
     });
 
     function updateTable(data) {
+        if (data == null) return false;
         $("#result").empty();
         $.each(data, function (index, value) {
             var htmlString =

@@ -79,6 +79,8 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.EditionList = editionRepository.GetMovieEditions();
             ViewBag.CinemaList = cinemaReppsitory.GetCinemas();
             ViewBag.GenreList = genreRepository.GetMovieGenres();
+            ViewBag.AgeList = ageLimitationRepository.GetAgeLimitations();
+
             var result = movieRepository.GetMoviesByTitle(query).Select(m => new MovieExtendedModel {
                 Actors = m.Actors,
                 AgeLimitation = m.AgeLimitation,

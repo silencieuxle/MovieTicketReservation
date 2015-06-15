@@ -11,6 +11,7 @@ namespace MovieTicketReservation.Services {
         IEnumerable<Schedule> GetSchedulesByDate(DateTime date);
         IEnumerable<Schedule> GetCanBeReserveScheduleByMovieID(int movieId);
         IEnumerable<Schedule> GetSchedulesByRoomID(string roomId);
+        IEnumerable<Schedule> GetSchedulesByCinemaID(string cinemaId);
         IEnumerable<Schedule> GetSchedulesByCinemaIDAndMovieID(string cinemaId, int movieId);
         IEnumerable<Schedule> GetAvailableSchedules();
         Schedule GetScheduleByID(int scheduleId);

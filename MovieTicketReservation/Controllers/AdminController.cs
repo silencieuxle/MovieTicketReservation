@@ -93,71 +93,74 @@ namespace MovieTicketReservation.Controllers {
                 case "login":
                     Session.Abandon();
                     return Redirect("Login");
+
                 case "moviestats_overall":
                     ViewBag.TotalMovies = movieRepository.GetAllMovies().Count();
                     ViewBag.ShowingMovies = movieRepository.GetCanBeReservedMovies().Count();
                     ViewBag.CommingMovies = movieRepository.GetCommingMovies().Count();
                     ViewBag.FutureMovies = movieRepository.GetFutureMovies().Count();
                     return PartialView("_MovieStats_Overall");
-                case "moviestats_ticket":
-                    return PartialView("_MovieStats_Ticket");
+
                 case "ticketstats_overall":
                     return PartialView("_TicketStats_Overall");
+
                 case "ticketstats_movie":
                     var dates = new List<string>();
                     for (var date = DateTime.Now; date >= DateTime.Now.AddDays(-30); date = date.AddDays(-1)) {
                         dates.Add(date.ToShortDateString());
                     }
                     ViewBag.Dates = dates;
-
                     return PartialView("_TicketStats_CanBeReservedMovies");
+
                 case "systemstats":
                     return PartialView("_SystemStats");
+
                 case "managemovie_all":
                     return PartialView("_ManageMovie_All");
+
                 case "manageschedule_all":
                     return PartialView("_ManageSchedule_All");
-                case "manageschedule_edit":
-                    return PartialView("_ManageSchedule_Edit");
+
                 case "manageschedule_add":
                     string cinemaId = (string)Session["AdminSection"];
                     var movies = movieRepository.GetCanBeScheduledMovies()
                         .Join(cinemaMovieRepository.GetDetailsByCinemaID((string)Session["AdminSection"]), m => m.MovieID, d => d.MovieID, (m, d) => new { Movie = m })
                         .Select(x => x.Movie).ToList();
-
                     ViewBag.Movies = movies;
                     ViewBag.Rooms = roomRepository.GetRoomsByCinemaID(cinemaId);
                     ViewBag.Showtimes = showtimeRepository.GetShowtimes();
-
                     var promotion = promotionRepository.GetFixedDayOfWeekPromotionByDay((int)DateTime.Now.DayOfWeek);
-
                     if (promotion != null) {
                         ViewBag.Promotion = promotion;
                     } else {
                         ViewBag.Promotions = promotionRepository.GetActiveDuratedPromotions();
                     }
-
                     return PartialView("_ManageSchedule_Create");
+
                 case "managemember_all":
                     return PartialView("_ManageMember_All");
+
                 case "managemember_add":
                     return PartialView("_ManageMember_Add");
+
                 case "managemember_edit":
                     return PartialView("_ManageMember_Edit", memberRepository.GetMemberByID(Convert.ToInt32(param)));
+
                 case "promotion_all":
-                    return PartialView("_Promotion_All");
-                case "promotion_add":
-                    return PartialView("_Promotion_Add");
-                case "promotion_edit":
-                    return PartialView("_Promotion_Edit");
+                    return PartialView("_ManagePromotion_All");
+
                 case "managenews_all":
                     return PartialView("_ManageNews_All");
+
                 case "managenews_add":
                     return PartialView("_ManageNews_Add");
-                case "managenews_edit":
-                    return PartialView("_ManageNews_Edit");
+
+                case "revenue":
+                    ViewBag.Cinemas = cinemaRepository.GetCinemas();
+                    return PartialView("_Revenue_Cinema");
+
                 default:
-                    return View("Index");
+                    return Redirect("Index");
             }
         }
 
@@ -196,6 +199,7 @@ namespace MovieTicketReservation.Controllers {
                 ModelState.AddModelError("", "Tài khoản không có quyền hạn truy cập vào khu vực này!");
                 return View(loginModel);
             }
+            Session["ReservingSeats"] = new List<int>();
             Session["UID"] = user.MemberID;
             Session["Role"] = admin.RoleID;
             Session["AdminSection"] = admin.Section;
@@ -341,7 +345,7 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult AjaxGetSchedules(int headIndex, int type) {
-            var result = scheduleRepository.GetSchedules();
+            var result = scheduleRepository.GetSchedulesByCinemaID((string)Session["AdminSection"]);
             if (headIndex >= result.Count()) {
                 return null;
             }
@@ -482,9 +486,9 @@ namespace MovieTicketReservation.Controllers {
                 int result = 0;
                 // First showtime
                 int currentShowTimeId = firstShowtimeId;
+                DateTime showdate = DateTime.Parse(date);
 
                 for (int i = 1; i <= numberOfScheduleToCreate; i++) {
-                    DateTime showdate = DateTime.Parse(date);
                     var currentShowTime = (TimeSpan)showtimeRepository.GetShowtimeByID(currentShowTimeId).StartTime;
 
                     int cineMovieID = cinemaMovieRepository.GetDetailsByCinemaIDAndMovieID((string)Session["AdminSection"], movieId).DetailsID;
@@ -958,20 +962,33 @@ namespace MovieTicketReservation.Controllers {
 
         }
 
-        //public ActionResult AjaxTicketStat_OverallByDate(string stringDate) {
-        //    var date = DateTime.Parse(stringDate);
-        //    var bookingHeaders = bookingRepository.GetBookingHeadersByDate(date).ToList();
-        //}
-
         public ActionResult AjaxRevenue_OverallStat_Week() {
             int today = (int)DateTime.Now.DayOfWeek;
             var result = bookingRepository.GetBookingHeaders()
                 .Where(b => ((DateTime)b.ReservedTime).Date >= DateTime.Now.AddDays(-today).Date && ((DateTime)b.ReservedTime).Date <= DateTime.Now.Date).ToList()
-                .GroupBy(b => ((DateTime)b.ReservedTime).Date, (date, data) => new { 
+                .GroupBy(b => ((DateTime)b.ReservedTime).Date, (date, data) => new {
                     date = date.ToShortDateString(),
-                    total = (int)data.Sum(x => x.Total)
+                    total = (int)data.Sum(x => x.Seat_ShowDetails.Sum(d => d.TicketClass.Price))
                 });
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AjaxRevenue_Cinema(string cinemaId) {
+            int today = (int)DateTime.Now.DayOfWeek;
+
+            var todayResult = bookingRepository.GetBookingHeadersByDate(DateTime.Now)
+                .Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinemaId)
+                .Sum(b => b.Seat_ShowDetails.Sum(d => d.TicketClass.Price));
+
+            var lineResult = bookingRepository.GetBookingHeaders()
+                .Where(b => ((DateTime)b.ReservedTime).Date >= DateTime.Now.AddDays(-today).Date &&
+                    ((DateTime)b.ReservedTime).Date <= DateTime.Now.Date &&
+                    b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinemaId).ToList()
+                .GroupBy(b => ((DateTime)b.ReservedTime).Date, (date, data) => new {
+                    date = date.ToShortDateString(),
+                    total = (int)data.Sum(x => x.Seat_ShowDetails.Sum(d => d.TicketClass.Price))
+                });
+            return Json(new { Today = todayResult, Line = lineResult }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

@@ -75,7 +75,7 @@ namespace MovieTicketReservation.Controllers {
                 };
                 ticketModels.Add(ticketModel);
             }
-            return View(ticketModels);
+            return View(ticketModels.OrderByDescending(t => t.ReservedDate).ToList());
         }
 
         /// <summary>
@@ -218,10 +218,8 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult CancelConfirmation() {
             if (!IsLoggedIn())
                 return Redirect("/Home/");
-            if (Session["Schedule"] == null)
-                return Redirect("/Home/");
             Session["Schedule"] = null;
-            Session["ReservingSeats"] = null;
+            Session["ReservingSeats"] = new List<int>();
             return Redirect("/Movies/");
         }
 
@@ -299,6 +297,13 @@ namespace MovieTicketReservation.Controllers {
             }
             return Json(new { Success = false, ErrorMessage = "Booking header not found." }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public ActionResult AjaxCleanSession() {
+            Session["ReservingSeats"] = new List<int>();
+            Session["Schedule"] = null;
+            return null;
+        }
         #endregion
 
         #region Private methods
@@ -314,8 +319,10 @@ namespace MovieTicketReservation.Controllers {
 
             // Calculate total price for current booking header
             decimal total = 0;
-            foreach (var seat in seats) {
-                total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
+            if (seats.Count() != 0) {
+                foreach (var seat in seats) {
+                    total += (decimal)seatShowRepository.GetDetailsBySeatID(seat).TicketClass.Price;
+                }
             }
 
             // If we have promotion for this schedule

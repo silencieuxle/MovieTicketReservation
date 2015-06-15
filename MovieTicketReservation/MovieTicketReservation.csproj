@@ -517,14 +517,11 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Views\Admin\_ManageNews_Edit.cshtml" />
-    <Content Include="Views\Admin\_TicketStats_Room.cshtml" />
     <Content Include="Views\Admin\_ManageSchedule_Create.cshtml" />
-    <Content Include="Views\Admin\_ManageSchedule_Edit.cshtml" />
     <Content Include="Views\Admin\_ManageMember_All.cshtml" />
     <Content Include="Views\Admin\_ManageMember_Add.cshtml" />
     <Content Include="Views\Admin\_ManageMember_Edit.cshtml" />
-    <Content Include="Views\Admin\_Promotion_All.cshtml" />
+    <Content Include="Views\Admin\_ManagePromotion_All.cshtml" />
     <Content Include="Views\Admin\ManagePromotion_Add.cshtml" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\morris.min.js" />
@@ -636,12 +633,8 @@
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\_MovieStats_Overall.cshtml" />
-    <Content Include="Views\Admin\_MovieStats_View.cshtml" />
-    <Content Include="Views\Admin\_MovieStats_Ticket.cshtml" />
     <Content Include="Views\Admin\_TicketStats_Overall.cshtml" />
     <Content Include="Views\Admin\_TicketStats_CanBeReservedMovies.cshtml" />
-    <Content Include="Views\Admin\_TicketStats_Showtime.cshtml" />
-    <Content Include="Views\Admin\_SystemStats.cshtml" />
     <Content Include="Views\Admin\_ManageMovie_All.cshtml" />
     <Content Include="Views\Admin\_ManageSchedule_All.cshtml" />
     <Content Include="Views\Ticket\Confirm.cshtml" />
@@ -662,10 +655,10 @@
     <Content Include="Views\Admin\ManageNews_Add.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
     <Content Include="Views\Ticket\OutOfService.cshtml" />
-    <Content Include="Views\Admin\_ManageMovie_Cine.cshtml" />
     <Content Include="Views\Admin\ManageMovie_Add.cshtml" />
     <Content Include="Views\User\WatchedMovies.cshtml" />
     <Content Include="Views\Ticket\ChangeReservedSeats.cshtml" />
+    <Content Include="Views\Admin\_Revenue_Cinema.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

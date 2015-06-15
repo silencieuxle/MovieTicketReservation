@@ -213,13 +213,16 @@ namespace MovieTicketReservation.Services.MovieService {
         #region Private methods
 
         private int GetScheduleType(Movie movie) {
-            var beginShowDate = (DateTime)movie.BeginShowDate;
+            var beginShowDate = ((DateTime)movie.BeginShowDate).Date;
             var duration = (int)movie.Duration;
 
             if (beginShowDate.AddDays(duration) >= DateTime.Now) {
-                if (beginShowDate <= DateTime.Now && DateTime.Now <= beginShowDate.AddDays(duration)) return 1; //Now showing Movie
-                if (beginShowDate <= DateTime.Now.AddDays(7) && beginShowDate > DateTime.Now) return 2; //Coming Soon Movies
-                if (beginShowDate > DateTime.Now.AddDays(7)) return 3; // Future Movies
+                if (beginShowDate <= DateTime.Now.Date && DateTime.Now.Date <= beginShowDate.AddDays(duration))
+                    return 1; //Now showing Movie
+                else if (beginShowDate <= DateTime.Now.AddDays(14).Date && beginShowDate > DateTime.Now.Date)
+                    return 2; //Coming Soon Movies
+                else if (beginShowDate > DateTime.Now.AddDays(14).Date)
+                    return 3; // Future Movies
             }
             return 0; // Ended Movies
         }

@@ -62,29 +62,33 @@
                             <li>
                                 <a href="/Admin/"><i class="fa fa-dashboard fa-fw"></i> Bảng điều khiển</a>
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Thống kê<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="#" class="ajaxLink" id="moviestats_overall"> Thống kê film</a>
-                                    </li>
-                                    <li>
-                                        <a href=""> Tình trạng đặt vé<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-second-level">
-                                            <li><a href="#" class="ajaxLink" id="ticketstats_overall"><i class="fa fa-arrow-right fa-fw"></i> Thống kê chung</a></li>
-                                            <li><a href="#" class="ajaxLink" id="ticketstats_movie"><i class="fa fa-arrow-right fa-fw"></i> Các film đang chiếu</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
+                            
                             @if ((int)Session["Role"] == 1) {
+                                <li>
+                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Thống kê<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="#" class="ajaxLink" id="revenue">Doanh thu</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="ajaxLink" id="moviestats_overall"> Thống kê film</a>
+                                        </li>
+                                        <li>
+                                            <a href=""> Tình trạng đặt vé<span class="fa arrow"></span></a>
+                                            <ul class="nav nav-second-level">
+                                                <li><a href="#" class="ajaxLink" id="ticketstats_overall"><i class="fa fa-arrow-right fa-fw"></i> Thống kê chung</a></li>
+                                                <li><a href="#" class="ajaxLink" id="ticketstats_movie"><i class="fa fa-arrow-right fa-fw"></i> Các film đang chiếu</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
+                                </li>
                                 <li>
                                     <a href="#"><i class="fa fa-film"></i> Quản lý<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li><a href="#" class="ajaxLink" id="managemovie_all"><i class="fa fa-arrow-right fa-fw"></i> Tất cả film</a></li>
                                         <li><a href="/Admin/ManageMovie_Add"><i class="fa fa-arrow-right fa-fw"></i> Thêm film mới</a></li>
-                                        <li><a href="#" class="ajaxLink" id="managemovie_add"><i class="fa fa-arrow-right fa-fw"></i> Film ở rạp</a></li>
+                                        @*<li><a href="#" class="ajaxLink" id="managemovie_add"><i class="fa fa-arrow-right fa-fw"></i> Film ở rạp</a></li>*@
                                     </ul>
                                 </li>
                                 <li>

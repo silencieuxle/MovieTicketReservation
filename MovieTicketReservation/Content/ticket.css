@@ -48,3 +48,10 @@
 .booking-info p {
     font-weight: 600;
 }
+
+.item {
+    border-bottom: 1px dashed gray;
+    padding-bottom:20px;
+    margin-bottom: 20px;
+    overflow: hidden
+}

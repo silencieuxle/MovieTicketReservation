@@ -4,6 +4,10 @@ html, body {
     height: 100%;
 }
 
+.detail-header {
+    font-weight: 600 !important;
+}
+
 .inline-child {
     padding-bottom: 15px;
 }
