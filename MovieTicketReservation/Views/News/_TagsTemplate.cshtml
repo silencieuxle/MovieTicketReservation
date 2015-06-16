@@ -2,7 +2,7 @@
 @model List<Tag>
 
 @foreach (var item in Model) {
-    <a href="javascript;" class="tag" data-tag="@item.TagID">
+    <a href="/News/GetNewsByTagID?tagId=@item.TagID" class="tag" data-tag="@item.TagID">
         <i class="badge">@item.Name</i>
     </a>
 }

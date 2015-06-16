@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MovieTicketReservation.Models;
+@{
     ViewBag.Title = "Admin CP";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -104,6 +105,35 @@
     <h3 class="separator">Doanh thu trong tuần toàn hệ thống</h3>
     <div id="line-result">
 
+    </div>
+</div>
+<div class="col-sm-12">
+    <h2 class="separator">Lượt đặt trong ngày toàn hệ thống</h2>
+    <div class="table-responsive" style="overflow-y: scroll; max-height: 500px;">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="25%">Email</th>
+                    <th width="30%">Họ tên</th>
+                    <th width="10%">Rạp</th>
+                    <th width="15%">Film</th>
+                    <th width="15%">Số lượng</th>
+                </tr>
+            </thead>
+            <tbody id="result">
+                @foreach (BookingHeader item in ViewBag.BookingHeaders) {
+                    <tr>
+                        <td>@item.HeaderID</td>
+                        <td>@item.Member.Email</td>
+                        <td>@item.Member.Firstname @item.Member.Lastname</td>
+                        <td>@item.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.Cinema.Name</td>
+                        <td>@item.Movie.Title</td>
+                        <td>@item.Total</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

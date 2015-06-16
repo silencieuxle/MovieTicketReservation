@@ -92,7 +92,7 @@
         </div>
         <span style="float: right">
             <button id="btnCancel" type="button" style="margin-right: 50px;" class="btn btn-danger">Huỷ</button>
-            <button id="btnCreate" type="button" class="btn btn-success">Thêm</button>
+            <button id="btnCreate" type="submit" class="btn btn-success">Thêm</button>
         </span>
     </form>
 </div>
@@ -112,8 +112,8 @@
     $("#autoCreate").hide();
     $("#manuallyCreate").show();
 
-    function updateTable(movieId) {
-        $.post("/Admin/AjaxGetAvailableSchedulesByMovieID", { movieId: movieId }, function (data) {
+    function updateTable(date) {
+        $.post("/Admin/AjaxGetAvailableSchedulesByDate", { stringDate: date }, function (data) {
             $("#result").empty();
             if (data.size == 0) {
                 var htmlString = "<tr><td colspan='6'>Không tìm thấy suất chiếu nào.</td></tr>";
@@ -147,7 +147,6 @@
                 $("#selDate").append(htmlString);
             });
         });
-        updateTable(movieId);
     });
 
     $(document).on("change", "#selDate", function () {
@@ -166,6 +165,7 @@
                 $("#selPromotion").append(htmlString);
             });
         });
+        updateTable(stringDate);
     });
 
     $(document).on("click", "#btnCancel", function () {
@@ -188,7 +188,8 @@
         $("#manuallyCreate").slideUp();
     });
 
-    $(document).on("click", "#btnCreate", function () {
+    $(document).on("click", "#btnCreate", function (e) {
+        e.preventDefault();
         var movieId = $("#selMovie").val();
         var roomId = $("#selRoom").val();
         var date = $("#selDate").val();
@@ -224,7 +225,7 @@
                     } else {
                         alert(response.ErrorMessage);
                     }
-                    updateTable(movieId);
+                    updateTable(date);
                 }
             );
         } else {
@@ -236,6 +237,12 @@
                 alert("Phải nhập số suất chiếu cần tạo");
                 return false;
             }
+
+            if (numberOfSchedule <= 0) {
+                alert("Số suất chiếu không được nhỏ hơn hoặc bằng 0!");
+                return false;
+            }
+
             $('#loadingImage').modal('show');
             $.post("/Admin/AjaxAddScheduleAuto",
                 {
@@ -253,10 +260,10 @@
                     } else {
                         alert(response.ErrorMessage);
                     }
-                    updateTable(movieId);
+                    updateTable(date);
                 }
             );
         }
-        updateTable(movieId);
+        updateTable(date);
     });
 </script>

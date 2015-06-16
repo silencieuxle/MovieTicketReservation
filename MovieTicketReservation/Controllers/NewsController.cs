@@ -38,7 +38,7 @@ namespace MovieTicketReservation.Controllers {
         }
 
         public ActionResult GetNewsByTagID(int tagId) {
-            var news = newsRepository.GetNewsByTag(tagId);
+            var news = newsRepository.GetNewsByTag(tagId).ToList();
             return PartialView("_NewsTemplate", news);
         }
 

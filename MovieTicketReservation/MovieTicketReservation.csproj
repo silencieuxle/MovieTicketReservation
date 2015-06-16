@@ -659,6 +659,7 @@
     <Content Include="Views\User\WatchedMovies.cshtml" />
     <Content Include="Views\Ticket\ChangeReservedSeats.cshtml" />
     <Content Include="Views\Admin\_Revenue_Cinema.cshtml" />
+    <Content Include="Views\Admin\_TicketStat_Cinema.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

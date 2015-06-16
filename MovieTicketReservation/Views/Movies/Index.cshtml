@@ -126,12 +126,3 @@
         </script>
     </div>
 </div>
-<script>
-    $(".btn-schedule").click(function () {
-        var id = $(this).attr("data-id");
-        $.get("/Movies/AjaxGetScheduleViewByMovieId", { movieId: id }, function (data) {
-            $("body").remove("#modalSchedule");
-            $(data).appendTo("body").modal("show");
-        });
-    });
-</script>

@@ -28,7 +28,7 @@
 
 <script>
     $.post("/Admin/AjaxGetMembers", { headIndex: 0, type: -1 }, function (response) {
-        if (response != null) {
+        if (response.Data.length != 0) {
             $("#result").empty();
             updateTable(response.Data);
             $("#headIndex").val(response.HeadIndex);

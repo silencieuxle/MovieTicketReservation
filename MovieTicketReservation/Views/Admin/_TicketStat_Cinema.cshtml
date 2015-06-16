@@ -1,0 +1,75 @@
+﻿<div class="col-sm-12">
+    <h2 class="separator">Thống kê lượt đặt vé theo rạp</h2>
+    
+    <div class="col-sm-6">
+        <h4><i class="fa fa-caret-right"></i> Theo % tổng lượt đặt</h4>
+        <select class="form-control" id="selCinema">
+            <option value="-1" disabled selected>Chọn rạp</option>
+            @foreach (var item in ViewBag.Cinemas) {
+                <option value="@item.CinemaID">@item.Name</option>
+            }
+        </select>
+        <div id="donutChart">
+
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h4><i class="fa fa-caret-right"></i> Chi tiết theo phim</h4>
+        <div class="table-responsive" style="max-height: 400px; overflow-y: scroll">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>Tên film</th>
+                        <th>Số lượt</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody id="details"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+<script>
+    $(document).on("change", "#selCinema", function () {
+        var cinemaId = $(this).val();
+        $.post("/Admin/AjaxTicketStat_OverallStats_Cinema", { cinemaId: cinemaId }, function (data) {
+            $("#donutChart").empty();
+            Morris.Donut({
+                element: 'donutChart',
+                data: data
+            });
+
+            // Get total booking header
+            var total = 0;
+            for (i = 0; i < data.length; i++) {
+                total += parseInt(data[i].value);
+            }
+
+            $("#details").empty();
+            $.each(data, function (index, value) {
+                var stringHtml = "<tr><td>" + value.label + "</td><td>" + value.value + "</td><td>" + (value.value / total) * 100 + "%</td>";
+                $("#details").append(stringHtml);
+            });
+        });
+    });
+
+    $.post("/Admin/AjaxTicketStat_OverallStats_Cinema", { cinemaId : "CINE1" },function (data) {
+        Morris.Donut({
+            element: 'donutChart',
+            data: data
+        });
+
+        // Get total booking header
+        var total = 0;
+        for (i = 0; i < data.length; i++) {
+            total += parseInt(data[i].value);
+        }
+
+        $("#details").empty();
+        $.each(data, function (index, value) {
+            var stringHtml = "<tr><td>" + value.label + "</td><td>" + value.value + "</td><td>" + (value.value / total) * 100 + "%</td>";
+            $("#details").append(stringHtml);
+        });
+    });
+</script>

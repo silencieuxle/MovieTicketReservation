@@ -27,23 +27,24 @@
 </div>
 
 <script>
-    $.post("/Admin/AjaxGetPromotions", { headIndex: 0, type: -1 }, function (data) {
+    $.post("/Admin/AjaxGetPromotions", { headIndex: 0, type: -1 }, function (response) {
         $("#result").empty();
-        updateTable(data.Data);
-        $("#headIndex").val = data.HeadIndex
+        updateTable(response.Data);
+        $("#headIndex").val = response.HeadIndex
     });
 
     $(document).on("click", ".btnNav", function (event) {
         event.preventDefault();
-
         var headIndex = $("#headIndex").val();
         var type = $(this).attr("data-type");
-        if (type == 0 && headIndex == 0) return false;
+        if (parseInt(type) == 0 && parseInt(headIndex) == 0) return false;
 
-        $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (data) {
-            $("#result").empty();
-            updateTable(data.Data);
-            $("#headIndex").val(data.HeadIndex);
+        $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: parseInt(type) }, function (response) {
+            if (response.Data.length != 0) {
+                $("#result").empty();
+                updateTable(response.Data);
+                $("#headIndex").val(response.HeadIndex);
+            }
         });
     });
 
@@ -54,9 +55,9 @@
         $.post("/Admin/AjaxDeletePromotion", { promotionId: id }, function (data) {
             if (data.Success == true) {
                 alert("Đã xoá khuyến mãi!");
-                $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: 0 }, function (data) {
-                    updateTable(data.Data);
-                    $("#headIndex").val(data.HeadIndex);
+                $.post("/Admin/AjaxGetPromotions", { headIndex: parseInt(headIndex), type: -1 }, function (response) {
+                    updateTable(response.Data);
+                    $("#headIndex").val(response.HeadIndex);
                 });
             } else {
                 alert("Có lỗi xảy ra, không thể xoá khuyến mãi này, hãy chắc rằng không có suất chiếu nào đang sử dụng khuyến mãi này.");

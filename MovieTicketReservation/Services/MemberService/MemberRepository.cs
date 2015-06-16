@@ -19,6 +19,10 @@ namespace MovieTicketReservation.Services.MemberService {
             return context.Members.ToList();
         }
 
+        public IEnumerable<Member> GetAllUsers() {
+            return context.Members.Where(m => m.AdminAccounts.Count() == 0).ToList();
+        }
+
         public Member GetMemberByID(int memberId) {
             return context.Members.Find(memberId);
         }

@@ -27,6 +27,14 @@ namespace MovieTicketReservation.Services.BookingHeaderService {
             return context.BookingHeaders.ToList().Where(b => ((DateTime)b.ReservedTime).Date == date.Date);
         }
 
+        public IEnumerable<BookingHeader> GetBookingHeadersByMonth(int month, int year) {
+            return context.BookingHeaders.ToList().Where(b => ((DateTime)b.ReservedTime).Month == month && ((DateTime)b.ReservedTime).Year == year);
+        }
+
+        public IEnumerable<BookingHeader> GetBookingHeadersByYear(int year) {
+            return context.BookingHeaders.ToList().Where(b => ((DateTime)b.ReservedTime).Year == year);
+        }
+
         public IEnumerable<BookingHeader> GetBookingHeadersByMovieID(int movieId) {
             return context.BookingHeaders.Where(b => b.MovieID == movieId).ToList();
         }

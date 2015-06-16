@@ -33,11 +33,62 @@
     </div>
     <div class="col-sm-6">
         <h3><i class="fa fa-caret-right"></i> Doanh thu toàn hệ thống</h3>
+        <select class="form-control" id="selRevenue">
+            <option selected value="1">Doanh thu theo tuần</option>
+            <option value="2">Doanh thu theo tháng</option>
+            <option value="3">Doanh thu theo năm</option>
+        </select>
         <div id="bar-result"></div>
     </div>
 </div>
 
 <script>
+    $(document).on("change", "#selRevenue", function () {
+        var type = parseInt($(this).val());
+        switch (type) {
+            case 1:
+                $.get("/Admin/AjaxRevenue_OverallStat_AllCinemasWeek", function (response) {
+                    $("#bar-result").empty();
+                    Morris.Bar({
+                        element: "bar-result",
+                        data: response,
+                        xkey: "date",
+                        ykeys: ["a", "b", "c", "d"],
+                        labels: ["Nguyễn Trãi (VND)", "Nguyễn Du (VND)", "Nguyễn Hồng Đào (VND)", "Kinh Dương Vương (VND)"],
+                        parseTime: false
+                    });
+                });
+                break;
+            case 2:
+                $.get("/Admin/AjaxRevenue_OverallStat_AllCinemasMonth", function (response) {
+                    $("#bar-result").empty();
+                    Morris.Bar({
+                        element: "bar-result",
+                        data: response,
+                        xkey: "month",
+                        ykeys: ["a", "b", "c", "d"],
+                        labels: ["Nguyễn Trãi (VND)", "Nguyễn Du (VND)", "Nguyễn Hồng Đào (VND)", "Kinh Dương Vương (VND)"],
+                        parseTime: false
+                    });
+                });
+                break;
+            case 3:
+                $.get("/Admin/AjaxRevenue_OverallStat_AllCinemasYear", function (response) {
+                    $("#bar-result").empty();
+                    Morris.Bar({
+                        element: "bar-result",
+                        data: response,
+                        xkey: "year",
+                        ykeys: ["a", "b", "c", "d"],
+                        labels: ["Nguyễn Trãi (VND)", "Nguyễn Du (VND)", "Nguyễn Hồng Đào (VND)", "Kinh Dương Vương (VND)"],
+                        parseTime: false
+                    });
+                });
+                break;
+            default: return false;
+        }
+    });
+
     $(document).on("change", "#selCinema", function () {
         var cinemaId = $(this).val();
         $.getJSON("/Admin/AjaxRevenue_Cinema", { cinemaId: cinemaId }, function (response) {
@@ -49,21 +100,19 @@
                 xkey: "date",
                 ykeys: ["total"],
                 labels: ["Tổng tiền (VND)"],
-                parseTime: false,
-                resize: true
+                parseTime: false
             });
         });
     });
 
-    $.get("/Admin/AjaxRevenue_OverallStat_All", function (response) {
+    $.get("/Admin/AjaxRevenue_OverallStat_AllCinemasWeek", function (response) {
         Morris.Bar({
             element: "bar-result",
             data: response,
             xkey: "date",
             ykeys: ["a", "b", "c", "d"],
             labels: ["Nguyễn Trãi (VND)", "Nguyễn Du (VND)", "Nguyễn Hồng Đào (VND)", "Kinh Dương Vương (VND)"],
-            parseTime: false,
-            resize: true
+            parseTime: false
         });
     });
 </script>

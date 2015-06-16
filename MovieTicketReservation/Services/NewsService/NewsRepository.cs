@@ -21,7 +21,8 @@ namespace MovieTicketReservation.Services.NewsRepository {
         }
 
         public IEnumerable<News> GetNewsByTag(int tagId) {
-            return context.News.Where(n => n.Tags.Contains(new Tag { TagID = tagId }));
+            var tag = context.Tags.Find(tagId);
+            return context.News.Where(n => n.Tags.Contains(tag));
         }
 
         public IEnumerable<News> GetNewsByPostedDate(DateTime date) {

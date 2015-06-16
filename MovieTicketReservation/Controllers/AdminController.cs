@@ -79,6 +79,7 @@ namespace MovieTicketReservation.Controllers {
             ViewBag.TotalMembers = memberRepository.GetAllMembers().Count();
             ViewBag.TotalBookings = bookingRepository.GetBookingHeadersByDate(DateTime.Now).Count();
             ViewBag.ShowingMovies = movieRepository.GetCanBeReservedMovies().Count();
+            ViewBag.BookingHeaders = bookingRepository.GetBookingHeadersByDate(DateTime.Now.Date);
             var bookingHeaders = bookingRepository.GetBookingHeadersByDate(DateTime.Now.Date);
             long total = 0;
             foreach (var item in bookingHeaders) {
@@ -113,8 +114,9 @@ namespace MovieTicketReservation.Controllers {
                     ViewBag.Dates = dates;
                     return PartialView("_TicketStats_CanBeReservedMovies");
 
-                case "systemstats":
-                    return PartialView("_SystemStats");
+                case "ticketstats_cinema":
+                    ViewBag.Cinemas = cinemaRepository.GetCinemas();
+                    return PartialView("_TicketStat_Cinema");
 
                 case "managemovie_all":
                     return PartialView("_ManageMovie_All");
@@ -237,9 +239,9 @@ namespace MovieTicketReservation.Controllers {
 
         [HttpPost]
         public ActionResult AjaxGetMembers(int headIndex, int type) {
-            var result = memberRepository.GetAllMembers();
-            if (headIndex >= result.Count()) {
-                return null;
+            var result = memberRepository.GetAllUsers();
+            if (headIndex >= result.Count() || (type == 0 && headIndex == 0)) {
+                return Json(new { Data = new List<object>(), HeadIndex = 0 }, JsonRequestBehavior.AllowGet);
             }
             int index = 0;
             switch (type) {
@@ -347,8 +349,8 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetSchedules(int headIndex, int type) {
             var result = scheduleRepository.GetSchedulesByCinemaID((string)Session["AdminSection"]);
-            if (headIndex >= result.Count()) {
-                return null;
+            if (headIndex >= result.Count() || (type == 0 && headIndex == 0)) {
+                return Json(new { Data = new List<object>(), HeadIndex = 0 }, JsonRequestBehavior.AllowGet);
             }
             int index = 0;
             switch (type) {
@@ -377,6 +379,22 @@ namespace MovieTicketReservation.Controllers {
                 }),
                 HeadIndex = index
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AjaxGetAvailableSchedulesByDate(string stringDate) {
+            if (IsCinema()) {
+                DateTime date = DateTime.Parse(stringDate);
+                var result = scheduleRepository.GetAvailableSchedules().Where(s => ((DateTime)s.Date).Date == date.Date && s.Cine_MovieDetails.CinemaID == (string)Session["AdminSection"]).Select(s => new {
+                    ScheduleID = s.ScheduleID,
+                    MovieTitle = s.Cine_MovieDetails.Movie.Title,
+                    Date = ((DateTime)s.Date).ToShortDateString(),
+                    Time = Helper.ToTimeString((TimeSpan)s.ShowTime.StartTime),
+                    Room = s.Room.Name
+                }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            } else {
+                return null;
+            }
         }
 
         [HttpPost]
@@ -474,6 +492,9 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxAddScheduleAuto(int movieId, string roomId, string date, int firstShowtimeId, int numberOfSchedule, int? promoteId) {
             if (IsCinema()) {
+                if (numberOfSchedule <= 0) {
+                    Json(new { Success = false, ErrorMessage = "Số suất chiếu không nhỏ hơn hoặc bằng 0" }, JsonRequestBehavior.AllowGet);
+                }
                 // Get needed information
                 var movie = movieRepository.GetMovieByID(movieId);
 
@@ -593,8 +614,8 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetNews(int headIndex, int type) {
             var result = newsRepository.GetNews();
-            if (headIndex >= result.Count()) {
-                return null;
+            if (headIndex >= result.Count() || (type == 0 && headIndex == 0)) {
+                return Json(new { Data = new List<object>(), HeadIndex = 0 }, JsonRequestBehavior.AllowGet);
             }
             int index = 0;
             switch (type) {
@@ -731,8 +752,8 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetMovies(int headIndex, int type) {
             var result = movieRepository.GetAllMovies();
-            if (headIndex >= result.Count()) {
-                return null;
+            if (headIndex >= result.Count() || (type == 0 && headIndex == 0)) {
+                return Json(new { Data = new List<object>(), HeadIndex = 0 }, JsonRequestBehavior.AllowGet);
             }
             int index = 0;
             switch (type) {
@@ -766,6 +787,14 @@ namespace MovieTicketReservation.Controllers {
         public ActionResult AjaxDeleteMovie(int movieId) {
             var result = movieRepository.DeleteMovie(movieId);
             return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AjaxCheckMovie(string movieTitle) {
+            var movie = movieRepository.GetMoviesByCinemaID((string)Session["AdminSection"]).Where(m => m.Title.ToLower().Equals(movieTitle.ToLower()));
+            if (movie.Count() != 0)
+                return Json(new { Existed = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { Existed = false }, JsonRequestBehavior.AllowGet);
         }
 
         private void InitializePage() {
@@ -870,8 +899,8 @@ namespace MovieTicketReservation.Controllers {
         [HttpPost]
         public ActionResult AjaxGetPromotions(int headIndex, int type) {
             var result = promotionRepository.GetPromotions();
-            if (headIndex >= result.Count()) {
-                return null;
+            if (headIndex >= result.Count() || (type == 0 && headIndex == 0)) {
+                return Json(new { Data = new List<object>(), HeadIndex = 0 }, JsonRequestBehavior.AllowGet);
             }
             int index = 0;
             switch (type) {
@@ -924,6 +953,18 @@ namespace MovieTicketReservation.Controllers {
 
         #region Staticstics
 
+        public ActionResult AjaxTicketStat_OverallStats_Cinema(string cinemaId) {
+            var bookingHeaders = bookingRepository.GetBookingHeaders().Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinemaId);
+            var movies = cinemaMovieRepository.GetDetailsByCinemaID(cinemaId).Select(d => d.Movie);
+
+            var result = new List<object>();
+
+            foreach (var movie in movies) {
+                result.Add(new { label = movie.Title, value = bookingRepository.GetBookingHeadersByMovieID(movie.MovieID).Count() });
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AjaxTicketStat_OverallStats_CanBeReserved(string stringDate = null) {
             if (stringDate == null) {
 
@@ -974,7 +1015,7 @@ namespace MovieTicketReservation.Controllers {
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxRevenue_OverallStat_All() {
+        public ActionResult AjaxRevenue_OverallStat_AllCinemasWeek() {
             int today = (int)DateTime.Now.DayOfWeek;
             List<object> result = new List<object>();
             var cinemaList = cinemaRepository.GetCinemas();
@@ -987,6 +1028,46 @@ namespace MovieTicketReservation.Controllers {
                     res.Add((long)revenue);
                 }
                 result.Add(new { date = date.ToShortDateString(), a = res[0], b = res[1], c = res[2], d = res[3] });
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AjaxRevenue_OverallStat_AllCinemasMonth() {
+            int thisMonth = (int)DateTime.Now.Month;
+            List<object> result = new List<object>();
+            var cinemaList = cinemaRepository.GetCinemas();
+            for (var month = 1; month <= thisMonth; month++) {
+                List<long> res = new List<long>();
+                foreach (var cinema in cinemaList) {
+                    var bookingHeaders = bookingRepository.GetBookingHeadersByMonth(month, DateTime.Now.Year);
+                    long revenue = 0;
+                    if (bookingHeaders.Count() != 0) {
+                        revenue = (long)bookingHeaders.Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinema.CinemaID)
+                            .Sum(b => b.Seat_ShowDetails.Sum(d => d.TicketClass.Price));
+                    }
+                    res.Add(revenue);
+                }
+                result.Add(new { month = (new DateTime(DateTime.Now.Year, month, 1).Month.ToString()), a = res[0], b = res[1], c = res[2], d = res[3] });
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AjaxRevenue_OverallStat_AllCinemasYear() {
+            int today = (int)DateTime.Now.DayOfWeek;
+            List<object> result = new List<object>();
+            var cinemaList = cinemaRepository.GetCinemas();
+            for (var year = 2015; year <= DateTime.Now.Year; year++) {
+                List<long> res = new List<long>();
+                foreach (var cinema in cinemaList) {
+                    var bookingHeaders = bookingRepository.GetBookingHeadersByYear(year);
+                    long revenue = 0;
+                    if (bookingHeaders.Count() != 0) {
+                        revenue = (long)bookingHeaders.Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinema.CinemaID)
+                            .Sum(b => b.Seat_ShowDetails.Sum(d => d.TicketClass.Price));
+                    }
+                    res.Add(revenue);
+                }
+                result.Add(new { year = year, a = res[0], b = res[1], c = res[2], d = res[3] });
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
