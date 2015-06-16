@@ -2,13 +2,14 @@
     <h2 class="separator">Doanh thu theo rạp</h2>
     <div class="col-sm-6">
         <div class="form-group">
-            <label>Chọn rạp</label>
+            <h3><i class="fa fa-caret-right"></i> Chọn rạp</h3>
             <select class="form-control" id="selCinema">
                 <option selected disabled value="-1">Chọn rạp</option>
                 @foreach (var item in ViewBag.Cinemas) {
                     <option value="@item.CinemaID">@item.Name</option>
                 }
             </select>
+            <p></p>
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class="row">
@@ -16,35 +17,53 @@
                             <i class="fa fa-desktop fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge" id="cinemaRevenue"></div>
+                            <div class="huge" id="cinemaRevenue">N/A (Chọn rạp để xem)</div>
                             <div>Doanh thu trong ngày</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="line-result">
+        </div>
+        <div class="form-group">
+            <h4><i class="fa fa-caret-right"></i> Doanh thu trong tuần (chọn rạp để xem)</h4>
+            <div id="cinema-line-result">
 
             </div>
         </div>
     </div>
     <div class="col-sm-6">
-        <div id="donut-result"></div>
+        <h3><i class="fa fa-caret-right"></i> Doanh thu toàn hệ thống</h3>
+        <div id="bar-result"></div>
     </div>
 </div>
 
 <script>
     $(document).on("change", "#selCinema", function () {
         var cinemaId = $(this).val();
-        $.getJSON("/Admin/AjaxRevenue_Cinema", function (response) {
+        $.getJSON("/Admin/AjaxRevenue_Cinema", { cinemaId: cinemaId }, function (response) {
             $("#cinemaRevenue").text(response.Today + " VND");
+            $("#cinema-line-result").empty();
             Morris.Line({
-                element: "line-result",
+                element: "cinema-line-result",
                 data: response.Line,
                 xkey: "date",
                 ykeys: ["total"],
-                labels: ["Lượt đặt"],
+                labels: ["Tổng tiền (VND)"],
                 parseTime: false,
+                resize: true
             });
+        });
+    });
+
+    $.get("/Admin/AjaxRevenue_OverallStat_All", function (response) {
+        Morris.Bar({
+            element: "bar-result",
+            data: response,
+            xkey: "date",
+            ykeys: ["a", "b", "c", "d"],
+            labels: ["Nguyễn Trãi (VND)", "Nguyễn Du (VND)", "Nguyễn Hồng Đào (VND)", "Kinh Dương Vương (VND)"],
+            parseTime: false,
+            resize: true
         });
     });
 </script>

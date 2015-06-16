@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using MovieTicketReservation.App_Code;
 using MovieTicketReservation.Models;
 using MovieTicketReservation.Services;
@@ -973,10 +974,27 @@ namespace MovieTicketReservation.Controllers {
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult AjaxRevenue_OverallStat_All() {
+            int today = (int)DateTime.Now.DayOfWeek;
+            List<object> result = new List<object>();
+            var cinemaList = cinemaRepository.GetCinemas();
+            for (var date = DateTime.Now.AddDays(-today).Date; date <= DateTime.Now.Date; date = date.AddDays(1)) {
+                List<long> res = new List<long>();
+                foreach (var cinema in cinemaList) {
+                    var revenue = bookingRepository.GetBookingHeadersByDate(date)
+                    .Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinema.CinemaID)
+                    .Sum(b => b.Seat_ShowDetails.Sum(d => d.TicketClass.Price));
+                    res.Add((long)revenue);
+                }
+                result.Add(new { date = date.ToShortDateString(), a = res[0], b = res[1], c = res[2], d = res[3] });
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AjaxRevenue_Cinema(string cinemaId) {
             int today = (int)DateTime.Now.DayOfWeek;
 
-            var todayResult = bookingRepository.GetBookingHeadersByDate(DateTime.Now)
+            var todayResult = bookingRepository.GetBookingHeadersByDate(DateTime.Now.Date)
                 .Where(b => b.Seat_ShowDetails.First().Schedule.Cine_MovieDetails.CinemaID == cinemaId)
                 .Sum(b => b.Seat_ShowDetails.Sum(d => d.TicketClass.Price));
 
